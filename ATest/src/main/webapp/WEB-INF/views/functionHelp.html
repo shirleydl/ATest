@@ -1,0 +1,158 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<h1 class="book_h01">函数说明</h1>
+		<p class="book_p">
+		<table class="book_table" border="1" cellpadding="10">
+			<tr>
+				<td><label class="td_label">函数名</label></td>
+				<td><label class="td_label">描述</label></td>
+				<td><label class="td_label">格式</label></td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${StatusCode}</label></td>
+				<td><label class="td_label">获取返回状态码</label></td>
+				<td><label class="td_label">${StatusCode}</label></td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Content:}</label></td>
+				<td><label class="td_label">获取返回内容</label></td>
+				<td>
+					<p>
+						<label class="td_label">全部内容：${Content:all}</label>
+					</p>
+					<p>
+						<label class="td_label">关键字内容(非数组json格式)：${Content:key}/${Content:key1.key2}</label>
+					</p>
+					<p>
+						<label class="td_label">关键字内容(数组json格式)：${Content:$array[?].key}/${Content:key1[?].key2[?].key3}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Header:}</label></td>
+				<td><label class="td_label">获取返回头内容</label></td>
+				<td>
+					<p>
+						<label class="td_label">全部内容：${Header:all}</label>
+					</p>
+					<p>
+						<label class="td_label">关键字内容：${Header:key}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Bind:}</label></td>
+				<td><label class="td_label">获取测试集变量值</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取key变量名值：${Bind:key}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Variable:}</label></td>
+				<td><label class="td_label">获取用例变量值</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取key变量名值：${Variable:key}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${_JS()}</label></td>
+				<td><label class="td_label">执行js</label></td>
+				<td>
+					<p>
+						<label class="td_label">执行js：${_JS(print("Hello!"))}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${VAR()}</label></td>
+				<td><label class="td_label">函数参数使用的用例变量</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取提供给函数参数的用例变量：${Variable:${VAR(key)}}、${_JS(${VAR(key)})}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">&+&</label></td>
+				<td><label class="td_label">拼接连接符</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取拼接值：xxx&+&${xxx}&+&${xxx}&+&xxx</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">&_&</label></td>
+				<td><label class="td_label">组合函数连接符</label></td>
+				<td>
+					<p>
+						<label class="td_label">调用组合函数：${xxx}&_&${xxx}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Custom_getTime()}</label></td>
+				<td><label class="td_label">获取指定格式时间</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取当前时间戳(单位：毫秒)：${Custom_getTime()}</label>
+					</p>
+					<p>
+						<label class="td_label">获取当前时间戳(单位：秒)：${Custom_getTime(now)}</label>
+					</p>
+					<p>
+						<label class="td_label">获取转换格式时间：${Custom_getTime(yyyy-MM-dd
+							E a HH:mm:ss,1564469430000)}</label>
+					</p>
+				</td>
+			</tr>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Custom_substring()}</label></td>
+				<td><label class="td_label">组合函数，截取字符串</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取前一个函数值的截取值：${xxx}&_&${Custom_substring(startStr:startInt,endStr:endInt)}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Custom_getMd5(Encryption32)}</label></td>
+				<td><label class="td_label">组合函数，加密字符串</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取前一个函数值的加密值：${xxx}&_&${Custom_Md5(Encryption32)}</label>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td><label class="td_label">${Custom_toUpperCase()}</label></td>
+				<td><label class="td_label">组合函数，转换大写字符串</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取前一个函数值的大写字符串：${xxx}&_&${Custom_toUpperCase()}</label>
+					</p>
+				</td>
+			</tr>
+		</table>
+		</p>
+	</div>
+
+</body>
+</html>

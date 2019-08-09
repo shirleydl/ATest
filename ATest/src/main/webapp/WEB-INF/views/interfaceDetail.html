@@ -1,0 +1,132 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
+<style>
+.input-default {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 2px; /*html5*/
+	text-indent: 0 !important;
+	min-height: 22px;
+}
+</style>
+
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<h1 class="book_h01">接口信息</h1>
+		<form id="form_update" action="toUpdateInterface" method="post">
+			<p class="book_p">
+			<table class="book_table" border="1" cellpadding="10">
+				<tr>
+					<input id="interfaceId" type="hidden" name="interfaceId" />
+					<td><label class="td_label">接口名</label></td>
+					<td><input id="name" name="name" type="text"
+						class="book_input03" placeholder="必填"></td>
+					<td><label class="td_label">API</label></td>
+					<td><input id="api" name="api" type="text"
+						class="book_input03" placeholder="必填"></td>
+				</tr>
+				<tr>
+					<td><label class="td_label">所属环境</label></td>
+					<td><input id="environmentId" type="hidden" name="environmentId" />
+					<input id="environmentName" type="text" name="environmentName" class="book_input03" autocomplete="off" placeholder="必填"/>
+					<td><label class="td_label">描述</label></td>
+					<td><input id="description" name="description" type="text" class="book_input03"></td>
+				</tr>
+			</table>
+			</p>
+			<p class="book_foot">
+				<input type="button" id="Sumbit" value="提交" />
+			</p>
+		</form>
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+	<script src="js/editor/js/input-autocomplete.js"></script>
+	<script>
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (let i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			let interfaceId = value[0];
+			$("#interfaceId").val(interfaceId);
+			$.ajax({
+				type : 'post',
+				url : "toQueryInterface",
+				cache : false,
+				data : {
+					"id" : interfaceId
+				},
+				success : function(data) {
+					$("#name").val(data.name);
+					$("#api").val(data.api);
+					$("#environmentId").val(data.environmentId);
+					$("#environmentName").val(data.environmentName);
+					$("#description").val(data.description);
+				},
+				error : function() {
+					alert("查询失败")
+				}
+			})
+		});
+	</script>
+	<script>
+		$("#Sumbit").click(function() {
+			let targetUrl = $("#form_update").attr("action");
+			let data = $('#form_update').serialize();
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+					} else
+						alert("数据错误");
+				},
+				error : function() {
+					alert("提交失败");
+				}
+			})
+
+		})
+	</script>
+	<script>
+		$("#environmentName").bigAutocomplete({
+			url : 'queryEnvironments',
+			title : 'name',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.name;
+			},
+			formatSelected : function(data, i, row) {
+				return row.name;
+			},
+			callback : function(row) {
+				if (null != row)
+					$("#environmentId").val(row.id);
+				else
+					$("#environmentId").val("");
+			},
+		});
+	</script>
+
+</body>
+</html>

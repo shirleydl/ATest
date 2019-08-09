@@ -1,0 +1,7 @@
+
+/*bigautocomplete 模糊匹配*/
+.bigautocomplete-layout{display:none;background-color:#FFF;border:1px solid #BCBCBC;position:absolute;z-index:99999;max-height:215px;overflow-x:hidden;overflow-y:auto;-webkit-background-clip:padding-box;background-clip:padding-box;-webkit-box-shadow:0 6px 12px rgba(26,64,119,.15);box-shadow:0 6px 12px rgba(26,64,119,.15)}
+.bigautocomplete-layout table{border-collapse:collapse;border-spacing:0;background:none repeat scroll 0 0 #fff;width:100%;cursor:default}
+.bigautocomplete-layout table tr{background:none repeat scroll 0 0 #fff}
+.bigautocomplete-layout .ct{background:none repeat scroll 0 0 #4481e6!important;color:#fff}
+.bigautocomplete-layout div{word-wrap:break-word;word-break:break-all;padding:5px 5px}

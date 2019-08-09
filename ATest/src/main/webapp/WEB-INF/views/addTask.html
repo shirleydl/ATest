@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<h1 class="book_h01">新增任务</h1>
+		<form id="form_add" action="toAddTask" method="post">
+			<p class="book_p">
+			<table class="book_table" border="1" cellpadding="10">
+				<tr>
+					<td><label class="td_label">任务名</label></td>
+					<td><input id="name" name="name" type="text"
+						class="book_input03"></td>
+					<td><label class="td_label">开始时间</label></td>
+					<td><input id="startTime" name="startTime"
+						type="datetime-local" class="book_input03"></td>
+				</tr>
+			</table>
+			</p>
+			<p class="book_foot">
+				<input type="button" id="Sumbit" value="提交" /><input type="button"
+					id="Clean" value="清除" /> <input type="button" id="Return"
+					value="返回" />
+			</p>
+		</form>
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+	<script>
+		$("#Sumbit").click(function() {
+			let targetUrl = $("#form_add").attr("action");
+			let data = $("#form_add").serialize();
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+						window.location.href = "taskList";
+					} else
+						alert("数据错误");
+				},
+				error : function() {
+					alert("提交失败");
+				}
+			})
+
+		});
+
+		$("#Clean").click(function() {
+			$(".book_table input").each(function() {
+				$(this).val('');
+			});
+		})
+
+		$("#Return").click(function() {
+			window.location.href = "taskList";
+		})
+	</script>
+
+</body>
+</html>

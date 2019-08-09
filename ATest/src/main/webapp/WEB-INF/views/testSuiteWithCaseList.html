@@ -1,0 +1,477 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
+<style>
+.input-default {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 2px; /*html5*/
+	text-indent: 0 !important;
+	min-height: 22px;
+}
+</style>
+
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<h1 class="book_h01">用例管理</h1>
+		<p class="book_p">
+		<form id="form_addOrUpdate" method="post">
+			<table id="edit_book" class="book_table" border="1" cellpadding="10">
+				<tr>
+					<input id="testSuiteId" type="hidden" name="testSuiteId" />
+					<td><label class="td_label">测试集名</label></td>
+					<td colspan="3"><label id="testSuiteName" class="td_label"></label></td>
+					</td>
+					<td><label class="td_label">描述</label></td>
+					<td colspan="3"><label id="description" class="td_label"></label></td>
+				</tr>
+				<tr id="tr_testcase">
+					<input id="id" name="id" type="hidden" name="testSuiteId" />
+					<td><label class="td_label">用例号</label></td>
+					<td><input id="interfaceCaseId" name="interfaceCaseId"
+						type="text" class="book_input03" " autocomplete="off"></label></td>
+					<td><label class="td_label">用例名</label></td>
+					<td><input id="interfaceCaseName" name="interfaceCaseName"
+						type="text" class="book_input03" autocomplete="off"></td>
+					<td><label class="td_label">接口API</label></td>
+					<td><input id="interfaceApi" name="interfaceApi" type="text"
+						class="book_input03" readonly="readonly"></td>
+					<td><label class="td_label">优先级</label></td>
+					<td><input id="priority" name="priority" type="text"
+						class="book_input03"></td>
+				</tr>
+				<tr id="tr_testcase">
+					<td><label class="td_label">响应时间</label></td>
+					<td><input id="timeout" name="timeout" type="text"
+						class="book_input03"></td>
+					<td><label class="td_label">重试次数</label></td>
+					<td><input id="retry" name="retry" type="text"
+						class="book_input03"></td>
+					<td><label class="td_label">重试间隔</label></td>
+					<td><input id="interval" name="interval" type="text"
+						class="book_input03"></td>
+					<td><label class="td_label">延迟启动</label></td>
+					<td><input id="delay" name="delay" type="text"
+						class="book_input03"></td>
+				</tr>
+			</table>
+			<p class="book_foot">
+				<input type="button" id="addCase" value="添加用例" /><input
+					type="button" id="updateCase" value="保存修改" style="display: none" />
+					<input
+					type="button" id="cancel" value="取消" style="display: none" />
+			</p>
+		</form>
+		<div
+			style="overflow-x: auto; overflow-y: auto; height: 251px; width: 100%;">
+			<table id="table" class="book_table" border="1" cellpadding="10">
+				<tr>
+					<td><label class="td_label">优先级</label></td>
+					<td><label class="td_label">用例号</label></td>
+					<td><label class="td_label">用例名</label></td>
+					<td><label class="td_label">接口API</label></td>
+					<td><label class="td_label">响应时间</label></td>
+					<td><label class="td_label">重试次数</label></td>
+					<td><label class="td_label">重试间隔</label></td>
+					<td><label class="td_label">延迟启动</label></td>
+					<td><label class="td_label">绑定变量</label></td>
+					<td><label class="td_label">操作</label></td>
+				</tr>
+			</table>
+			
+		</div>
+<p class="book_foot"><input type="button" value="执行测试" onclick="result()"/> </p>
+		</p>
+
+
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+	<script src="js/editor/js/input-autocomplete.js"></script>
+
+	<script>
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			let testSuiteId = value[0];
+			$("#testSuiteId").val(testSuiteId);
+			$.ajax({
+				type : 'post',
+				url : "toQueryTestSuite",
+				cache : false,
+				data : {
+					"id" : testSuiteId
+				},
+				success : function(data) {
+					$("#testSuiteName").text(data.name);
+					$("#description").text(data.description);
+				},
+				error : function() {
+					alert("查询失败")
+				}
+			});
+			$
+					.ajax({
+						type : 'post',
+						url : "toQueryTestSuiteWithCases",
+						cache : false,
+						data : {
+							"testSuiteId" : testSuiteId
+						},
+						success : function(data) {
+							let arr = data.testSuiteWithCases;
+							for (let i = 0; i < arr.length; i++) {
+								$("#table")
+										.append(
+												"<tr id='"
+														+ (i + 1)
+														+ "'><input id='id"
+														+ (i + 1)
+														+ "' type='hidden' name='id"
+														+ (i + 1)
+														+ "' value='"
+														+ arr[i].id
+														+ "' /><td><label id='priority"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].priority
+														+ "</label></td><td><label id='interfaceCaseId"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].interfaceCaseId
+														+ "</label></td><td><label id='interfaceCaseName"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].interfaceCaseName
+														+ "</label></td><td><label id='interfaceApi"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].interfaceApi
+														+ "</label></td><td><label id='timeout"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].timeout
+														+ "</label></td><td><label id='retry"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].retry
+														+ "</label></td><td><label id='interval"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].interval
+														+ "</label></td><td><label id='delay"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].delay
+														+ "</label></td><td><label id='bind"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ (null == arr[i].bindVariables ? "无"
+																: "有")
+														+ "</label></td><td><a href='javascript:void(0)' onclick='Bind("
+														+ arr[i].id
+														+ ")' class='add_a'>绑定变量</a><a href='javascript:void(0)' onclick='EditElement("
+														+ (i + 1)
+														+ ")' class='add_a'>编辑</a><a href='javascript:void(0)' onclick='CaseDetail("
+														+ arr[i].interfaceCaseId
+														+ ")' class='add_a'>查看</a><a href='javascript:void(0)' onclick='DeleteElement("
+														+ (i + 1)
+														+ ")' class='add_a'>删除</a></td></tr>");
+							}
+						},
+						error : function() {
+							alert("查询失败")
+						}
+					})
+		});
+	</script><script>
+		$("#addCase").click(function() {
+			let targetUrl = "toAddTestSuiteWithCase";
+			let data = $('#form_addOrUpdate').serialize();
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+						location.reload();
+					} else
+						alert("数据错误");
+				},
+				error : function() {
+					alert("提交失败");
+				}
+			})
+
+		});
+
+		$("#updateCase").click(function() {
+			let targetUrl = "toUpdateTestSuiteWithCase";
+			let data = $('#form_addOrUpdate').serialize();
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+						$("#updateCase").hide();
+						$("#cancel").hide();
+						$("#addCase").show();
+						location.reload();
+					} else
+						alert("数据错误");
+				},
+				error : function() {
+					alert("提交失败");
+				}
+			})
+
+		});
+		$("#cancel").click(function() {
+			$("#id").val('');
+			$("#interfaceCaseId").val('');
+			$("#interfaceCaseName").val('');
+			$("#interfaceApi").val('');
+			$("#priority").val('');
+			$("#timeout").val('');
+			$("#retry").val('');
+			$("#interval").val('');
+			$("#delay").val('');
+			$("#updateCase").hide();
+			$("#cancel").hide();
+			$("#addCase").show();
+		})
+	</script>
+	<script>
+		function DeleteElement(index) {
+			$
+					.ajax({
+						type : 'post',
+						url : "toDelTestSuiteWithCase",
+						cache : false,
+						data : {
+							"id" : $("#id" + index).val()
+						},
+						success : function(data) {
+							if (data) {
+								let _len = $("#table tr").length;
+								$("tr[id='" + index + "']").remove();//删除当前行
+								for (let i = index + 1, j = _len; i < j; i++) {
+									let nextIdVal = $("#id" + i).val();
+									let nextInterfaceCaseIdVal = $(
+											"#interfaceCaseId" + i).text();
+									let nextInterfaceCaseNameVal = $(
+											"#interfaceCaseName" + i).text();
+									let nextInterfaceApiVal = $(
+											"#interfaceApi" + i).text();
+									let nextPriorityVal = $("#priority" + i)
+											.text();
+									let nextTimeoutVal = $("#timeout" + i)
+											.text();
+									let nextRetryVal = $("#retry" + i).text();
+									let nextIntervalVal = $("#interval" + i)
+											.text();
+									let nextDelayVal = $("#delay" + i).text();
+									let nextBindVal = $("#bind" + i).text();
+									$("tr[id=\'" + i + "\']")
+											.replaceWith(
+													"<tr id='"
+															+ (i - 1)
+															+ "'><input id='id"
+															+ (i - 1)
+															+ "' type='hidden' name='id"
+															+ (i - 1)
+															+ "' value='"
+															+ nextIdVal
+															+ "' /><td><label id='priority"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextPriorityVal
+															+ "</label></td><td><label id='interfaceCaseId"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextInterfaceCaseIdVal
+															+ "</label></td><td><label id='interfaceCaseName"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextInterfaceCaseNameVal
+															+ "</label></td><td><label id='interfaceApi"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextInterfaceApiVal
+															+ "</label></td><td><label id='timeout"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextTimeoutVal
+															+ "</label></td><td><label id='retry"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextRetryVal
+															+ "</label></td><td><label id='interval"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextIntervalVal
+															+ "</label></td><td><label id='delay"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextDelayVal
+															+ "</label></td><td><label id='bind"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextBindVal
+															+ "</label></td><td><a href='javascript:void(0)' onclick='Bind("
+															+ nextIdVal
+															+ ")' class='add_a'>绑定变量</a><a href='javascript:void(0)' onclick='EditElement("
+															+ (i - 1)
+															+ ")' class='add_a'>编辑</a><a href='javascript:void(0)' onclick='CaseDetail("
+															+ nextInterfaceCaseIdVal
+															+ ")' class='add_a'>查看</a><a href='javascript:void(0)' onclick='DeleteElement("
+															+ (i - 1)
+															+ ")' class='add_a'>删除</a></td></tr>");
+								}
+							} else
+								alert("数据错误");
+						},
+						error : function() {
+							alert("提交失败");
+						}
+					})
+		}
+	</script>
+	<script>
+		function EditElement(index) {
+			$("#id").val($("#id" + index).val());
+			$("#interfaceCaseId").val($("#interfaceCaseId" + index).text());
+			$("#interfaceCaseName").val($("#interfaceCaseName" + index).text());
+			$("#interfaceApi").val($("#interfaceApi" + index).text());
+			$("#priority").val($("#priority" + index).text());
+			$("#timeout").val($("#timeout" + index).text());
+			$("#retry").val($("#retry" + index).text());
+			$("#interval").val($("#interval" + index).text());
+			$("#delay").val($("#delay" + index).text());
+			$("#updateCase").show();
+			$("#cancel").show();
+			$("#addCase").hide();
+
+		}
+	</script>
+		<script src="js/layer_v2.1/layer/layer.js"></script>
+		<script>
+		function Bind(id) {
+				layer.open({
+					type : 2,
+					title : '绑定变量信息',
+					shadeClose : true,
+					shade : 0.5,
+					skin : 'layui-layer-rim',
+					//            maxmin: true,
+					closeBtn : 1,
+					area : [ '60%', '80%' ],
+					shadeClose : true,
+					closeBtn : 1,
+					content : 'queryBinds?testSuiteWithCaseId=' + id
+				//iframe的url
+				});
+
+		}
+		
+		function CaseDetail(interfaceCaseId){
+			layer.open({
+				type : 2,
+				title : '测试用例信息',
+				shadeClose : true,
+				shade : 0.5,
+				skin : 'layui-layer-rim',
+				//            maxmin: true,
+				closeBtn : 1,
+				area : [ '100%', '100%' ],
+				shadeClose : true,
+				closeBtn : 1,
+				content : 'queryInterfaceCase?id=' + interfaceCaseId
+			//iframe的url
+			});
+		}
+	</script>
+	<script>
+	function result() {
+		let id=$("#testSuiteId").val();
+		layer.open({
+			type : 2,
+			title : '验证信息',
+			shadeClose : true,
+			shade : 0.5,
+			skin : 'layui-layer-rim',
+			//            maxmin: true,
+			closeBtn : 1,
+			area : [ '98%', '98%' ],
+			shadeClose : true,
+			closeBtn : 1,
+			content : 'testSuiteResult?id=' + id
+		//iframe的url
+		});
+	}
+	</script>
+	<script>
+		//param 自定义参数,动态构建/渲染html时可以用到
+		$("#interfaceCaseName").bigAutocomplete({
+			//data:data3,
+			url : 'queryInterfaceCasesByName',//url自行研究,条件限制这里就不写demo了
+			title : 'name',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.name + " " + row.id;
+			},
+			formatSelected : function(data, i, row) {
+				return row.name;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#interfaceCaseId").val(row.id);
+					$("#interfaceApi").val(row.interfaceApi);
+				}
+			},
+		});
+
+		$("#interfaceCaseId").bigAutocomplete({
+			//data:data3,
+			url : 'queryInterfaceCaseById',//url自行研究,条件限制这里就不写demo了
+			title : 'name',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.id + " " + row.name;
+			},
+			formatSelected : function(data, i, row) {
+				return row.id;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#interfaceCaseName").val(row.name);
+					$("#interfaceApi").val(row.interfaceApi);
+				}
+			},
+		});
+	</script>
+</body>
+</html>

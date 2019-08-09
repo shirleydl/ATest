@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+	default-autowire="byName" default-lazy-init="true">
+	<!--数据库数据源配置 -->
+	<bean id="localdataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!--加载驱动类 -->
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<!--数据库访问地址 -->
+		<property name="url" value="jdbc:mysql://localhost:3306/atest?serverTimezone=UTC"></property>
+		<!--数据库访问用户名 -->
+		<property name="username" value="atest"></property>
+		<!--数据库访问密码 -->
+		<property name="password" value="password"></property>
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="15" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="5000" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="false" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 （心跳） -->
+		<property name="timeBetweenEvictionRunsMillis" value="10000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="180000" />
+	</bean>
+	<bean id="qadataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!--加载驱动类 -->
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<!--数据库访问地址 -->
+		<property name="url" value="jdbc:mysql://localhost:3306/atest?serverTimezone=UTC"></property>
+		<!--数据库访问用户名 -->
+		<property name="username" value="root"></property>
+		<!--数据库访问密码 -->
+		<property name="password" value="password"></property>
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="15" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="5000" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="false" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 （心跳） -->
+		<property name="timeBetweenEvictionRunsMillis" value="10000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="180000" />
+	</bean>
+	<bean id="uatdataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<!--加载驱动类 -->
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<!--数据库访问地址 -->
+		<property name="url" value="jdbc:mysql://localhost:3306/atest?serverTimezone=UTC"></property>
+		<!--数据库访问用户名 -->
+		<property name="username" value="root"></property>
+		<!--数据库访问密码 -->
+		<property name="password" value="password"></property>
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="15" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="5000" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="testWhileIdle" value="false" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 （心跳） -->
+		<property name="timeBetweenEvictionRunsMillis" value="10000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="180000" />
+	</bean>
+
+	<bean id="dataSource" class="com.shirley.aTestActuator.db.DynamicDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry value-ref="localdataSource" key="localdataSource"></entry>
+				<entry value-ref="qadataSource" key="qadataSource"></entry>
+				<entry value-ref="uatdataSource" key="uatdataSource"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="localdataSource"></property>
+	</bean>
+
+
+
+	<!-- spring 提供的数据库事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+
+	<!--spring提供的数据库访问操作类 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+
+
+</beans>

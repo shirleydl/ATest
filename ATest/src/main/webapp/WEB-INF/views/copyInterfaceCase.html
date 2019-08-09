@@ -1,0 +1,560 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
+<style>
+.input-default {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 2px; /*html5*/
+	text-indent: 0 !important;
+	min-height: 22px;
+}
+</style>
+
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<h1 class="book_h01">复制用例信息</h1>
+		<form id="form_update" action="toUpdateInterfaceCase" method="post">
+
+			<table class="book_table" border="1" cellpadding="10">
+				<tr>
+					<input id="id" type="hidden" name="id" />
+					<td><label class="td_label">用例名</label></td>
+					<td colspan="2"><input id="name" name="name" type="text"
+						class="book_input03"></td>
+					<td><label class="td_label">描述</label></td>
+					<td colspan="2"><input id="description" name="description"
+						type="text" class="book_input03"></td>
+
+				</tr>
+				<tr>
+					<td><label class="td_label">所属接口Id</label></td>
+					<td><input id="interfaceId" type="text" name="interfaceId"
+						class="book_input03" autocomplete="off" />
+					<td><label class="td_label">所属接口名</label></td>
+					<td><input id="interfaceName" type="text" name="interfaceName"
+						class="book_input03" autocomplete="off" />
+					<td><label class="td_label">所属接口API</label></td>
+					<td><input id="interfaceApi" type="text" name="interfaceApi"
+						class="book_input03" autocomplete="off" />
+				</tr>
+				<tr>
+					<td><label class="td_label">请求方法</label></td>
+					<td colspan="5"><input id="sendDataType" type="hidden"
+						name="sendDataType" value="get" /><input type="radio"
+						class="input_radio" checked="checked" name="radio01"
+						onchange="param('get')" value="get" /><a>GET</a><input
+						type="radio" class="input_radio" name="radio01"
+						onchange="param('form')" value="form" /><a>POST(form)</a> <input
+						type="radio" class="input_radio" name="radio01"
+						onchange="param('raw')" value="raw" /><a>POST(raw)</a></td>
+				</tr>
+			</table>
+
+			<table id="tb_headers" class="book_table" border="1" cellpadding="10">
+				<tr>
+					<td colspan="2"><label class="td_label">请求头</label></td>
+					<td><input type="button" id="addHeader" value="添加栏位" /></td>
+				</tr>
+				<tr>
+					<td><label class="td_label">参数名</label></td>
+					<td><label class="td_label">参数值</label></td>
+					<td><label class="td_label">操作</label></td>
+				</tr>
+			</table>
+
+			<table id="tb_params" class="book_table" border="1" cellpadding="10">
+				<tr>
+					<td colspan="2"><label class="td_label">请求参数</label></td>
+					<td><input type="button" id="addParam" value="添加栏位" /></td>
+				</tr>
+				<tr>
+					<td><label class="td_label">参数名</label></td>
+					<td><label class="td_label">参数值</label></td>
+					<td><label class="td_label">操作</label></td>
+				</tr>
+			</table>
+
+			<table id="tb_rowParams" class="book_table" border="1"
+				cellpadding="10" style="display: none">
+				<tr>
+					<td colspan="3"><label class="td_label">请求参数</label></td>
+				</tr>
+				<tr>
+					<td><textarea type="text" id="rowParams"
+							class="online_input01" name="rowParams"></textarea></td>
+				</tr>
+			</table>
+
+			<table id="tb_asserts" class="book_table" border="1" cellpadding="10">
+				<tr>
+					<td colspan="3"><label class="td_label">断言</label></td>
+					<td><input type="button" id="addAssert" value="添加栏位" /></td>
+				</tr>
+				<tr>
+					<td><label class="td_label">取值</label></td>
+					<td><label class="td_label">验证方法</label></td>
+					<td><label class="td_label">预期值</label></td>
+					<td><label class="td_label">操作</label></td>
+				</tr>
+
+			</table>
+			<table id="tb_variables" class="book_table" border="1"
+				cellpadding="10">
+				<tr>
+					<td colspan="2"><label class="td_label">用例变量</label></td>
+					<td><input type="button" id="addVariable" value="添加栏位" /></td>
+				</tr>
+				<tr>
+					<td><label class="td_label">变量名</label></td>
+					<td><label class="td_label">取值</label></td>
+					<td><label class="td_label">操作</label></td>
+				</tr>
+
+			</table>
+
+			<p class="book_foot">
+				<input type="button" id="Sumbit" value="确定复制" /> 
+			</p>
+		</form>
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+	<script src="js/editor/js/input-autocomplete.js"></script>
+
+	<script>
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (let i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			let interfaceCaseId = value[0];
+			$("#id").val(interfaceCaseId);
+			$
+					.ajax({
+						type : 'post',
+						url : "toQueryInterfaceCase",
+						cache : false,
+						data : {
+							"id" : interfaceCaseId
+						},
+						success : function(data) {
+							$("#name").val(data.name);
+							$("#description").val(data.description);
+							$("#interfaceId").val(data.interfaceId);
+							$("#interfaceName").val(data.interfaceName);
+							$("#interfaceApi").val(data.interfaceApi);
+							$("#sendDataType").val(data.method);
+							$("input[value='" + data.method + "']").attr(
+									'checked', 'true');
+							let i = 1;
+							let Data = data.headers;
+							for ( let key in Data) {
+								$("#tb_headers")
+										.append(
+												"<tr id='header"+i+"'><td><input id='headerKey"+i+"' type='text' class='book_input03' value='"
+										+ key
+										+ "'></td><td><input type='text' id='headerValue"+i+"' class='book_input03' value='"
+										+ Data[key]
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteHeader("
+														+ i
+														+ ")' class='add_a'>删除</a></td></tr>");
+								i++;
+							}
+
+							Data = data.params;
+							if (Data != null) {
+								if (data.method == "raw") {
+									$("#tb_params").hide();
+									$("#tb_rowParams").show();
+									$("#rowParams").val(Data);
+								} else {
+									Data = JSON.parse(Data);
+									$("#tb_params").show();
+									$("#tb_rowParams").hide()
+									let i = 1;
+									for ( let key in Data) {
+										$("#tb_params")
+												.append(
+														"<tr id='param"+i+"'><td><input id='paramKey"+i+"' type='text' class='book_input03' value='"
+										+ key
+										+ "'></td><td><input type='text' id='paramValue"+i+"' class='book_input03' value='"
+										+ Data[key]
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteParam("
+																+ i
+																+ ")' class='add_a'>删除</a></td></tr>");
+										i++;
+									}
+								}
+							}
+
+							Data = data.asserts;
+							if (Data != null) {
+								Data = JSON.parse(Data);
+								for (let i = 1; i <= Data.length; i++) {
+									$("#tb_asserts")
+											.append(
+													"<tr id='assert"+i+"'><td><input id='assertKey"+i+"' type='text' class='book_input03' value='"
+										+ Data[i-1].key
+										+ "'></td><td><select id='assertMethod"+i+"'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue"+i+"' class='book_input03' value='"
+										+ Data[i-1].value
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteAssert("
+															+ i
+															+ ")' class='add_a'>删除</a></td></tr>");
+									$("#assertMethod" + i).val(
+											Data[i - 1].method);
+								}
+							}
+							
+							i = 1;
+							Data = data.variables;
+							for ( let key in Data) {
+								$("#tb_variables")
+										.append(
+												"<tr id='variable"+i+"'><td><input id='variableKey"+i+"' type='text' class='book_input03' value='"
+										+ key
+										+ "'></td><td><input type='text' id='variableValue"+i+"' class='book_input03' value='"
+										+ Data[key]
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+														+ i
+														+ ")' class='add_a'>删除</a></td></tr>");
+								i++;
+							}
+
+						},
+						error : function() {
+							alert("查询失败")
+						}
+					})
+		});
+	</script>
+	<script>
+		$("#addHeader")
+				.click(
+						function() {
+							let _len = $("#tb_headers tr").length - 1;
+							$("#tb_headers")
+									.append(
+											"<tr id='header"+_len+"'><td><input id='headerKey"+_len+"' type='text' class='book_input03'></td><td><input type='text' id='headerValue"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteHeader("
+													+ _len
+													+ ")' class='add_a'>删除</a></td></tr>");
+						});
+		$("#addParam")
+				.click(
+						function() {
+							let _len = $("#tb_params tr").length - 1;
+							$("#tb_params")
+									.append(
+											"<tr id='param"+_len+"'><td><input id='paramKey"+_len+"' type='text' class='book_input03'></td><td><input type='text' id='paramValue"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteParam("
+													+ _len
+													+ ")' class='add_a'>删除</a></td></tr>");
+						});
+		$("#addAssert")
+				.click(
+						function() {
+							let _len = $("#tb_asserts tr").length - 1;
+							$("#tb_asserts")
+									.append(
+											"<tr id='assert"+_len+"'><td><input id='assertKey"+_len+"' type='text' class='book_input03'></td><td><select id='assertMethod"+_len+"'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteAssert("
+													+ _len
+													+ ")' class='add_a'>删除</a></td></tr>");
+						});
+		$("#addVariable")
+				.click(
+						function() {
+							let _len = $("#tb_variables tr").length - 1;
+							$("#tb_variables")
+									.append(
+											"<tr id='variable"+_len+"'><td><input id='variableKey"+_len+"' type='text' class='book_input03'></td><td><input type='text' id='variableValue"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+													+ _len
+													+ ")' class='add_a'>删除</a></td></tr>");
+						});
+	</script>
+	<script>
+		function DeleteHeader(index) {
+			let _len = $("#tb_headers tr").length - 1;
+			$("tr[id='header" + index + "']").remove();//删除当前行
+			for (let i = index + 1, j = _len; i < j; i++) {
+				let nextKeyVal = $("#headerKey" + i).val();
+				let nextValueVal = $("#headerValue" + i).val();
+				$("tr[id=\'header" + i + "\']")
+						.replaceWith(
+								"<tr id='header"
+										+ (i - 1)
+										+ "'><td><input id='headerKey"
+										+ (i - 1)
+										+ "' type='text' class='book_input03' value='"
+										+ nextKeyVal
+										+ "'></td><td><input type='text' id='headerValue"
+										+ (i - 1)
+										+ "' class='book_input03' value='"
+										+ nextValueVal
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteHeader("
+										+ (i - 1)
+										+ ")' class='add_a'>删除</a></td></tr>");
+			}
+		}
+	</script>
+	<script>
+		function DeleteParam(index) {
+			let _len = $("#tb_params tr").length - 1;
+			$("tr[id='param" + index + "']").remove();//删除当前行
+			for (let i = index + 1, j = _len; i < j; i++) {
+				let nextKeyVal = $("#paramKey" + i).val();
+				let nextValueVal = $("#paramValue" + i).val();
+				$("tr[id=\'param" + i + "\']")
+						.replaceWith(
+								"<tr id='param"
+										+ (i - 1)
+										+ "'><td><input id='paramKey"
+										+ (i - 1)
+										+ "' type='text' class='book_input03' value='"
+										+ nextKeyVal
+										+ "'></td><td><input type='text' id='paramValue"
+										+ (i - 1)
+										+ "' class='book_input03' value='"
+										+ nextValueVal
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteParam("
+										+ (i - 1)
+										+ ")' class='add_a'>删除</a></td></tr>");
+			}
+		}
+	</script>
+	<script>
+		function DeleteAssert(index) {
+			let _len = $("#tb_asserts tr").length - 1;
+			$("tr[id='assert" + index + "']").remove();//删除当前行
+			for (let i = index + 1, j = _len; i < j; i++) {
+				let nextKeyVal = $("#assertKey" + i).val();
+				let nextMethodVal = $("#assertMethod" + i).val();
+				let nextValueVal = $("#assertValue" + i).val();
+				$("tr[id=\'assert" + i + "\']")
+						.replaceWith(
+								"<tr id='assert"
+										+ (i - 1)
+										+ "'><td><input id='assertKey"
+										+ (i - 1)
+										+ "' type='text' class='book_input03' value='"
+										+ nextKeyVal
+										+ "'></td><td><select id='assertMethod"
+										+ (i - 1)
+										+ "'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue"
+										+ (i - 1)
+										+ "' class='book_input03' value='"
+										+ nextValueVal
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteAssert("
+										+ (i - 1)
+										+ ")' class='add_a'>删除</a></td></tr>");
+				$("#assertMethod" + (i - 1)).val(nextMethodVal)
+			}
+		}
+	</script>
+	<script>
+		function DeleteVariable(index) {
+			let _len = $("#tb_variables tr").length - 1;
+			$("tr[id='variable" + index + "']").remove();//删除当前行
+			for (let i = index + 1, j = _len; i < j; i++) {
+				let nextKeyVal = $("#variableKey" + i).val();
+				let nextValueVal = $("#variableValue" + i).val();
+				$("tr[id=\'variable" + i + "\']")
+						.replaceWith(
+								"<tr id='variable"
+										+ (i - 1)
+										+ "'><td><input id='variableKey"
+										+ (i - 1)
+										+ "' type='text' class='book_input03' value='"
+										+ nextKeyVal
+										+ "'></td><td><input type='text' id='variableValue"
+										+ (i - 1)
+										+ "' class='book_input03' value='"
+										+ nextValueVal
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+										+ (i - 1)
+										+ ")' class='add_a'>删除</a></td></tr>");
+			}
+		}
+	</script>
+	<script>
+		function param(type) {
+			if (type == "raw") {
+				$("#tb_params").hide();
+				$("#tb_rowParams").show();
+				$("#tb_binParams").hide();
+				$("#sendDataType").val("raw");
+			}
+			if (type == "get") {
+				$("#tb_params").show();
+				$("#tb_rowParams").hide()
+				$("#tb_binParams").hide();
+				$("#sendDataType").val("get");
+			}
+			if (type == "form") {
+				$("#tb_params").show();
+				$("#tb_rowParams").hide()
+				$("#tb_binParams").hide();
+				$("#sendDataType").val("form");
+			}
+
+		}
+	</script>
+	<script>
+		$("#Sumbit").click(function() {
+			let targetUrl = "toAddInterfaceCase";
+			let id = $("#id").val();
+			let name = $("#name").val();
+			let interfaceId = $("#interfaceId").val();
+			let description = $("#description").val();
+			let method = $("#sendDataType").val();
+			let headerMap = {};
+			let paramMap = {};
+			let variableMap = {};
+			let assertList = [];
+			let headerMapJson = "";
+			let assertJson = "";
+			let param = "";
+			let variableMapJson = "";
+
+			let _lenh = $("#tb_headers tr").length - 2;
+			for (let i = 1; i <= _lenh; i++) {
+				let hkeystr = $("#headerKey" + i).val();
+				let hvaluestr = $("#headerValue" + i).val();
+				headerMap[hkeystr] = hvaluestr;
+			}
+			headerMapJson = JSON.stringify(headerMap);
+
+			let _lena = $("#tb_asserts tr").length - 2;
+			for (let i = 1; i <= _lena; i++) {
+				let assert = new Object();
+				assert.key = $("#assertKey" + i).val();
+				assert.method = $("#assertMethod" + i).val();
+				assert.value = $("#assertValue" + i).val();
+				assertList.push(assert);
+			}
+			assertJson = JSON.stringify(assertList);
+			
+			let _lenv = $("#tb_variables tr").length - 2;
+			for (let i = 1; i <= _lenv; i++) {
+				let vkeystr = $("#variableKey" + i).val();
+				let vvaluestr = $("#variableValue" + i).val();
+				variableMap[vkeystr] = vvaluestr;
+			}
+			variableMapJson = JSON.stringify(variableMap);
+
+			if (method == "get" || method == "form") {
+				let _lenp = $("#tb_params tr").length - 2;
+				for (let i = 1; i <= _lenp; i++) {
+					let pkeystr = $("#paramKey" + i).val();
+					let pvaluestr = $("#paramValue" + i).val();
+					paramMap[pkeystr] = pvaluestr;
+				}
+				param = JSON.stringify(paramMap);
+			}
+
+			if (method == "raw") {
+				param = $("#rowParams").val();
+			}
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : {
+					"id" : id,
+					"name" : name,
+					"interfaceId" : interfaceId,
+					"description" : description,
+					"method" : method,
+					"headers" : headerMapJson,
+					"param" : param,
+					"asserts" : assertJson,
+					"variables" : variableMapJson
+				},
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+					} else
+						alert("数据错误");
+				},
+				error : function() {
+					alert("提交失败");
+				}
+			})
+
+		});
+
+		$("#Clean").click(function() {
+			$(".book_table input").each(function() {
+				$(this).val('');
+			});
+		});
+	</script>
+	<script>
+		$("#interfaceId").bigAutocomplete({
+			url : 'queryInterfacesById',
+			title : 'id',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.id + " " + row.name + " " + row.api;
+			},
+			formatSelected : function(data, i, row) {
+				return row.id;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#interfaceName").val(row.name);
+					$("#interfaceApi").val(row.api);
+				}
+			},
+		});
+		$("#interfaceName").bigAutocomplete({
+			url : 'queryInterfacesByName',
+			title : 'name',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.name + " " + row.id + " " + row.api;
+			},
+			formatSelected : function(data, i, row) {
+				return row.name;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#interfaceId").val(row.id);
+					$("#interfaceApi").val(row.api);
+				}
+			},
+		});
+		$("#interfaceApi").bigAutocomplete({
+			url : 'queryInterfacesByApi',
+			title : 'api',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.api + " " + row.id + " " + row.name;
+			},
+			formatSelected : function(data, i, row) {
+				return row.api;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#interfaceId").val(row.id);
+					$("#interfaceName").val(row.name);
+				}
+			},
+		});
+	</script>
+
+</body>
+</html>

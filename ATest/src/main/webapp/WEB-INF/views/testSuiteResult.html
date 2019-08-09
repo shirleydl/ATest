@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html" ; charset="utf-8" />
+<title></title>
+
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/bstable/css/bootstrap.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/bstable/css/bootstrap-table.css" rel="stylesheet"
+	type="text/css">
+
+<style>
+.detailDiv {
+	position: absolute;
+	width: 95%;
+	top: 30px;
+	left: 40px;
+	background: #ffffff;
+	z-index:999;
+}
+</style>
+
+</head>
+<body>
+	<div>
+		<table id="table" class="table_style" style="margin: 0 auto">
+		</table>
+	</div>
+
+
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+	<script src="js/bstable/js/bootstrap.min.js"></script>
+	<script src="js/bstable/js/bootstrap-table.js"></script>
+	<script src="js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (let i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			let testSuiteId = value[0];
+			
+			$('#table')
+					.bootstrapTable(
+							{
+								method : "get",
+								url : "toRequestTestSuite",
+								striped : true,
+								dataType : "json",
+								pagination : true, //分页
+								cache : false,
+								sidePagination : 'client',
+								pageSize : 8,
+								pageNumber : 1,
+								singleSelect : false,
+								search : false, //显示搜索框
+								contentType : "application/x-www-form-urlencoded",
+								queryParams : function(params) { //配置参数  
+									let temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的  
+										testSuiteId : testSuiteId,
+									};
+									return temp;
+								},
+								columns : [
+										{
+											title : '地址',
+											field : 'url',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
+											title : '判断结果',
+											field : 'status',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
+											title : 'assertResult',
+											field : 'assertResult',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
+											title : '操作',
+											field : 'opear',
+											align : 'center',
+											formatter : function(value,row,index) {
+												let e ='<a  href="#" title="详细信息" onclick="detail('+index+')">查看</a><div class="detailDiv" id="detailDiv'+index+'" style="display:none"><div style="margin: 10; text-align: right;"><input type="button" onclick="closeDiv('+index+')" value="关闭"/></div><table class="book_table" border="1" cellpadding="10"><tr><td><label class="td_label">请求内容</label></td><td><label class="td_label">返回内容</label></td></tr><tr><td><textarea type="text" class="online_input01" readonly="readonly">'+row.requestContent+'</textarea></td><td><textarea type="text" class="online_input01" readonly="readonly">'+row.responseContent+'</textarea></td></tr><tr><td colspan="2"><label class="td_label">验证内容</label></td></tr><tr><td colspan="2"><textarea type="text" class="online_input01" readonly="readonly">'+row.assertResult+'</textarea></td></tr></table></div>';
+												return e;
+												 
+											}
+										} ]
+							});
+		})
+	</script>
+	<script>
+     function detail(id) {
+        	$('#detailDiv'+id).show();
+        	
+        }
+     
+     function closeDiv(id) {
+    	 $('#detailDiv'+id).hide();
+        }
+</script>
+</body>
+</html>

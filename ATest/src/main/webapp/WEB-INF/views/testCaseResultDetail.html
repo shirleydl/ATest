@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<p class="book_p">
+		<table id="table" class="book_table" border="1" cellpadding="10">
+
+			<tr>
+				<td><label class="td_label">请求内容</label></td>
+				<td><label class="td_label">返回内容</label></td>
+			</tr>
+			<tr>
+				<td><textarea type="text" id="requestContent"
+						class="online_input01" readonly="readonly"></textarea></td>
+				<td><textarea type="text" id="responseContent"
+						class="online_input01" readonly="readonly"></textarea></td>
+			</tr>
+			<tr>
+				<td colspan="2"><label class="td_label">验证内容</label></td>
+			</tr>
+
+			<tr>
+				<td colspan="2"><textarea type="text" id="assertResult"
+						class="online_input01" readonly="readonly"></textarea></td>
+			</tr>
+
+		</table>
+		</p>
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+
+	<script>
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			let assertResultId;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (let i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			
+			id=value[0];
+			$.ajax({
+				type : 'post',
+				url : "toRequestInterfaceCase",
+				cache : false,
+				data : {
+					"interfaceCaseId" : id
+				},
+				success : function(data) {
+					$("#requestContent").text(data.requestContent);
+					$("#responseContent").text(data.responseContent);
+					$("#assertResult").text(data.assertResult);
+				},
+				error : function() {
+					alert("查询失败")
+				}
+			})
+		});
+		
+	</script>
+
+</body>
+</html>
