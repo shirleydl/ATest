@@ -1,3 +1,3 @@
 @echo off
-title ATest by TAD
+title ATest
 java -jar ATestActuator-1.0.0.jar
