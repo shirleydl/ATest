@@ -28,4 +28,6 @@ public interface ITestCaseDAO {
 
 	public Request QueryRequestByTestCaseId(int id);
 
+	public Boolean FindCaseInterface(List<Integer> ids);
+
 }

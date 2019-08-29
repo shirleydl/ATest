@@ -19,4 +19,6 @@ public interface IEnvironmentService {
 	public Boolean DeleteEnvironments(List<Integer> ids);
 
 	public Boolean UpdateEnvironment(Environment environment);
+	
+	public Environment QueryEnvironmentById(int id);
 }

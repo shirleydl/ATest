@@ -28,7 +28,7 @@ public class TestSuiteWithCaseDAO {
 
 	public List<Request> QueryTestCaseByTestSuiteRequest(int testSuiteId) {
 		// TODO Auto-generated method stub
-		String sql = "select environment.url,interface.api,testcase.method,testcase.headers,testcase.params,testcase.asserts,testcase.variables,testsuite_testcase.priority,testsuite_testcase.timeout,testsuite_testcase.retry,testsuite_testcase.intervaltime,testsuite_testcase.delay,testsuite_testcase.bindVariables from testsuite_testcase left join testcase on testsuite_testcase.testcase_id=testcase.id left join interface on testcase.interface_id=interface.id left join environment on interface.environment_id=environment.id where testsuite_testcase.testsuite_id=?";
+		String sql = "select environment.url,interface.api,testcase.id,testcase.method,testcase.headers,testcase.params,testcase.asserts,testcase.variables,testsuite_testcase.priority,testsuite_testcase.timeout,testsuite_testcase.retry,testsuite_testcase.intervaltime,testsuite_testcase.delay,testsuite_testcase.bindVariables from testsuite_testcase left join testcase on testsuite_testcase.testcase_id=testcase.id left join interface on testcase.interface_id=interface.id left join environment on interface.environment_id=environment.id where testsuite_testcase.testsuite_id=?";
 		List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql, testSuiteId);
 		List<Request> requests = new ArrayList<Request>();
 		Gson gson = new Gson();
@@ -37,6 +37,7 @@ public class TestSuiteWithCaseDAO {
 			Request request = new Request();
 			request.setUrl((String) row.get("url"));
 			request.setApi((String) row.get("api"));
+			request.setCaseId((Integer)row.get("id"));
 			request.setMethod((String) row.get("method"));
 			request.setHeaders((gson.fromJson((String) row.get("headers"), map.getClass())));
 			if ("raw".equals(request.getMethod())) {

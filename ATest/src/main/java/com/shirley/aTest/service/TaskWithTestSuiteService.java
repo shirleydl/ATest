@@ -20,9 +20,10 @@ public class TaskWithTestSuiteService implements ITaskWithTestSuiteService {
 	private TaskWithTestSuiteDAO taskWithTestSuiteDAO;
 
 	@Override
-	public List<TaskWithTestSuite> QueryTaskWithTestSuite(int taskId) {
+	public List<TaskWithTestSuite> QueryTaskWithTestSuite(int currentPageNo, int pageSize, int taskId, int testSuiteId,
+			String testSuiteName) {
 		// TODO Auto-generated method stub
-		return taskWithTestSuiteDAO.QueryTaskWithTestSuite(taskId);
+		return taskWithTestSuiteDAO.QueryTaskWithTestSuite(currentPageNo, pageSize, taskId, testSuiteId, testSuiteName);
 	}
 
 	@Override
@@ -32,15 +33,24 @@ public class TaskWithTestSuiteService implements ITaskWithTestSuiteService {
 	}
 
 	@Override
-	public Boolean DeleteTaskWithTestSuite(int id) {
+	public void AddTaskWithTestSuites(List<TaskWithTestSuite> taskWithTestSuites) {
 		// TODO Auto-generated method stub
-		return taskWithTestSuiteDAO.DeleteTaskWithTestSuite(id);
+		for (TaskWithTestSuite taskWithTestSuite : taskWithTestSuites) {
+			if(taskWithTestSuiteDAO.FindTaskWithTestSuiteBySuiteId(taskWithTestSuite))
+				taskWithTestSuiteDAO.AddTaskWithTestSuite(taskWithTestSuite);
+		}
 	}
 
 	@Override
-	public Boolean UpdateTaskWithTestSuite(TaskWithTestSuite taskWithTestSuite) {
+	public Boolean DeleteTaskWithTestSuite(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		return taskWithTestSuiteDAO.UpdateTaskWithTestSuite(taskWithTestSuite);
+		return taskWithTestSuiteDAO.DeleteTaskWithTestSuite(ids);
+	}
+
+	@Override
+	public int QueryProductProjectWithSuiteCount(int taskId, int testSuiteId, String testSuiteName) {
+		// TODO Auto-generated method stub
+		return taskWithTestSuiteDAO.QueryProductProjectWithSuiteCount(taskId, testSuiteId, testSuiteName);
 	}
 
 }

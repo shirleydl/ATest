@@ -95,11 +95,14 @@ public class TestSuiteController {
 
 	@RequestMapping(value = "/queryTestSuiteById", method = RequestMethod.POST)
 	@ResponseBody
-	public BigAutocompleteDataHelper<TestSuite> queryTestSuiteById(Integer keyword) {
-		List<TestSuite> testSuites = testSuiteService.QueryTestSuite(0, 0, keyword, null, null);
+	public BigAutocompleteDataHelper<TestSuite> queryTestSuiteById(String keyword) {
+		if(keyword.matches("[0-9]+")&&Integer.parseInt(keyword)>0){
+		List<TestSuite> testSuites = testSuiteService.QueryTestSuite(0, 0, Integer.parseInt(keyword), null, null);
 		BigAutocompleteDataHelper<TestSuite> jsonHelper = new BigAutocompleteDataHelper<TestSuite>();
 		jsonHelper.setData(testSuites);
 		return jsonHelper;
+		}
+		return null;
 	}
 
 	@RequestMapping(value = "/queryTestSuiteByName", method = RequestMethod.POST)

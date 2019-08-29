@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.shirley.aTestActuator.dao.AssertsDAO;
 import com.shirley.aTestActuator.dao.TestSuiteWithCaseDAO;
 import com.shirley.aTestActuator.entity.AssertResult;
+import com.shirley.aTestActuator.entity.Replace;
 import com.shirley.aTestActuator.entity.Request;
 import com.shirley.aTestActuator.entity.ResponseContent;
 
@@ -26,11 +27,12 @@ public class DoQueryRequest implements Runnable {
 	private int testSuiteId;
 	private CountDownLatch latch;
 	private Map<String, String> bindMapAll;
-	public DoQueryTestSuite callBack;
-	public Boolean toAssertsOrNot;
+	private DoQueryTestSuite callBack;
+	private Boolean toAssertsOrNot;
+	private Replace replace;
 
 	public DoQueryRequest(DoQueryTestSuite callBack, int testSuiteId, int taskId, CountDownLatch latch,
-			JdbcTemplate jdbcTemplate, Boolean toAssertsOrNot, Map<String, String> bindMapAll) {
+			JdbcTemplate jdbcTemplate, Boolean toAssertsOrNot, Map<String, String> bindMapAll, Replace replace) {
 		this.callBack = callBack;
 		this.testSuiteId = testSuiteId;
 		this.taskId = taskId;
@@ -41,6 +43,7 @@ public class DoQueryRequest implements Runnable {
 		assertsDAO = new AssertsDAO();
 		assertsDAO.setJdbcTemplate(jdbcTemplate);
 		this.bindMapAll = bindMapAll;
+		this.replace = replace;
 	}
 
 	@Override
@@ -52,6 +55,14 @@ public class DoQueryRequest implements Runnable {
 		List<Request> requestList = testSuiteWithCaseDAO.QueryTestCaseByTestSuiteRequest(testSuiteId);
 		Collections.sort(requestList);
 		for (Request request : requestList) {
+			if (null != replace) {
+				String replaceUrl = replace.getReplaceUrl().get(request.getUrl());
+				Map<String, String> replaceVariables = replace.getReplaceData().get(request.getCaseId() + "");
+				if (null != replaceUrl &&!"".equals(replaceUrl))
+					request.setUrl(replaceUrl);
+				if (null != replaceVariables && replaceVariables.size() > 0)
+					request.putVariables(replaceVariables);
+			}
 			DoRequest doRequest = new DoRequest(taskId, request, bindMap);
 			ResponseContent responseContent = new ResponseContent();
 			responseContent = doRequest.toRequest();

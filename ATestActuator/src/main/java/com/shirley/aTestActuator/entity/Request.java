@@ -11,6 +11,7 @@ import java.util.Map;
 public class Request implements Comparable<Request> {
 	private String url;
 	private String api;
+	private int caseId;
 	private String method;
 	private Map<String, String> headers;
 	private Map<String, String> paramMap;
@@ -38,6 +39,14 @@ public class Request implements Comparable<Request> {
 
 	public void setApi(String api) {
 		this.api = api;
+	}
+
+	public int getCaseId() {
+		return caseId;
+	}
+
+	public void setCaseId(int caseId) {
+		this.caseId = caseId;
 	}
 
 	public String getMethod() {
@@ -135,7 +144,11 @@ public class Request implements Comparable<Request> {
 	public void setVariables(Map<String, String> variables) {
 		this.variables = variables;
 	}
-
+	
+	public void putVariables(Map<String, String> variables) {
+		this.variables.putAll(variables);
+	}
+	
 	@Override
 	public int compareTo(Request request) {
 		// TODO Auto-generated method stub

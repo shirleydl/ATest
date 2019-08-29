@@ -92,6 +92,14 @@ public class EnvironmentController {
 		return environmentService.DeleteEnvironments(idList);
 	}
 
+	@RequestMapping(value = "/toQueryEnvironment", method = RequestMethod.POST)
+	@ResponseBody
+	public Environment toQueryEnvironment(Integer id) {
+		if (null != id)
+			return environmentService.QueryEnvironmentById(id);
+		return null;
+	}
+
 	/**
 	 * 更新环境字段：环境名、环境地址（by 环境id）
 	 */

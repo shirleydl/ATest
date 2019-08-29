@@ -56,11 +56,14 @@ public class InterfaceController {
 
 	@RequestMapping(value = "/queryInterfacesById", method = RequestMethod.POST)
 	@ResponseBody
-	public BigAutocompleteDataHelper<Interface> queryInterfaceById(Integer keyword) {
-		List<Interface> interfaces = interfaceService.QueryInterfaces(1, 10, keyword, null, null);
+	public BigAutocompleteDataHelper<Interface> queryInterfaceById(String keyword) {
+		if (keyword.matches("[0-9]+") && Integer.parseInt(keyword) > 0) {
+		List<Interface> interfaces = interfaceService.QueryInterfaces(1, 10, Integer.parseInt(keyword), null, null);
 		BigAutocompleteDataHelper<Interface> jsonHelper = new BigAutocompleteDataHelper<Interface>();
 		jsonHelper.setData(interfaces);
 		return jsonHelper;
+		}
+		return null;
 
 	}
 

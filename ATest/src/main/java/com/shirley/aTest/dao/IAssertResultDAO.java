@@ -18,4 +18,6 @@ public interface IAssertResultDAO {
 
 	public Boolean AddAsserts(AssertResult assertResult);
 
+	public void DeleteAssertsByTaskId(List<Integer> ids);
+
 }

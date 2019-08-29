@@ -31,17 +31,17 @@
 					<input id="interfaceId" type="hidden" name="interfaceId" />
 					<td><label class="td_label">接口名</label></td>
 					<td><input id="name" name="name" type="text"
-						class="book_input03" placeholder="必填"></td>
+						class="book_input03" maxlength="50" placeholder="必填"></td>
 					<td><label class="td_label">API</label></td>
 					<td><input id="api" name="api" type="text"
-						class="book_input03" placeholder="必填"></td>
+						class="book_input03" maxlength="80" placeholder="必填"></td>
 				</tr>
 				<tr>
 					<td><label class="td_label">所属环境</label></td>
 					<td><input id="environmentId" type="hidden" name="environmentId" />
 					<input id="environmentName" type="text" name="environmentName" class="book_input03" autocomplete="off" placeholder="必填"/>
 					<td><label class="td_label">描述</label></td>
-					<td><input id="description" name="description" type="text" class="book_input03"></td>
+					<td><input id="description" name="description" type="text" class="book_input03" maxlength="80"></td>
 				</tr>
 			</table>
 			</p>
@@ -99,7 +99,7 @@
 					if (data) {
 						alert("提交成功");
 					} else
-						alert("数据错误");
+						alert("数据错误!接口序号、名、api、所属环境不能为空！");
 				},
 				error : function() {
 					alert("提交失败");

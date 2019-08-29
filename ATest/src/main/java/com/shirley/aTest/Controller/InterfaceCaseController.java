@@ -93,12 +93,15 @@ public class InterfaceCaseController {
 	 */
 	@RequestMapping(value = "/queryInterfaceCaseById", method = RequestMethod.POST)
 	@ResponseBody
-	public BigAutocompleteDataHelper<InterfaceCase> queryInterfaceCaseById(Integer keyword) {
-		List<InterfaceCase> interfaceCases = interfaceCaseService.QueryTestCase(0, 0, (null == keyword ? 0 : keyword),
-				null, null, null);
-		BigAutocompleteDataHelper<InterfaceCase> jsonHelper = new BigAutocompleteDataHelper<InterfaceCase>();
-		jsonHelper.setData(interfaceCases);
-		return jsonHelper;
+	public BigAutocompleteDataHelper<InterfaceCase> queryInterfaceCaseById(String keyword) {
+		if (keyword.matches("[0-9]+") && Integer.parseInt(keyword) > 0) {
+			List<InterfaceCase> interfaceCases = interfaceCaseService.QueryTestCase(0, 0, Integer.parseInt(keyword),
+					null, null, null);
+			BigAutocompleteDataHelper<InterfaceCase> jsonHelper = new BigAutocompleteDataHelper<InterfaceCase>();
+			jsonHelper.setData(interfaceCases);
+			return jsonHelper;
+		}
+		return null;
 	}
 
 	/**

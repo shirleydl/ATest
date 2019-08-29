@@ -10,11 +10,14 @@ import com.shirley.aTest.entity.TaskWithTestSuite;
  * @date 2019年7月4日 下午9:10:02
  */
 public interface ITaskWithTestSuiteService {
-	public List<TaskWithTestSuite> QueryTaskWithTestSuite(int taskId);
+	public List<TaskWithTestSuite> QueryTaskWithTestSuite(int currentPageNo, int pageSize,
+			int taskId, int testSuiteId, String testSuiteName);
 
 	public Boolean AddTaskWithTestSuite(TaskWithTestSuite taskWithTestSuite);
 
-	public Boolean DeleteTaskWithTestSuite(int id);
+	public Boolean DeleteTaskWithTestSuite(List<Integer> ids);
 
-	public Boolean UpdateTaskWithTestSuite(TaskWithTestSuite taskWithTestSuite);
+	public int QueryProductProjectWithSuiteCount(int taskId, int testSuiteId, String testSuiteName);
+	
+	public void AddTaskWithTestSuites(List<TaskWithTestSuite> taskWithTestSuites);
 }

@@ -1,300 +1,242 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html" ; charset="utf-8" />
 <title></title>
+
 <link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+<link href="js/bstable/css/bootstrap.min.css" rel="stylesheet"
 	type="text/css">
-<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+<link href="js/bstable/css/bootstrap-table.css" rel="stylesheet"
 	type="text/css">
-<link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
-<style>
-.input-default {
-	padding: 5px;
-	border: 1px solid #ccc;
-	border-radius: 2px; /*html5*/
-	text-indent: 0 !important;
-	min-height: 22px;
-}
-</style>
 
 </head>
+<body>
 
-<body style="background-color: #e6ecf5">
-
-	<div class="book_con01">
-		<h1 class="book_h01">测试集管理</h1>
-		<p class="book_p">
-		<form id="form_addOrUpdate" method="post">
-			<table id="edit_book" class="book_table" border="1" cellpadding="10">
-				<tr>
-					<input id="taskId" type="hidden" name="taskId" />
-					<td><label class="td_label">任务名</label></td>
-					<td colspan="5"><label id="taskName" class="td_label"></label></td>
-					</td>
-				</tr>
-				<tr id="tr_testcase">
-					<input id="id" name="id" type="hidden"" />
-					<td><label class="td_label">测试集号</label></td>
-					<td><input id="testSuiteId" name="testSuiteId"
-						type="text" class="book_input03" " autocomplete="off"></label></td>
-					<td><label class="td_label">测试集名</label></td>
-					<td><input id="testSuiteName" name="testSuiteName"
-						type="text" class="book_input03" autocomplete="off"></td>
-					<td><label class="td_label">优先级</label></td>
-					<td><input id="priority" name="priority" type="text"
-						class="book_input03"></td>
-				</tr>
-			</table>
-			<p class="book_foot">
-				<input type="button" id="addSuite" value="添加测试集" /><input
-					type="button" id="updateSuite" value="保存修改" style="display: none" />
-					<input
-					type="button" id="cancel" value="取消" style="display: none" />
-			</p>
-		</form>
-		<div
-			style="overflow-x: auto; overflow-y: auto; height: 251px; width: 100%;">
-			<table id="table" class="book_table" border="1" cellpadding="10">
-				<tr>
-					<td><label class="td_label">优先级</label></td>
-					<td><label class="td_label">测试集号</label></td>
-					<td><label class="td_label">测试集名</label></td>
-					<td><label class="td_label">操作</label></td>
-				</tr>
-			</table>
-		</div>
-
+	<div class="div_find">
+		<p>
+			<label id="taskIdStr" class="find_labela"></label> <label
+				id="taskNameStr" class="find_labela"></label> <input id="taskId"
+				name="taskId" type="hidden"> <label class="find_labela">测试集号：</label><input
+				id="testSuiteId" name="testSuiteId" type="text" class="find_input">
+			<label class="find_labela">测试集名：</label><input id="testSuiteName"
+				name="testSuiteName" type="text" class="find_input"> <input
+				type="button" value="搜索" class="find_but" id="search_btn"> <input
+				type="button" value="重置" class="find_but" id="clean_btn"> <input
+				type="button" id="Return" class="find_but" value="返回任务列表" />
 		</p>
-
-
 	</div>
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-	<script src="js/editor/js/input-autocomplete.js"></script>
+	<p class="p_but">
 
-	<script>
+		<i class="add_i"></i><a href="javascript:void(0)"
+			onclick="addTaskWithSuite()" class="add_a">新增</a> <i class="del_i"></i><a
+			href="javascript:void(0)" onclick="DeleteByIds()" class="add_a">删除</a>
+	</p>
+	<p>
+	<table id="table" class="table_style" style="margin: 0 auto">
+	</table>
+	</p>
+
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+	<script src="js/bstable/js/bootstrap.min.js"></script>
+	<script src="js/bstable/js/bootstrap-table.js"></script>
+	<script src="js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+	<script type="text/javascript">
 		$(function() {
 			let url = decodeURI(window.location.search);
 			let value;
 			if (url.indexOf("?") != -1) {
 				let strs = url.substr(1).split("&");
 				value = new Array(strs.length);
-				for (let i = 0; i < strs.length; i++) {
+				for (i = 0; i < strs.length; i++) {
 					value[i] = unescape(strs[i].split("=")[1]);
 				}
 			}
-			$("#taskId").val(value[0]);
-			$("#taskName").text(value[1]);
+			let taskId = value[0];
+			$("#taskId").val(taskId);
+			$("#taskIdStr").text("任务序号："+taskId);	
+			$.ajax({
+				type : 'post',
+				url : "toQueryTask",
+				cache : false,
+				data : {
+					"id" : taskId
+				},
+				success : function(data) {
+					if(data!=null){
+					$("#taskNameStr").text("任务名："+data.name);
+					}
+				},
+				error : function() {
+					alert("查询失败")
+				}
+			})
 			
-			$.ajax({
-						type : 'post',
-						url : "toQueryTaskWithTestSuites",
-						cache : false,
-						data : {
-							"taskId" : $("#taskId").val()
-						},
-						success : function(data) {
-							let arr = data.testSuiteWithCases;
-							for (let i = 0; i < arr.length; i++) {
-								$("#table")
-										.append(
-												"<tr id='"
-														+ (i + 1)
-														+ "'><input id='id"
-														+ (i + 1)
-														+ "' type='hidden' name='id"
-														+ (i + 1)
-														+ "' value='"
-														+ arr[i].id
-														+ "' /><td><label id='priority"
-														+ (i + 1)
-														+ "' class='td_label'>"
-														+ arr[i].priority
-														+ "</label></td><td><label id='testSuiteId"
-														+ (i + 1)
-														+ "' class='td_label'>"
-														+ arr[i].testSuiteId
-														+ "</label></td><td><label id='testSuiteName"
-														+ (i + 1)
-														+ "' class='td_label'>"
-														+ arr[i].testSuiteName
-														+ "</label></td><td><a href='javascript:void(0)' onclick='EditElement("
-														+ (i + 1)
-														+ ")' class='add_a'>编辑</a><a href='javascript:void(0)' onclick='DeleteElement("
-														+ (i + 1)
-														+ ")' class='add_a'>删除</a></td></tr>");
-							}
-						},
-						error : function() {
-							alert("查询失败")
-						}
-					})
-		});
-	</script><script>
-		$("#addSuite").click(function() {
-			let targetUrl = "toAddTaskWithTestSuite";
-			let data = $('#form_addOrUpdate').serialize();
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : data,
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-						location.reload();
-					} else
-						alert("数据错误");
-				},
-				error : function() {
-					alert("提交失败");
-				}
-			})
-
-		});
-
-		$("#updateSuite").click(function() {
-			let targetUrl = "toUpdateTaskWithTestSuite";
-			let data = $('#form_addOrUpdate').serialize();
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : data,
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-						$("#updateSuite").hide();
-						$("#cancel").hide();
-						$("#addSuite").show();
-						location.reload();
-					} else
-						alert("数据错误");
-				},
-				error : function() {
-					alert("提交失败");
-				}
-			})
-
-		});
-		$("#cancel").click(function() {
-			$("#id").val('');
-			$("#testSuiteId").val('');
-			$("#testSuiteName").val('');
-			$("#priority").val('');
-			$("#updateSuite").hide();
-			$("#cancel").hide();
-			$("#addSuite").show();
+			$('#table')
+					.bootstrapTable(
+							{
+								method : "get",
+								url : "toQueryTaskWithTestSuites",
+								striped : true,
+								dataType : "json",
+								pagination : true, //分页
+								cache : false,
+								sidePagination : 'server',
+								pageSize : 10,
+								pageNumber : 1,
+								singleSelect : false,
+								search : false, //显示搜索框
+								contentType : "application/x-www-form-urlencoded",
+								queryParams : function(params) { //配置参数  
+									let temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的  
+										testSuiteName : $("#testSuiteName").val(),
+										testSuiteId : $("#testSuiteId").val(),
+										taskId : taskId,
+										pageNumber : (params.offset / params.limit) + 1,
+										pageSize : params.limit
+									};
+									return temp;
+								},
+								columns : [
+										{
+											title : "全选",
+											checkbox : true,
+											field : 'check',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
+											title : "测试集序号",
+											field : 'testSuiteId',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
+											title : '测试集名',
+											field : 'testSuiteName',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
+											title : '操作',
+											field : 'opear',
+											align : 'center',
+											formatter : function(value, row) {
+												let e = '<a  href="#" title="测试集信息" onclick="testSuiteInfo(\''
+														+ row.testSuiteId + '\')">编辑</a> <a  href="#" title="测试集用例信息" onclick="testCaseInfo(\''
+														+ row.testSuiteId + '\')">用例管理</a>';
+												return e;
+											}
+										} ]
+							});
 		})
-	</script>
-	<script>
-		function DeleteElement(index) {
-			$
-					.ajax({
-						type : 'post',
-						url : "toDelTaskWithTestSuite",
-						cache : false,
-						data : {
-							"id" : $("#id" + index).val()
-						},
-						success : function(data) {
-							if (data) {
-								let _len = $("#table tr").length;
-								$("tr[id='" + index + "']").remove();//删除当前行
-								for (let i = index + 1, j = _len; i < j; i++) {
-									let nextIdVal = $("#id" + i).val();
-									let nextTestSuiteIdVal = $(
-											"#testSuiteId" + i).text();
-									let nextITestSuiteNameVal = $(
-											"#testSuiteName" + i).text();
-									let nextPriorityVal = $("#priority" + i)
-											.text();
-									$("tr[id=\'" + i + "\']")
-											.replaceWith(
-													"<tr id='"
-															+ (i - 1)
-															+ "'><input id='id"
-															+ (i - 1)
-															+ "' type='hidden' name='id"
-															+ (i - 1)
-															+ "' value='"
-															+ nextIdVal
-															+ "' /><td><label id='priority"
-															+ (i - 1)
-															+ "' class='td_label'>"
-															+ nextPriorityVal
-															+ "</label></td><td><label id='testSuiteId"
-															+ (i - 1)
-															+ "' class='td_label'>"
-															+ nextTestSuiteIdVal
-															+ "</label></td><td><label id='testSuiteName"
-															+ (i - 1)
-															+ "' class='td_label'>"
-															+ nextITestSuiteNameVal
-															+ "</label></td><td><a href='javascript:void(0)' onclick='EditElement("
-															+ (i - 1)
-															+ ")' class='add_a'>编辑</a><a href='javascript:void(0)' onclick='DeleteElement("
-															+ (i - 1)
-															+ ")' class='add_a'>删除</a></td></tr>");
-								}
-							} else
-								alert("数据错误");
-						},
-						error : function() {
-							alert("提交失败");
-						}
-					})
-		}
-	</script>
-	<script>
-		function EditElement(index) {
-			$("#id").val($("#id" + index).val());
-			$("#testSuiteId").val($("#testSuiteId" + index).text());
-			$("#testSuiteName").val($("#testSuiteName" + index).text());
-			$("#priority").val($("#priority" + index).text());
-			$("#updateSuite").show();
-			$("#cancel").show();
-			$("#addSuite").hide();
 
-		}
-	</script>
+		$('#search_btn').click(function() {
+			$('#table').bootstrapTable('refresh', {
+				url : 'toQueryTaskWithTestSuites'
+			});
+		})
+		$('#clean_btn').click(function() {
+			$('#testSuiteName').val("");
+			$('#testSuiteId').val("");
+		})
 		
-	<script>
-		$("#testSuiteName").bigAutocomplete({
-			url : 'queryTestSuiteByName',
-			title : 'name',
-			custom : false,
-			formatItem : function(data, i, row) {
-				return row.name + " " + row.id;
-			},
-			formatSelected : function(data, i, row) {
-				return row.name;
-			},
-			callback : function(row) {
-				if (null != row) {
-					$("#testSuiteId").val(row.id);
-				}
-			},
-		});
+				
+		$("#Return").click(function() {
+			window.location.href = "taskList";
+		})
 
-		$("#testSuiteId").bigAutocomplete({
-			url : 'queryTestSuiteById',
-			title : 'name',
-			custom : false,
-			formatItem : function(data, i, row) {
-				return row.id + " " + row.name;
-			},
-			formatSelected : function(data, i, row) {
-				return row.id;
-			},
-			callback : function(row) {
-				if (null != row) {
-					$("#testSuiteName").val(row.name);
+		function DeleteByIds() {
+			let ids = new Array()
+			let rows = $("#table").bootstrapTable('getSelections');
+			if (rows.length <= 0) {
+				alert("请选中一行")
+			} else {
+				for (let i = 0; i < rows.length; i++) {
+					ids.push(rows[i].id);
 				}
-			},
-		});
+				let url = "toDelTaskWithTestSuite";
+				$.ajax({
+					traditional : true,//这使json格式的字符不会被转码
+					data : {
+						"ids" : ids,
+					},
+					type : "post",
+					url : url,
+					success : function(data) {
+						if (data) {
+							alert("提交成功！");
+							$('#table').bootstrapTable('refresh', {
+								url : 'toQueryTaskWithTestSuites'
+							});
+						} else
+							alert("数据错误");
+					},
+					error : function(data) {
+						alert("提交失败！");
+					}
+				});
+			}
+		}
+	</script>
+
+	<script src="js/layer_v2.1/layer/layer.js"></script>
+	<script>
+		function testSuiteInfo(id) {
+			layer.open({
+				type : 2,
+				title : '测试集信息',
+				shadeClose : true,
+				shade : 0.5,
+				skin : 'layui-layer-rim',
+				//maxmin: true,
+				closeBtn : 1,
+				area : [ '98%', '92%' ],
+				shadeClose : true,
+				content : 'queryTestSuite?id=' + id
+			//iframe的url
+			});
+		}
+		
+		function testCaseInfo(id) {
+			layer.open({
+				type : 2,
+				title : '测试集用例信息',
+				shadeClose : true,
+				shade : 0.5,
+				skin : 'layui-layer-rim',
+				//            maxmin: true,
+				closeBtn : 1,
+				area : [ '100%', '100%' ],
+				shadeClose : true,
+				content : 'queryTestSuiteWithCase?testSuiteId=' + id
+			//iframe的url
+			});
+		}
+		
+		function addTaskWithSuite() {
+			let taskId = $("#taskId").val();
+			layer.open({
+				type : 2,
+				title : '添加测试集',
+				shadeClose : true,
+				shade : 0.5,
+				skin : 'layui-layer-rim',
+				//            maxmin: true,
+				closeBtn : 1,
+				area : [ '100%', '100%' ],
+				shadeClose : true,
+				content : 'addTaskWithSuite?taskId=' + taskId,
+				end: function () {
+					$('#table').bootstrapTable('refresh', {
+						url : 'toQueryTaskWithTestSuites'
+					});
+					}
+				
+			//iframe的url
+			});
+		}
+
 	</script>
 </body>
 </html>

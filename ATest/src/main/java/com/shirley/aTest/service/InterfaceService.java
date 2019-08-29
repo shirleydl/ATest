@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.shirley.aTest.dao.InterfaceDAO;
+import com.shirley.aTest.dao.TestCaseDAO;
 import com.shirley.aTest.entity.Interface;
 
 /**
@@ -18,6 +19,8 @@ import com.shirley.aTest.entity.Interface;
 public class InterfaceService implements IInterfaceService {
 	@Resource(name = "interfaceDAO")
 	private InterfaceDAO interfaceDAO;
+	@Resource(name = "testCaseDAO")
+	private TestCaseDAO testCaseDAO;
 
 	@Override
 	public List<Interface> QueryInterface(int currentPageNo, int pageSize, String name, String api,
@@ -41,7 +44,9 @@ public class InterfaceService implements IInterfaceService {
 	@Override
 	public Boolean DeleteInterfaces(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		return interfaceDAO.DeleteInterfaces(ids);
+		if (testCaseDAO.FindCaseInterface(ids))
+			return interfaceDAO.DeleteInterfaces(ids);
+		return false;
 	}
 
 	@Override

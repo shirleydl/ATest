@@ -126,7 +126,11 @@ public class TestSuiteDAO implements ITestSuiteDAO {
 	public TestSuite QueryTestSuiteById(int id) {
 		// TODO Auto-generated method stub
 		String sql = "select * from testsuite where id=?";
-		return this.jdbcTemplate.queryForObject(sql, new TestSuiteRowMapper(), id);
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new TestSuiteRowMapper(), id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override

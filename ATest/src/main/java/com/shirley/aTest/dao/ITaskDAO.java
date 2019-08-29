@@ -26,5 +26,12 @@ public interface ITaskDAO {
 
 	public Boolean UpdateTaskStatus(int id, int status);
 
-	public Boolean UpdateTaskBeforeTaskId(Task task);
+	public Boolean UpdateTaskBeforeAndReplace(Task task);
+
+	public Boolean UpdateTaskIsLoop(Task task);
+
+	public Boolean FindTaskRaplace(List<Integer> ids);
+
+	public Boolean FindTaskBeforeTask(List<Integer> ids);
+
 }

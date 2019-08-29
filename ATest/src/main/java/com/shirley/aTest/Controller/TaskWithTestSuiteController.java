@@ -1,9 +1,8 @@
 package com.shirley.aTest.Controller;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shirley.aTest.entity.TaskWithTestSuite;
+import com.shirley.aTest.jsonHelper.PageHelper;
 import com.shirley.aTest.service.TaskWithTestSuiteService;
 
 /**
@@ -34,60 +34,69 @@ public class TaskWithTestSuiteController {
 	public String copyTaskWithSuiteList() {
 		return "copyTaskWithSuiteList";
 	}
+	
+	@RequestMapping(value = "/addTaskWithSuite", method = RequestMethod.GET)
+	public String addTaskWithSuite() {
+		return "addTaskWithSuite";
+	}
 
-	@RequestMapping(value = "/toQueryTaskWithTestSuites", method = RequestMethod.POST)
+	@RequestMapping(value = "/toQueryTaskWithTestSuites", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> toQueryTaskWithTestSuites(Integer taskId) {
-		if (null != taskId) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			List<TaskWithTestSuite> taskWithTestSuites = taskWithTestSuiteService.QueryTaskWithTestSuite(taskId);
-			Collections.sort(taskWithTestSuites);
-			map.put("testSuiteWithCases", taskWithTestSuites);
-			return map;
+	public PageHelper<TaskWithTestSuite> toQueryTaskWithTestSuites(Integer pageNumber, Integer pageSize,
+			Integer taskId, Integer testSuiteId, String testSuiteName) {
+		if (null != taskId && taskId != 0) {
+			List<TaskWithTestSuite> taskWithTestSuites = taskWithTestSuiteService.QueryTaskWithTestSuite((null == pageNumber ? 0 : pageNumber),(null == pageSize ? 0 : pageSize), taskId,(null == testSuiteId ? 0 : testSuiteId), testSuiteName);
+			PageHelper<TaskWithTestSuite> pageHelper = new PageHelper<TaskWithTestSuite>();
+			// 统计总记录数
+			pageHelper.setTotal(taskWithTestSuiteService.QueryProductProjectWithSuiteCount(taskId,(null == testSuiteId ? 0 : testSuiteId), testSuiteName));
+			pageHelper.setRows(taskWithTestSuites);
+			return pageHelper;
 		}
 		return null;
 	}
 
 	@RequestMapping(value = "/toAddTaskWithTestSuite", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean toAddTaskWithTestSuite(Integer taskId, Integer testSuiteId, Integer priority) {
+	public Boolean toAddTaskWithTestSuite(Integer taskId, Integer testSuiteId) {
 		if (null != taskId && null != testSuiteId) {
 			TaskWithTestSuite taskWithTestSuite = new TaskWithTestSuite();
 			taskWithTestSuite.setTaskId(taskId);
 			taskWithTestSuite.setTestSuiteId(testSuiteId);
-			taskWithTestSuite.setPriority(null == priority ? 0 : priority);
 			return taskWithTestSuiteService.AddTaskWithTestSuite(taskWithTestSuite);
+		}
+		return false;
+	}
+	
+	@RequestMapping(value = "/toAddTaskWithTestSuites", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean toAddTaskWithTestSuites(Integer taskId, Integer[] ids) {
+		if (null != taskId && null != ids) {
+			List<TaskWithTestSuite> taskWithTestSuites=new ArrayList<TaskWithTestSuite>();
+			for(int id:ids){
+			TaskWithTestSuite taskWithTestSuite = new TaskWithTestSuite();
+			taskWithTestSuite.setTaskId(taskId);
+			taskWithTestSuite.setTestSuiteId(id);
+			taskWithTestSuites.add(taskWithTestSuite);
+			}
+			taskWithTestSuiteService.AddTaskWithTestSuites(taskWithTestSuites);
+			return true;
 		}
 		return false;
 	}
 
 	@RequestMapping(value = "/toDelTaskWithTestSuite", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean toDelTaskWithTestSuite(Integer id) {
-		if (null != id)
-			return taskWithTestSuiteService.DeleteTaskWithTestSuite(id);
-		return false;
+	public Boolean toDelTaskWithTestSuite(Integer[] ids) {
+		List<Integer> idList = Arrays.asList(ids);
+		return taskWithTestSuiteService.DeleteTaskWithTestSuite(idList);
 	}
 
-	@RequestMapping(value = "/toUpdateTaskWithTestSuite", method = RequestMethod.POST)
-	@ResponseBody
-	public Boolean toUpdateTaskWithTestSuite(Integer id, Integer taskId, Integer testSuiteId, Integer priority) {
-		if (null != id && null != testSuiteId && null != taskId) {
-			TaskWithTestSuite taskWithTestSuite = new TaskWithTestSuite();
-			taskWithTestSuite.setId(id);
-			taskWithTestSuite.setTaskId(taskId);
-			taskWithTestSuite.setTestSuiteId(testSuiteId);
-			taskWithTestSuite.setPriority(priority);
-			return taskWithTestSuiteService.UpdateTaskWithTestSuite(taskWithTestSuite);
-		}
-		return false;
-	}
 
 	@RequestMapping(value = "/toCopyTaskWithSuite", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean toCopyTaskWithSuite(Integer fromTaskId, Integer toTaskId) {
 		if (null != fromTaskId && null != toTaskId) {
-			List<TaskWithTestSuite> taskWithTestSuites = taskWithTestSuiteService.QueryTaskWithTestSuite(fromTaskId);
+			List<TaskWithTestSuite> taskWithTestSuites = taskWithTestSuiteService.QueryTaskWithTestSuite(0, 0, fromTaskId, 0, null);
 			for (TaskWithTestSuite taskWithTestSuite : taskWithTestSuites) {
 				taskWithTestSuite.setTaskId(toTaskId);
 				taskWithTestSuiteService.AddTaskWithTestSuite(taskWithTestSuite);

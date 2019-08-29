@@ -23,13 +23,29 @@ public class TaskDAO {
 
 	public List<DoTaskId> QueryDoTaskId() {
 		// TODO Auto-generated method stub
-		String sql = "select id,beforeTask_id from task where startTime < unix_timestamp(now())*1000 and status=1";
+		String sql = "select id,beforeTask_id,replaceInfo_id from task where startTime < unix_timestamp(now())*1000 and status=1";
 		List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql);
 		List<DoTaskId> doTaskIds = new ArrayList<DoTaskId>();
 		for (Map<String, Object> row : list) {
 			DoTaskId doTaskId = new DoTaskId();
 			doTaskId.setId((Integer) row.get("id"));
 			doTaskId.setBeforeTaskId((Integer) row.get("beforeTask_id"));
+			doTaskId.setReplaceInfoId((Integer) row.get("replaceInfo_id"));
+			doTaskIds.add(doTaskId);
+		}
+		return doTaskIds;
+	}
+	
+	public List<DoTaskId> QueryByTaskName(String taskName) {
+		// TODO Auto-generated method stub
+		String sql = "select id,beforeTask_id,replaceInfo_id from task where isLoop=1 and name like ?";
+		List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql,taskName);
+		List<DoTaskId> doTaskIds = new ArrayList<DoTaskId>();
+		for (Map<String, Object> row : list) {
+			DoTaskId doTaskId = new DoTaskId();
+			doTaskId.setId((Integer) row.get("id"));
+			doTaskId.setBeforeTaskId((Integer) row.get("beforeTask_id"));
+			doTaskId.setReplaceInfoId((Integer) row.get("replaceInfo_id"));
 			doTaskIds.add(doTaskId);
 		}
 		return doTaskIds;

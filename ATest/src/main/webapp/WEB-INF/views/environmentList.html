@@ -95,13 +95,7 @@
 											field : 'opear',
 											align : 'center',
 											formatter : function(value, row) {
-												let e = '<a  href="#" title="环境信息" onclick="openlayer(\''
-														+ row.id
-														+ '&name='
-														+ encodeURI(row.name)
-														+ '&url='
-														+ encodeURI(row.url)
-														+ '\')">查看</a> ';
+												let e = '<a  href="#" title="环境信息" onclick="openlayer(\''+row.id+ '\')">查看</a> ';
 												return e;
 											}
 										} ]
@@ -147,7 +141,7 @@
 							url : 'queryEnvironments'
 						});
 					} else
-						alert("数据错误");
+						alert("数据错误！已存在接口的环境不能删除！");
 				},
 				error : function(data) {
 					alert("提交失败！");

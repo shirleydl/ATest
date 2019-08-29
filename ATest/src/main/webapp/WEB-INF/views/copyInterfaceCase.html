@@ -24,29 +24,29 @@
 
 	<div class="book_con01">
 		<h1 class="book_h01">复制用例信息</h1>
-		<form id="form_update" action="toUpdateInterfaceCase" method="post">
+		<form id="form_add" action="toAddInterfaceCase" method="post">
 
 			<table class="book_table" border="1" cellpadding="10">
 				<tr>
 					<input id="id" type="hidden" name="id" />
 					<td><label class="td_label">用例名</label></td>
 					<td colspan="2"><input id="name" name="name" type="text"
-						class="book_input03"></td>
+						class="book_input03" maxlength="50" placeholder="必填"></td>
 					<td><label class="td_label">描述</label></td>
 					<td colspan="2"><input id="description" name="description"
-						type="text" class="book_input03"></td>
+						type="text" class="book_input03" maxlength="80"></td>
 
 				</tr>
 				<tr>
 					<td><label class="td_label">所属接口Id</label></td>
 					<td><input id="interfaceId" type="text" name="interfaceId"
-						class="book_input03" autocomplete="off" />
+						class="book_input03" autocomplete="off" placeholder="必填"/>
 					<td><label class="td_label">所属接口名</label></td>
 					<td><input id="interfaceName" type="text" name="interfaceName"
-						class="book_input03" autocomplete="off" />
+						class="book_input03" autocomplete="off" placeholder="必填"/>
 					<td><label class="td_label">所属接口API</label></td>
 					<td><input id="interfaceApi" type="text" name="interfaceApi"
-						class="book_input03" autocomplete="off" />
+						class="book_input03" autocomplete="off" placeholder="必填"/>
 				</tr>
 				<tr>
 					<td><label class="td_label">请求方法</label></td>

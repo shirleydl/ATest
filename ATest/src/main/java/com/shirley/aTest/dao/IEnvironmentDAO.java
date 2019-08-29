@@ -20,4 +20,6 @@ public interface IEnvironmentDAO {
 
 	public Boolean UpdateEnvironment(Environment environment);
 
+	public Environment QueryEnvironmentById(int id);
+
 }

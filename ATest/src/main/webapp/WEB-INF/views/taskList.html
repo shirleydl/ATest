@@ -103,6 +103,20 @@
 												}
 										},
 										{
+											title : '是否循环',
+											field : 'isLoop',
+											align : 'center',
+											valign : 'middle',
+											formatter : function(value, row) {
+												if (value==0) {
+													return "否";
+													}
+												if (value==1) {
+													return "是";
+												}
+												}
+										},
+										{
 											title : '状态',
 											field : 'status',
 											align : 'center',
@@ -135,15 +149,20 @@
 											valign : 'middle'
 										},
 										{
+											title : '替换序号',
+											field : 'replaceInfoId',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
 											title : '操作',
 											field : 'opear',
 											align : 'center',
 											formatter : function(value, row) {
 												let e = ("2" != row.status ? '<a  href="#" title="任务信息" onclick="taskInfo(\''
-														+ row.id + '\')">编辑</a> <a href="#" title="测试集信息" onclick="testSuiteInfo(\''
-														+ row.id+'&taskName='+encodeURI(row.name)+ '\')">测试集管理</a> <a href="#" title="复制测试集" onclick="copyTaskWithSuite(\''
-														+ row.id+'\')">复制测试集</a>':'')+("0" == row.status ? ' <a href="#" title="设置前置任务" onclick="setBeforeTask(\''
-																+ row.id+'&beforeTaskId='+ row.beforeTaskId+'\')">设置前置任务</a> <input type="button" value="开启" onclick="update('+ 1+','+row.id+')"/>':'') +("1" == row.status ? ' <input type="button" value="取消" onclick="update('+ 0+','+row.id+')"/>':'') +("3" == row.status ? ' <input type="button" value="重置" onclick="update('+ 0+','+row.id+')"/>':'')+("3" == row.status ? ' <input type="button" value="结果" onclick="result('+row.id+')"/>':'');
+														+ row.id + '\')">编辑</a> <a href="queryTaskWithTestSuite?taskId='+row.id+'" title="测试集信息">测试集管理</a> <a href="#" title="复制测试集" onclick="copyTaskWithSuite(\''
+														+ row.id+'\')">复制测试集</a>':'')+("0" == row.status ? ' <a href="#" title="设置前置/替换" onclick="setBeforeAndReplace(\''
+																+ row.id+'&beforeTaskId='+ row.beforeTaskId+'&replaceInfoId='+ row.replaceInfoId+'\')">设置前置/替换</a> <input type="button" value="开启" onclick="update('+ 1+','+row.id+')"/>':'') +("1" == row.status ? ' <input type="button" value="取消" onclick="update('+ 0+','+row.id+')"/>':'') +("3" == row.status ? ' <input type="button" value="重置" onclick="update('+ 0+','+row.id+')"/>':'')+("3" == row.status ? ' <input type="button" value="结果" onclick="result('+row.id+')"/>':'')+("2" != row.status && "0" ==row.isLoop ? ' <input type="button" value="开启循环" onclick="updateLoop('+ 1+','+row.id+')"/>':'')+("2" != row.status && "1" ==row.isLoop ? ' <input type="button" value="关闭循环" onclick="updateLoop('+ 0+','+row.id+')"/>':'');
 												return e;
 												 
 											}
@@ -185,7 +204,7 @@
 								url : 'queryTasks'
 							});
 						} else
-							alert("数据错误");
+							alert("数据错误！已被设置为前置的任务不能删除！");
 					},
 					error : function(data) {
 						alert("提交失败！");
@@ -205,6 +224,32 @@
 			},
 			type : "post",
 			url : "toUpdateStatus",
+			success : function(data) {
+				if (data) {
+					alert("提交成功！");
+					$('#table').bootstrapTable('refresh', {
+						url : 'queryTasks'
+					});
+				} else
+					alert("数据错误");
+			},
+			error : function(data) {
+				alert("提交失败！");
+			}
+		});
+	}
+	</script>
+
+	<script>
+	function updateLoop(isLoop,id) {
+		$.ajax({
+			traditional : true,//这使json格式的字符不会被转码
+			data : {
+				"id" : id,
+				"isLoop":isLoop
+			},
+			type : "post",
+			url : "toUpdateIsLoop",
 			success : function(data) {
 				if (data) {
 					alert("提交成功！");
@@ -292,7 +337,7 @@
 		}
 		
 		
-		function setBeforeTask(id) {
+		function setBeforeAndReplace(id) {
 			layer.open({
 				type : 2,
 				title : '测试集信息',
@@ -304,7 +349,7 @@
 				area : [ '100%', '100%' ],
 				shadeClose : true,
 				closeBtn : 1,
-				content : 'setBeforeTask?fromTaskId=' + id
+				content : 'setBeforeAndReplace?fromTaskId=' + id
 			//iframe的url
 			});
 		}

@@ -1,0 +1,216 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<form id="form_update" action="toUpdateReplace" method="post">
+			<p class="book_p">
+			<table id="table" class="book_table" border="1" cellpadding="10">
+				<tr>
+				<input id="id" type="hidden" name="id" />
+					<td><label class="td_label">替换名</label></td>
+					<td><input id="name" name="name" type="text"
+						class="book_input03" placeholder="必填"></td>
+					<td><label class="td_label">替换描述</label></td>
+					<td><input id="description" name="description" type="text"
+						class="book_input03"></td>
+				</tr>
+			</table>
+			<table id="replaceUrlTable" class="book_table" border="1"
+				cellpadding="10">
+				<tr>
+					<td colspan="2"><label class="td_label">替换域名</label></td>
+					<td><input type="button" id="addReplaceUrl" value="添加栏位" /></td>
+				</tr>
+				<tr>
+					<td><label class="td_label">原域名</label></td>
+					<td><label class="td_label">新域名</label></td>
+					<td><label class="td_label">操作</label></td>
+				</tr>
+			</table>
+			<table id="replaceDataTable" class="book_table" border="1"
+				cellpadding="10">
+				<tr>
+					<td colspan="4"><label class="td_label">替换数据</label></td>
+				</tr>
+				<tr>
+					<td colspan="2"><textarea type="text" id="replaceData"
+							class="online_input01" name="replaceData"
+							placeholder="在此输入json字符串..."></textarea></td>
+					<td colspan="2"><textarea id="replaceDataView"
+							class="online_input01"
+							style="padding: 0px 25px; white-space: pre-line; word-wrap: break-word;"
+							disabled="disabled"></textarea></td>
+				</tr>
+			</table>
+			</p>
+			<p class="book_foot">
+				<input type="button" id="Sumbit" value="提交" />
+			</p>
+		</form>
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+
+	<script>
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (let i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			let replaceId = value[0];
+			$("#id").val(replaceId);
+			$.ajax({
+						type : 'post',
+						url : "toQueryReplace",
+						cache : false,
+						data : {
+							"id" : replaceId
+						},
+						success : function(data) {
+							$("#name").val(data.name);
+							$("#description").val(data.description);
+							let i = 1;
+							let Data = data.replaceUrl;
+							for ( let key in Data) {
+								$("#replaceUrlTable")
+										.append(
+												"<tr id='replaceUrl"+i+"'><td><input id='replaceOldUrl"+i+"' type='text' class='book_input03' value='"
+								+ key
+								+ "'></td><td><input type='text' id='replaceNewUrl"+i+"' class='book_input03' value='"
+								+ Data[key]
+								+ "'></td><td><a href='javascript:void(0)' onclick='DeleteReplaceUrl("
+														+ i
+														+ ")' class='add_a'>删除</a></td></tr>");
+								i++;
+							}
+							$("#replaceData").val(
+									JSON.stringify(data.replaceData));
+							$("#replaceData").change();
+						},
+						error : function() {
+							alert("查询失败")
+						}
+					})
+		});
+	</script>
+	<script>
+		$("#addReplaceUrl")
+				.click(
+						function() {
+							let _len = $("#replaceUrlTable tr").length - 1;
+							$("#replaceUrlTable")
+									.append(
+											"<tr id='replaceUrl"+_len+"'><td><input id='replaceOldUrl"+_len+"' type='text' class='book_input03'></td><td><input type='text' id='replaceNewUrl"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteReplaceUrl("
+													+ _len
+													+ ")' class='add_a'>删除</a></td></tr>");
+						});
+	</script>
+	<script>
+		function DeleteReplaceUrl(index) {
+			let _len = $("#replaceUrlTable tr").length - 1;
+			$("tr[id='replaceUrl" + index + "']").remove();//删除当前行
+			for (let i = index + 1; i < _len; i++) {
+				let nextKeyVal = $("#replaceOldUrl" + i).val();
+				let nextValueVal = $("#replaceNewUrl" + i).val();
+				$("tr[id=\'replaceUrl" + i + "\']")
+						.replaceWith(
+								"<tr id='replaceUrl"
+										+ (i - 1)
+										+ "'><td><input id='replaceOldUrl"
+										+ (i - 1)
+										+ "' type='text' class='book_input03' value='"
+										+ nextKeyVal
+										+ "'></td><td><input type='text' id='replaceNewUrl"
+										+ (i - 1)
+										+ "' class='book_input03' value='"
+										+ nextValueVal
+										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteReplaceUrl("
+										+ (i - 1)
+										+ ")' class='add_a'>删除</a></td></tr>");
+			}
+		}
+	</script>
+	<script>
+		$("#replaceData").change(function() {
+			let content = $.trim($("#replaceData").val());
+			let result = '';
+			if (content != '') {
+				try {
+					result = JSON.stringify(JSON.parse(content), null, 4);
+					$("#replaceData").val(result);
+				} catch (e) {
+					result = e;
+				}
+				$('#replaceDataView').text(result);
+			} else {
+				$('#replaceDataView').text('');
+			}
+
+		});
+
+		$("#Sumbit").click(function() {
+			let replaceUrlMap = {};
+			let replaceUrlMapJson="";
+			let _lenh = $("#replaceUrlTable tr").length-2;
+			for (let i = 1; i <= _lenh; i++) {
+				let ukeystr = $("#replaceOldUrl" + i).val();
+				let uvaluestr = $("#replaceNewUrl" + i).val();
+				if(ukeystr!="")
+					replaceUrlMap[ukeystr]=uvaluestr;
+			}
+			replaceUrlMapJson=JSON.stringify(replaceUrlMap);
+			
+			let replaceData = $.trim($("#replaceData").val());
+			try {
+				if (replaceData != '') {
+					replaceData = JSON.stringify(JSON.parse(replaceData));
+				}
+				let id = $("#id").val();
+				let name = $("#name").val();
+				let description = $("#description").val();
+				$.ajax({
+					type : 'post',
+					url : "toUpdateReplace",
+					cache : false,
+					dataType : 'json',
+					data : {
+						"id" : id,
+						"name" : name,
+						"description" : description,
+						"replaceUrl" : replaceUrlMapJson,
+						"replaceData" : replaceData
+					},
+					success : function(data) {
+						if (data) {
+							alert("提交成功");
+						} else
+							alert("数据错误");
+					},
+					error : function() {
+						alert("保存失败")
+					}
+				})
+			} catch (e) {
+				alert("json格式错误！");
+				return;
+			}
+
+		});
+	</script>
+
+</body>
+</html>

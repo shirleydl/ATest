@@ -3,6 +3,7 @@ package com.shirley.aTest.method;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,7 +35,7 @@ public class DoRequest {
 		this.taskId = taskId;
 		this.bindVariables = bindVariables;
 		Map<String, String> headers = new HashMap<String, String>();
-		Map<String, String> paramMap = new HashMap<String, String>();
+		Map<String, String> paramMap = new LinkedHashMap<String, String>();
 
 		// 获取用例变量值（不包含返回值）
 		if (null != request.getVariables() && request.getVariables().size() > 0) {

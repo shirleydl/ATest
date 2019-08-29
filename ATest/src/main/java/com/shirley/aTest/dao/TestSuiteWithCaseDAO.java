@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.google.gson.Gson;
@@ -27,6 +28,8 @@ public class TestSuiteWithCaseDAO implements ITestSuiteWithCaseDAO {
 	// 获取JdbcTemplate实例
 	@Resource(name = "jdbcTemplate")
 	private JdbcTemplate jdbcTemplate;
+	@Resource(name = "namedParameterJdbcTemplate")
+	private NamedParameterJdbcTemplate jdbcN;
 
 	@Override
 	public List<TestSuiteWithCase> QueryTestCaseByTestSuiteId(int testSuiteId) {
@@ -72,6 +75,24 @@ public class TestSuiteWithCaseDAO implements ITestSuiteWithCaseDAO {
 		String sql = "delete from testsuite_testcase where id=?";
 		int row = this.jdbcTemplate.update(sql, id);
 		return row > 0;
+	}
+	
+	@Override
+	public void DeleteTestSuiteWithCaseByCaseId(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		String sql = "delete from testsuite_testcase where testcase_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		this.jdbcN.update(sql, paramMap);
+	}
+	
+	@Override
+	public void DeleteTestSuiteWithCaseBySuiteId(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		String sql = "delete from testsuite_testcase where testsuite_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		this.jdbcN.update(sql, paramMap);
 	}
 
 	@Override

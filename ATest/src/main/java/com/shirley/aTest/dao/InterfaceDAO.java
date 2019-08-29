@@ -101,6 +101,16 @@ public class InterfaceDAO implements IInterfaceDAO {
 		int row = this.jdbcN.update(sql, paramMap);
 		return row > 0;
 	}
+	
+	@Override
+	public Boolean FindInterfaceEnvironment(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		String sql = "select count(id) from interface where environment_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		int row = this.jdbcN.queryForObject(sql, paramMap, Integer.class);
+		return row < 1;
+	}
 
 	@Override
 	public Boolean UpdateInterface(Interface interfaceObject) {
@@ -116,7 +126,11 @@ public class InterfaceDAO implements IInterfaceDAO {
 	public Interface QueryInterfaceById(int id) {
 		// TODO Auto-generated method stub
 		String sql = "select * from interface left join environment on interface.environment_id=environment.id where interface.id=?";
-		return this.jdbcTemplate.queryForObject(sql, new InterfaceRowMapper(), id);
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new InterfaceRowMapper(), id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override

@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<form id="form_update" action="updateProductProject" method="post">
+			<p class="book_p">
+			<table id="table" class="book_table" border="1" cellpadding="10">
+				<tr>
+					<td><label class="td_label">环境序号</label></td>
+					<td><input id="id" name="id" type="text" class="book_input03"
+						readonly="readonly"></td>
+					<td><label class="td_label">产品/项目名</label></td>
+					<td><input id="name" name="name" type="text"
+						class="book_input03" maxlength="50" placeholder="必填"></td>
+				</tr>
+				<tr>
+					<td><label class="td_label">描述</label></td>
+					<td colspan="3"><input id="description" name="description" type="text"
+						class="book_input03" maxlength="80" placeholder="必填"></td>
+				</tr>
+			</table>
+			</p>
+			<p class="book_foot">
+				<input type="button" id="Sumbit" value="提交" />
+			</p>
+		</form>
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+
+	<script>
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (let i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			let productProjectId = value[0];
+			$("#id").val(productProjectId);
+			$.ajax({
+				type : 'post',
+				url : "toQueryProductProject",
+				cache : false,
+				data : {
+					"id" : productProjectId
+				},
+				success : function(data) {
+					if(data!=null){
+					$("#name").val(data.name);
+					$("#description").val(data.description);
+					}
+				},
+				error : function() {
+					alert("查询失败")
+				}
+			})
+		});
+	</script>
+
+	<script>
+		$("#Sumbit").click(function() {
+			let targetUrl = $("#form_update").attr("action");
+			let data = $("#form_update").serialize();
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+					} else
+						alert("数据错误！产品序号、名不能为空！");
+				},
+				error : function() {
+					alert("保存失败")
+				}
+			})
+
+		});
+
+	</script>
+
+</body>
+</html>

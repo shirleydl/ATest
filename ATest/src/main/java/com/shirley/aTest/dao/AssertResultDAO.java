@@ -4,12 +4,14 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.shirley.aTest.db.AssertResultRowMapper;
@@ -25,11 +27,13 @@ public class AssertResultDAO implements IAssertResultDAO {
 	// 获取JdbcTemplate实例
 	@Resource(name = "jdbcTemplate")
 	private JdbcTemplate jdbcTemplate;
+	@Resource(name = "namedParameterJdbcTemplate")
+	private NamedParameterJdbcTemplate jdbcN;
 
 	@Override
 	public List<AssertResult> QueryAsserts(int currentPageNo, int pageSize, int taskId) {
 		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer("select * from asserts where 1=1");
+		StringBuffer sql = new StringBuffer("select id,url,status,createtime from asserts where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != taskId) {
 			sql.append(" and task_id = ?");
@@ -71,8 +75,12 @@ public class AssertResultDAO implements IAssertResultDAO {
 	@Override
 	public AssertResult QueryAssert(int assertId) {
 		// TODO Auto-generated method stub
-		String sql = "select * from asserts where id=?";
-		return this.jdbcTemplate.queryForObject(sql, new AssertResultRowMapper(), assertId);
+		String sql = "select id,task_id,url,requestcontent,responsecontent,assertresult,status,createtime from asserts where id=?";
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new AssertResultRowMapper(), assertId);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -87,6 +95,15 @@ public class AssertResultDAO implements IAssertResultDAO {
 				assertResult.getAssertResult(), assertResult.getStatus() });
 		return row > 0;
 
+	}
+	
+	@Override
+	public void DeleteAssertsByTaskId(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		String sql = "delete from asserts where task_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		this.jdbcN.update(sql, paramMap);
 	}
 
 }

@@ -25,4 +25,8 @@ public interface ITestSuiteWithCaseDAO {
 	public Boolean UpdateBindVariables(int id, Map<String, String> bindVariables);
 
 	public List<Request> QueryTestCaseByTestSuiteRequest(int testSuiteId);
+
+	public void DeleteTestSuiteWithCaseByCaseId(List<Integer> ids);
+
+	public void DeleteTestSuiteWithCaseBySuiteId(List<Integer> ids);
 }

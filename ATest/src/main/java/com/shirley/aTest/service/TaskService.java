@@ -6,7 +6,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.shirley.aTest.dao.AssertResultDAO;
 import com.shirley.aTest.dao.TaskDAO;
+import com.shirley.aTest.dao.TaskWithTestSuiteDAO;
 import com.shirley.aTest.entity.Task;
 
 /**
@@ -18,6 +20,10 @@ import com.shirley.aTest.entity.Task;
 public class TaskService implements ITaskService {
 	@Resource(name = "taskDAO")
 	private TaskDAO taskDAO;
+	@Resource(name = "taskWithTestSuiteDAO")
+	private TaskWithTestSuiteDAO taskWithTestSuiteDAO;
+	@Resource(name = "assertResultDAO")
+	private AssertResultDAO assertResultDAO;
 
 	@Override
 	public List<Task> QueryTask(int currentPageNo, int pageSize, int id, String name) {
@@ -46,7 +52,12 @@ public class TaskService implements ITaskService {
 	@Override
 	public Boolean DeleteTasks(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		return taskDAO.DeleteTasks(ids);
+		if (taskDAO.FindTaskBeforeTask(ids) && taskDAO.DeleteTasks(ids)) {
+			taskWithTestSuiteDAO.DeleteTaskWithTestSuiteByTaskId(ids);
+			assertResultDAO.DeleteAssertsByTaskId(ids);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -68,9 +79,15 @@ public class TaskService implements ITaskService {
 	}
 
 	@Override
-	public Boolean UpdateTaskBeforeTaskId(Task task) {
+	public Boolean UpdateTaskBeforeAndReplace(Task task) {
 		// TODO Auto-generated method stub
-		return taskDAO.UpdateTaskBeforeTaskId(task);
+		return taskDAO.UpdateTaskBeforeAndReplace(task);
+	}
+
+	@Override
+	public Boolean UpdateTaskIsLoop(Task task) {
+		// TODO Auto-generated method stub
+		return taskDAO.UpdateTaskIsLoop(task);
 	}
 
 }

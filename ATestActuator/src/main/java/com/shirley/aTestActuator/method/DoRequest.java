@@ -1,8 +1,8 @@
 package com.shirley.aTestActuator.method;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,7 +34,7 @@ public class DoRequest {
 		this.taskId = taskId;
 		this.bindVariables = bindVariables;
 		Map<String, String> headers = new HashMap<String, String>();
-		Map<String, String> paramMap = new HashMap<String, String>();
+		Map<String, String> paramMap = new LinkedHashMap<String, String>();
 
 		// 获取用例变量值（不包含返回值）
 		if (null != request.getVariables() && request.getVariables().size() > 0) {
@@ -89,11 +89,11 @@ public class DoRequest {
 			StringBuffer sbParams = new StringBuffer();
 			if (null != request.getParamMap() && request.getParamMap().size() > 0) {
 				for (Entry<String, String> e : request.getParamMap().entrySet()) {
-					sbParams.append(e.getKey());
+					sbParams.append(null!=e.getKey()?e.getKey():"");
 					sbParams.append("=");
 					try {
-						sbParams.append(URLEncoder.encode(e.getValue(), "utf-8"));
-					} catch (UnsupportedEncodingException e1) {
+						sbParams.append(null!=e.getValue()?URLEncoder.encode(e.getValue(), "utf-8"):"");
+					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						sbParams.append("");
 					}

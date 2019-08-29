@@ -24,7 +24,7 @@ public class TaskWithTestSuiteDAO {
 
 	public List<TaskWithTestSuite> QueryTaskWithTestSuite(int taskId) {
 		// TODO Auto-generated method stub
-		String sql = "select task_testsuite.id,task_testsuite.testsuite_id,testsuite.name,task_testsuite.priority from task_testsuite left join testsuite on task_testsuite.testsuite_id=testsuite.id where task_testsuite.task_id=?";
+		String sql = "select task_testsuite.id,task_testsuite.testsuite_id,testsuite.name from task_testsuite left join testsuite on task_testsuite.testsuite_id=testsuite.id where task_testsuite.task_id=?";
 		List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql, taskId);
 		List<TaskWithTestSuite> taskWithTestSuites = new ArrayList<TaskWithTestSuite>();
 		for (Map<String, Object> row : list) {
@@ -32,7 +32,6 @@ public class TaskWithTestSuiteDAO {
 			taskWithTestSuite.setId((Integer) row.get("id"));
 			taskWithTestSuite.setTestSuiteId((Integer) row.get("testsuite_id"));
 			taskWithTestSuite.setTestSuiteName((String) row.get("name"));
-			taskWithTestSuite.setPriority((Integer) row.get("priority"));
 			taskWithTestSuites.add(taskWithTestSuite);
 		}
 		return taskWithTestSuites;

@@ -1,6 +1,5 @@
 package com.shirley.aTestActuator.method;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +8,11 @@ import java.util.concurrent.CountDownLatch;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.shirley.aTestActuator.dao.ReplaceDAO;
 import com.shirley.aTestActuator.dao.TaskDAO;
 import com.shirley.aTestActuator.dao.TaskWithTestSuiteDAO;
 import com.shirley.aTestActuator.entity.DoTaskId;
+import com.shirley.aTestActuator.entity.Replace;
 import com.shirley.aTestActuator.entity.TaskWithTestSuite;
 
 /**
@@ -23,8 +24,10 @@ import com.shirley.aTestActuator.entity.TaskWithTestSuite;
 public class DoQueryTestSuite implements Runnable {
 	private TaskWithTestSuiteDAO taskWithTestSuiteDAO;
 	private TaskDAO taskDao;
+	private ReplaceDAO replaceDAO;
 	private DoTaskId doTaskId;
 	private JdbcTemplate jdbcTemplate;
+	private Replace replace;
 	private Map<String, String> bindMapAll = new HashMap<String, String>();
 
 	public DoQueryTestSuite(TaskDAO taskDao, DoTaskId doTaskId, JdbcTemplate jdbcTemplate) {
@@ -33,6 +36,8 @@ public class DoQueryTestSuite implements Runnable {
 		this.jdbcTemplate = jdbcTemplate;
 		taskWithTestSuiteDAO = new TaskWithTestSuiteDAO();
 		taskWithTestSuiteDAO.setJdbcTemplate(jdbcTemplate);
+		replaceDAO = new ReplaceDAO();
+		replaceDAO.setJdbcTemplate(jdbcTemplate);
 	}
 
 	public DoQueryTestSuite() {
@@ -46,12 +51,11 @@ public class DoQueryTestSuite implements Runnable {
 	public void doBefore() {
 		List<TaskWithTestSuite> taskWithTestSuites = taskWithTestSuiteDAO
 				.QueryTaskWithTestSuite(doTaskId.getBeforeTaskId());
-		Collections.sort(taskWithTestSuites);
 		CountDownLatch latch = new CountDownLatch(taskWithTestSuites.size());
 		DoQueryTestSuite doQueryTestSuite = new DoQueryTestSuite();
 		for (TaskWithTestSuite taskWithTestSuite : taskWithTestSuites) {
 			DoQueryRequest doQueryRequest = new DoQueryRequest(doQueryTestSuite, taskWithTestSuite.getTestSuiteId(),
-					doTaskId.getBeforeTaskId(), latch, jdbcTemplate, false, null);
+					doTaskId.getBeforeTaskId(), latch, jdbcTemplate, false, null, replace);
 			Thread thread = new Thread(doQueryRequest);
 			thread.start();
 		}
@@ -68,11 +72,10 @@ public class DoQueryTestSuite implements Runnable {
 
 	public void todo(Map<String, String> beforeMap) {
 		List<TaskWithTestSuite> taskWithTestSuites = taskWithTestSuiteDAO.QueryTaskWithTestSuite(doTaskId.getId());
-		Collections.sort(taskWithTestSuites);
 		CountDownLatch latch = new CountDownLatch(taskWithTestSuites.size());
 		for (TaskWithTestSuite taskWithTestSuite : taskWithTestSuites) {
 			DoQueryRequest doQueryRequest = new DoQueryRequest(null, taskWithTestSuite.getTestSuiteId(),
-					doTaskId.getId(), latch, jdbcTemplate, true, beforeMap);
+					doTaskId.getId(), latch, jdbcTemplate, true, beforeMap, replace);
 			new Thread(doQueryRequest).start();
 		}
 		try {
@@ -89,6 +92,9 @@ public class DoQueryTestSuite implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		if (doTaskId.getReplaceInfoId() != 0) {
+			replace = replaceDAO.QueryReplaceById(doTaskId.getReplaceInfoId());
+		}
 		if (doTaskId.getBeforeTaskId() != 0)
 			doBefore();
 		else
