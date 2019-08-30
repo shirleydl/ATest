@@ -1,6 +1,5 @@
 package com.shirley.aTest.method;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -90,11 +89,11 @@ public class DoRequest {
 			StringBuffer sbParams = new StringBuffer();
 			if (null != request.getParamMap() && request.getParamMap().size() > 0) {
 				for (Entry<String, String> e : request.getParamMap().entrySet()) {
-					sbParams.append(e.getKey());
+					sbParams.append(null!=e.getKey()?e.getKey():"");
 					sbParams.append("=");
 					try {
-						sbParams.append(URLEncoder.encode(e.getValue(), "utf-8"));
-					} catch (UnsupportedEncodingException e1) {
+						sbParams.append(null!=e.getValue()?URLEncoder.encode(e.getValue(), "utf-8"):"");
+					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						sbParams.append("");
 					}
