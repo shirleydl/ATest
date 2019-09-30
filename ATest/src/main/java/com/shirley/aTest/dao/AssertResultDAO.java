@@ -33,7 +33,7 @@ public class AssertResultDAO implements IAssertResultDAO {
 	@Override
 	public List<AssertResult> QueryAsserts(int currentPageNo, int pageSize, int taskId) {
 		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer("select id,url,status,createtime from asserts where 1=1");
+		StringBuffer sql = new StringBuffer("select id,case_id,url,status,createtime from asserts where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != taskId) {
 			sql.append(" and task_id = ?");
@@ -51,6 +51,7 @@ public class AssertResultDAO implements IAssertResultDAO {
 		for (Map<String, Object> row : list) {
 			AssertResult assertResult = new AssertResult();
 			assertResult.setId((Integer) row.get("id"));
+			assertResult.setCaseId((Integer) row.get("case_id"));
 			assertResult.setUrl((String) row.get("url"));
 			assertResult.setStatus((String) row.get("status"));
 			assertResult.setCreateTime(df.format((Timestamp) row.get("createtime")));
@@ -83,27 +84,15 @@ public class AssertResultDAO implements IAssertResultDAO {
 		}
 	}
 
-	@Override
-	public Boolean AddAsserts(AssertResult assertResult) {
-		// TODO Auto-generated method stub
-		String sql = "insert into asserts (task_id,url,requestcontent,responsecontent,assertresult,status) values (?,?,?,?,?,?)";
-		int row = this.jdbcTemplate.update(sql, new Object[] { assertResult.getTaskId(), assertResult.getUrl(),
-				assertResult.getRequestContent().length() > 5000 ? assertResult.getRequestContent().substring(0, 5000)
-						: assertResult.getRequestContent(),
-				assertResult.getResponseContent().length() > 5000 ? assertResult.getResponseContent().substring(0, 5000)
-						: assertResult.getResponseContent(),
-				assertResult.getAssertResult(), assertResult.getStatus() });
-		return row > 0;
-
-	}
 	
 	@Override
-	public void DeleteAssertsByTaskId(List<Integer> ids) {
+	public Boolean DeleteAssertsByTaskId(List<Integer> ids) {
 		// TODO Auto-generated method stub
 		String sql = "delete from asserts where task_id in(:ids)";
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("ids", ids);
-		this.jdbcN.update(sql, paramMap);
+		int row=this.jdbcN.update(sql, paramMap);
+		return row > 0;
 	}
 
 }

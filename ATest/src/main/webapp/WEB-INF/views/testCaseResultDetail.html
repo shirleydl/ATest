@@ -52,13 +52,15 @@
 				}
 			}
 			
-			id=value[0];
+			let id=value[0];
+			let mockId=value[1];
 			$.ajax({
 				type : 'post',
 				url : "toRequestInterfaceCase",
 				cache : false,
 				data : {
-					"interfaceCaseId" : id
+					"interfaceCaseId" : id,
+					"mockId" : mockId
 				},
 				success : function(data) {
 					$("#requestContent").text(data.requestContent);

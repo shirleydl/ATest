@@ -3,6 +3,7 @@ package com.shirley.aTest.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.shirley.aTest.entity.CaseVariable;
 import com.shirley.aTest.entity.Request;
 import com.shirley.aTest.entity.TestSuiteWithCase;
 
@@ -29,4 +30,8 @@ public interface ITestSuiteWithCaseDAO {
 	public void DeleteTestSuiteWithCaseByCaseId(List<Integer> ids);
 
 	public void DeleteTestSuiteWithCaseBySuiteId(List<Integer> ids);
+
+	public Boolean UpdateCaseVariables(CaseVariable CaseVariable);
+
+	public CaseVariable QueryCaseVariablesByTestSuiteWithCaseId(int testSuiteWithCaseId);
 }

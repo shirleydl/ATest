@@ -46,20 +46,19 @@ public class ReplaceController {
 
 	@RequestMapping(value = "/queryReplaces", method = RequestMethod.GET)
 	@ResponseBody
-	public PageHelper<Replace> queryReplaces(Integer pageNumber, Integer pageSize, Integer id, String name,
-			String replaceUrl) {
+	public PageHelper<Replace> queryReplaces(Integer pageNumber, Integer pageSize, Integer id, String name) {
 		List<Replace> replaces = replaceService.QueryReplaces((null == pageNumber ? 0 : pageNumber),
 				(null == pageSize ? 0 : pageSize), (null == id ? 0 : id), name);
 		PageHelper<Replace> pageHelper = new PageHelper<Replace>();
 		// 统计总记录数
-		pageHelper.setTotal(replaceService.QueryReplaceCount((null == id ? 0 : id), name, replaceUrl));
+		pageHelper.setTotal(replaceService.QueryReplaceCount((null == id ? 0 : id), name));
 		pageHelper.setRows(replaces);
 		return pageHelper;
 	}
 
 	@RequestMapping(value = "/toAddReplace", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean toAddReplace(String name, String description, String replaceUrl, String replaceData) {
+	public Boolean toAddReplace(String name, String description, String replaceUrl, String replaceData, String split) {
 		if (null != name && !"".equals(name)) {
 			try {
 				Map<String, Object> replaceDataJsonMap = new HashMap<String, Object>();
@@ -80,6 +79,7 @@ public class ReplaceController {
 				replace.setDescription(description);
 				replace.setReplaceUrl(replaceUrlMap);
 				replace.setReplaceData(replaceDataMap);
+				replace.setSplit(split);
 				return replaceService.AddReplace(replace);
 			} catch (Exception e) {
 				return false;
@@ -107,7 +107,7 @@ public class ReplaceController {
 
 	@RequestMapping(value = "/toUpdateReplace", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean toUpdateReplace(Integer id, String name, String description, String replaceUrl, String replaceData) {
+	public Boolean toUpdateReplace(Integer id, String name, String description, String replaceUrl, String replaceData, String split) {
 		if (null != name && !"".equals(name) && null != id) {
 			try {
 				Map<String, Object> replaceDataJsonMap = new HashMap<String, Object>();
@@ -129,6 +129,7 @@ public class ReplaceController {
 				replace.setDescription(description);
 				replace.setReplaceUrl(replaceUrlMap);
 				replace.setReplaceData(replaceDataMap);
+				replace.setSplit(split);
 				return replaceService.UpdateReplace(replace);
 			} catch (Exception e) {
 				return false;
@@ -139,7 +140,7 @@ public class ReplaceController {
 
 	@RequestMapping(value = "/queryReplaceById", method = RequestMethod.POST)
 	@ResponseBody
-	public BigAutocompleteDataHelper<Replace> queryTaskById(String keyword) {
+	public BigAutocompleteDataHelper<Replace> queryReplaceById(String keyword) {
 		if (keyword.matches("[0-9]+") && Integer.parseInt(keyword) > 0) {
 			List<Replace> replaces = replaceService.QueryReplaces(0, 0, Integer.parseInt(keyword), null);
 			BigAutocompleteDataHelper<Replace> jsonHelper = new BigAutocompleteDataHelper<Replace>();
@@ -151,7 +152,7 @@ public class ReplaceController {
 
 	@RequestMapping(value = "/queryReplaceByName", method = RequestMethod.POST)
 	@ResponseBody
-	public BigAutocompleteDataHelper<Replace> queryTaskByName(String keyword) {
+	public BigAutocompleteDataHelper<Replace> queryReplaceByName(String keyword) {
 		List<Replace> replaces = replaceService.QueryReplaces(0, 0, 0, keyword);
 		BigAutocompleteDataHelper<Replace> jsonHelper = new BigAutocompleteDataHelper<Replace>();
 		jsonHelper.setData(replaces);

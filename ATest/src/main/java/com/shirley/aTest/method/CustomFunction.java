@@ -1,5 +1,6 @@
 package com.shirley.aTest.method;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -65,5 +66,30 @@ public class CustomFunction {
 	 */
 	public String _toUpperCase(Map<String, String> object) {
 		return object.get("param0").toUpperCase();
+	}
+	
+	/**
+	 * param0=value
+	 */
+	public String _toEncodeURI(Map<String, String> object) {
+		try {
+			return URLEncoder.encode(object.get("param0"), "utf-8");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			return null;
+		}
+	}
+	
+	/**
+	 * param0=value
+	 * param1=old char
+	 */
+	public String _toReplaceEnter(Map<String, String> object) {
+		try {
+			return object.get("param0").replace(object.get("param1"), "\r\n");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			return null;
+		}
 	}
 }

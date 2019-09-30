@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.shirley.aTest.dao.ProductProjectWithSuiteDAO;
+import com.shirley.aTest.dao.SuiteWithCaseControllerDAO;
 import com.shirley.aTest.dao.TaskWithTestSuiteDAO;
 import com.shirley.aTest.dao.TestSuiteDAO;
 import com.shirley.aTest.dao.TestSuiteWithCaseDAO;
@@ -28,6 +29,8 @@ public class TestSuiteService implements ITestSuiteService {
 	private TaskWithTestSuiteDAO taskWithTestSuiteDAO;
 	@Resource(name = "productProjectWithSuiteDAO")
 	private ProductProjectWithSuiteDAO productProjectWithSuiteDAO;
+	@Resource(name = "suiteWithCaseControllerDAO")
+	private SuiteWithCaseControllerDAO suiteWithCaseControllerDAO;
 
 	@Override
 	public List<TestSuite> QueryTestSuite(int currentPageNo, int pageSize, int id, String name, String testCaseName) {
@@ -60,6 +63,7 @@ public class TestSuiteService implements ITestSuiteService {
 			testSuiteWithCaseDAO.DeleteTestSuiteWithCaseBySuiteId(ids);
 			taskWithTestSuiteDAO.DeleteTaskWithTestSuiteBySuiteId(ids);
 			productProjectWithSuiteDAO.DeleteProductProjectWithSuiteBySuiteId(ids);
+			suiteWithCaseControllerDAO.DeleteSuiteWithCaseControllersBySuiteId(ids);
 			return true;
 		}
 		else

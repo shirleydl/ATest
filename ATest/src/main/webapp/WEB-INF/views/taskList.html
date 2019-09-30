@@ -26,7 +26,8 @@
 
 		<i class="add_i"></i><a href="addTask" class="add_a">新增</a> <i
 			class="del_i"></i><a href="javascript:void(0)"
-			onclick="DeleteByIds()" class="add_a">删除</a>
+			onclick="DeleteByIds()" class="add_a">删除</a><input
+				type="button" value="清空测试结果" class="find_but" id="DelAssert_btn">
 	</p>
 	<p>
 	<table id="table" class="table_style" style="margin: 0 auto">
@@ -168,17 +169,52 @@
 											}
 										} ]
 							});
-		})
+		});
 
 		$('#search_btn').click(function() {
 			$('#table').bootstrapTable('refresh', {
 				url : 'queryTasks'
 			});
-		})
+		});
 		$('#clean_btn').click(function() {
 			$('#name').val("");
 			$('#id').val("");
-		})
+		});
+		
+		$('#DelAssert_btn').click(function() {
+			let ids = new Array()
+			let rows = $("#table").bootstrapTable('getSelections');
+			if (rows.length <= 0) {
+				alert("请选中一行")
+			} else {
+				for (let i = 0; i < rows.length; i++) {
+					ids.push(rows[i].id);
+				}
+				let url = "toDelAssertResult";
+				$.ajax({
+					traditional : true,//这使json格式的字符不会被转码
+					data : {
+						"ids" : ids
+					},
+					type : "post",
+					url : url,
+					success : function(data) {
+						if (data) {
+							alert("提交成功！");
+							$('#table').bootstrapTable('refresh', {
+								url : 'queryTasks'
+							});
+						} else
+							alert("数据错误！");
+					},
+					error : function(data) {
+						alert("提交失败！");
+					}
+				});
+			}
+		});
+		
+		
 
 		function DeleteByIds() {
 			let ids = new Array()

@@ -48,7 +48,10 @@
 			<table id="replaceDataTable" class="book_table" border="1"
 				cellpadding="10">
 				<tr>
-					<td colspan="4"><label class="td_label">替换数据</label></td>
+					<td colspan="2"><label class="td_label">替换数据</label></td>
+					<td><label class="td_label">替换循环变量分隔符</label></td>
+					<td><input id="split" name="split" type="text"
+						class="book_input03"></td>
 				</tr>
 				<tr>
 					<td colspan="2"><textarea type="text" id="replaceData"
@@ -148,6 +151,7 @@
 				}
 				let name = $("#name").val();
 				let description = $("#description").val();
+				let split= $("#split").val();
 				$.ajax({
 					type : 'post',
 					url : "toAddReplace",
@@ -157,6 +161,7 @@
 						"name" : name,
 						"description" : description,
 						"replaceUrl" : replaceUrlMapJson,
+						"split":split,
 						"replaceData" : replaceData
 					},
 					success : function(data) {

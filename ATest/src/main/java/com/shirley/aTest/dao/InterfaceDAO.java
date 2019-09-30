@@ -31,7 +31,7 @@ public class InterfaceDAO implements IInterfaceDAO {
 			String environmentName) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer(
-				"select distinct interface.id,interface.name,interface.api from interface left join environment on interface.environment_id=environment.id where 1=1");
+				"select interface.id,interface.name,interface.api,environment.name as environmentName from interface left join environment on interface.environment_id=environment.id where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (null != environmentName && !"".equals(environmentName)) {
 			sql.append(" and environment.name like ?");
@@ -57,6 +57,7 @@ public class InterfaceDAO implements IInterfaceDAO {
 			interfaceObject.setId((Integer) row.get("id"));
 			interfaceObject.setName((String) row.get("name"));
 			interfaceObject.setApi((String) row.get("api"));
+			interfaceObject.setEnvironmentName((String) row.get("environmentName"));
 			interfaceLists.add(interfaceObject);
 		}
 		return interfaceLists;
@@ -66,7 +67,7 @@ public class InterfaceDAO implements IInterfaceDAO {
 	public int QueryInterfaceCount(String name, String api, String environmentName) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer(
-				"select count(distinct interface.id) from interface left join environment on interface.environment_id=environment.id where 1=1");
+				"select count(interface.id) from interface left join environment on interface.environment_id=environment.id where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (null != environmentName && !"".equals(environmentName)) {
 			sql.append(" and environment.name like ?");

@@ -1,11 +1,14 @@
 package com.shirley.aTest.entity;
 
+import java.io.Serializable;
+
 /**
  * @Description: TODO(校验类)
  * @author 371683941@qq.com
  * @date 2019年7月3日 下午12:35:45
  */
-public class Asserts {
+public class Asserts implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String key;
 	private String method;
 	private String value;

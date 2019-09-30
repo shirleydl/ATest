@@ -59,7 +59,7 @@ public class ReplaceDAO implements IReplaceDAO {
 	}
 
 	@Override
-	public int QueryReplaceCount(int id, String name, String replaceUrl) {
+	public int QueryReplaceCount(int id, String name) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer("select count(id) from replaceInfo where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
@@ -71,17 +71,13 @@ public class ReplaceDAO implements IReplaceDAO {
 			sql.append(" and name like ?");
 			queryList.add("%" + name + "%");
 		}
-		if (null != replaceUrl && !"".equals(replaceUrl)) {
-			sql.append(" and replace_url like ?");
-			queryList.add(replaceUrl);
-		}
 		return this.jdbcTemplate.queryForObject(sql.toString(), queryList.toArray(), Integer.class);
 	}
 
 	@Override
 	public Replace QueryReplaceById(int id) {
 		// TODO Auto-generated method stub
-		String sql = "select id,name,description,replace_url,replace_data from replaceInfo where id=?";
+		String sql = "select id,name,description,replace_url,replace_data,replace_split from replaceInfo where id=?";
 		try {
 			return this.jdbcTemplate.queryForObject(sql, new ReplaceRowMapper(), id);
 		} catch (Exception e) {
@@ -93,10 +89,10 @@ public class ReplaceDAO implements IReplaceDAO {
 	@Override
 	public Boolean AddReplace(Replace replace) {
 		// TODO Auto-generated method stub
-		String sql = "insert into replaceInfo (name,description,replace_url,replace_data) values (?,?,?,?)";
+		String sql = "insert into replaceInfo (name,description,replace_url,replace_data,replace_split) values (?,?,?,?,?)";
 		Gson gson = new Gson();
 		int row = this.jdbcTemplate.update(sql, new Object[] { replace.getName(), replace.getDescription(),
-				gson.toJson(replace.getReplaceUrl()), gson.toJson(replace.getReplaceData()) });
+				gson.toJson(replace.getReplaceUrl()), gson.toJson(replace.getReplaceData()),replace.getSplit() });
 		return row > 0;
 	}
 
@@ -113,10 +109,10 @@ public class ReplaceDAO implements IReplaceDAO {
 	@Override
 	public Boolean UpdateReplace(Replace replace) {
 		// TODO Auto-generated method stub
-		String sql = "update replaceInfo set name=?,description=?,replace_url = ?,replace_data=? where id = ?";
+		String sql = "update replaceInfo set name=?,description=?,replace_url = ?,replace_data=?,replace_split=? where id = ?";
 		Gson gson = new Gson();
 		Object args[] = new Object[] { replace.getName(), replace.getDescription(),
-				gson.toJson(replace.getReplaceUrl()), gson.toJson(replace.getReplaceData()), replace.getId() };
+				gson.toJson(replace.getReplaceUrl()), gson.toJson(replace.getReplaceData()), replace.getSplit(),replace.getId() };
 		int row = this.jdbcTemplate.update(sql, args);
 		return row > 0;
 	}

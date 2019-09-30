@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.shirley.aTest.dao.TestSuiteWithCaseDAO;
+import com.shirley.aTest.entity.CaseVariable;
 import com.shirley.aTest.entity.Request;
 import com.shirley.aTest.entity.TestSuiteWithCase;
 
@@ -61,6 +62,18 @@ public class TestSuiteWithCaseService implements ITestSuiteWithCaseService {
 	public List<Request> QueryTestCaseByTestSuiteRequest(int testSuiteId) {
 		// TODO Auto-generated method stub
 		return testSuiteWithCaseDAO.QueryTestCaseByTestSuiteRequest(testSuiteId);
+	}
+
+	@Override
+	public Boolean UpdateCaseVariables(CaseVariable CaseVariable) {
+		// TODO Auto-generated method stub
+		return testSuiteWithCaseDAO.UpdateCaseVariables(CaseVariable);
+	}
+
+	@Override
+	public CaseVariable QueryCaseVariablesByTestSuiteWithCaseId(int testSuiteWithCaseId) {
+		// TODO Auto-generated method stub
+		return testSuiteWithCaseDAO.QueryCaseVariablesByTestSuiteWithCaseId(testSuiteWithCaseId);
 	}
 
 }

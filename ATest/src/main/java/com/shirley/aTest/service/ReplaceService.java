@@ -30,9 +30,9 @@ public class ReplaceService implements IReplaceService {
 	}
 
 	@Override
-	public int QueryReplaceCount(int id, String name, String replaceUrl) {
+	public int QueryReplaceCount(int id, String name) {
 		// TODO Auto-generated method stub
-		return replaceDAO.QueryReplaceCount(id, name, replaceUrl);
+		return replaceDAO.QueryReplaceCount(id, name);
 	}
 
 	@Override

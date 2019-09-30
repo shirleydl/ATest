@@ -13,6 +13,7 @@ public class Replace {
 	private String description;
 	private Map<String,String> replaceUrl;
 	private Map<String,Object> replaceData;
+	private String split;
 
 	public int getId() {
 		return id;
@@ -53,6 +54,16 @@ public class Replace {
 	public void setReplaceData(Map<String,Object> replaceData) {
 		this.replaceData = replaceData;
 	}
+
+	public String getSplit() {
+		return split;
+	}
+
+	public void setSplit(String split) {
+		this.split = split;
+	}
+	
+	
 
 	
 

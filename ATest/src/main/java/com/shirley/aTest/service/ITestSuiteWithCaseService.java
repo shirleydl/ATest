@@ -3,6 +3,7 @@ package com.shirley.aTest.service;
 import java.util.List;
 import java.util.Map;
 
+import com.shirley.aTest.entity.CaseVariable;
 import com.shirley.aTest.entity.Request;
 import com.shirley.aTest.entity.TestSuiteWithCase;
 
@@ -25,4 +26,8 @@ public interface ITestSuiteWithCaseService {
 	public Boolean UpdateBindVariables(int id, Map<String, String> bindVariables);
 
 	public List<Request> QueryTestCaseByTestSuiteRequest(int testSuiteId);
+
+	public Boolean UpdateCaseVariables(CaseVariable CaseVariable);
+
+	public CaseVariable QueryCaseVariablesByTestSuiteWithCaseId(int testSuiteWithCaseId);
 }

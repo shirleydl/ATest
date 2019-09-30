@@ -25,6 +25,7 @@ public class ReplaceRowMapper implements RowMapper<Replace> {
 		String description = rs.getString("description");
 		String replaceUrl=rs.getString("replace_url");
 		String replaceData=rs.getString("replace_data");
+		String split=rs.getString("replace_split");
 		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, String> urlMap = new HashMap<String,String>();
 		Gson gson = new Gson();
@@ -32,6 +33,7 @@ public class ReplaceRowMapper implements RowMapper<Replace> {
 		replace.setId(id);
 		replace.setName(name);
 		replace.setDescription(description);
+		replace.setSplit(split);
 		try{
 		replace.setReplaceUrl(gson.fromJson(replaceUrl, urlMap.getClass()));
 		replace.setReplaceData(gson.fromJson(replaceData, map.getClass()));

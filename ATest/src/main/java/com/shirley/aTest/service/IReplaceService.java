@@ -12,7 +12,7 @@ import com.shirley.aTest.entity.Replace;
 public interface IReplaceService {
 	public List<Replace> QueryReplaces(int currentPageNo, int pageSize, int id, String name);
 
-	public int QueryReplaceCount(int id, String name, String replaceUrl);
+	public int QueryReplaceCount(int id, String name);
 
 	public Replace QueryReplaceById(int id);
 
