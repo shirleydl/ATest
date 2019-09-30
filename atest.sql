@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : test
-Source Server Version : 80012
+Source Server         : atest
+Source Server Version : 80017
 Source Host           : localhost:3306
 Source Database       : atest
 
 Target Server Type    : MYSQL
-Target Server Version : 80012
+Target Server Version : 80017
 File Encoding         : 65001
 
-Date: 2019-08-27 11:47:36
+Date: 2019-09-30 11:12:32
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,12 +22,29 @@ DROP TABLE IF EXISTS `asserts`;
 CREATE TABLE `asserts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `task_id` int(11) NOT NULL DEFAULT '0',
+  `case_id` int(11) NOT NULL DEFAULT '0',
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `requestcontent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `responsecontent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `assertresult` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `createtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for controller
+-- ----------------------------
+DROP TABLE IF EXISTS `controller`;
+CREATE TABLE `controller` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `testsuite_id` int(11) NOT NULL,
+  `controller_type` varchar(255) NOT NULL,
+  `start_priority` int(11) NOT NULL DEFAULT '0',
+  `end_priority` int(11) NOT NULL DEFAULT '0',
+  `loopcount` int(11) NOT NULL DEFAULT '0',
+  `asserts` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `priority` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -54,6 +71,17 @@ CREATE TABLE `interface` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `interface_environment_id` (`environment_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for mock
+-- ----------------------------
+DROP TABLE IF EXISTS `mock`;
+CREATE TABLE `mock` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `bindvariable_mocks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -88,6 +116,7 @@ CREATE TABLE `replaceinfo` (
   `description` varchar(255) DEFAULT NULL,
   `replace_url` varchar(255) DEFAULT NULL,
   `replace_data` text,
+  `replace_split` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -160,6 +189,9 @@ CREATE TABLE `testsuite_testcase` (
   `retry` int(10) NOT NULL DEFAULT '0',
   `intervaltime` int(10) NOT NULL DEFAULT '0',
   `delay` int(10) NOT NULL DEFAULT '0',
+  `redirect` int(1) NOT NULL DEFAULT '0',
   `bindvariables` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `case_variables_split` varchar(255) DEFAULT NULL,
+  `case_variables` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
