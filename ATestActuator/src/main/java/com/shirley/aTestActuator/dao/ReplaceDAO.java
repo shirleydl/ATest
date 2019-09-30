@@ -20,7 +20,7 @@ public class ReplaceDAO {
 
 	public Replace QueryReplaceById(int id) {
 		// TODO Auto-generated method stub
-		String sql = "select id,name,description,replace_url,replace_data from replaceInfo where id=?";
+		String sql = "select id,name,description,replace_url,replace_data,replace_split from replaceInfo where id=?";
 		try {
 			return this.jdbcTemplate.queryForObject(sql, new ReplaceRowMapper(), id);
 		} catch (Exception e) {

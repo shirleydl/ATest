@@ -29,8 +29,30 @@ public class GetValue {
 		this.variables = variables;
 		this.responseContent = responseContent;
 	}
+	
+	/**
+	 * 获取各种类型的值
+	 */
+	public String getValue(String value) {
+		String addValues[] = null;
+//		GetValue getValue = new GetValue(bindVariables, variables, responseContent);
+		String valueStr = "";
+		String splitStr = "&" + "+" + "&";
+		// 判断是否有拼接值
+		if (value.contains("${") && value.contains(splitStr)) {
+			addValues = value.split("&\\+&");
+		}
+		if (null != addValues && addValues.length > 0) {
+			for (String addValue : addValues) {
+				valueStr += getKeyValue(addValue);
+			}
+		} else {
+			valueStr = getKeyValue(value);
+		}
+		return valueStr;
+	}
 
-	public String getValue(String str) {
+	public String getKeyValue(String str) {
 		String value = "";
 		String function[] = str.split("&_&");
 

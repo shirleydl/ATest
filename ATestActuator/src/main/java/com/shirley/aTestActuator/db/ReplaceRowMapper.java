@@ -25,6 +25,7 @@ public class ReplaceRowMapper implements RowMapper<Replace> {
 			Map<String, String> urlMap = new HashMap<String, String>();
 			Gson gson = new Gson();
 			Replace replace = new Replace();
+			replace.setSplit(rs.getString("replace_split"));
 			try {
 				replace.setReplaceUrl(gson.fromJson(rs.getString("replace_url"), urlMap.getClass()));
 				replace.setReplaceData(gson.fromJson(rs.getString("replace_data"), map.getClass()));

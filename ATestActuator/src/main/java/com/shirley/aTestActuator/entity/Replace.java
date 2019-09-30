@@ -10,6 +10,7 @@ import java.util.Map;
 public class Replace {
 	private Map<String,String> replaceUrl;
 	private Map<String,Map<String,String>> replaceData;
+	private String split;
 
 	public Map<String,String> getReplaceUrl() {
 		return replaceUrl;
@@ -27,6 +28,15 @@ public class Replace {
 		this.replaceData = replaceData;
 	}
 
+	public String getSplit() {
+		return split;
+	}
+
+	public void setSplit(String split) {
+		this.split = split;
+	}
+
+	
 	
 
 }
