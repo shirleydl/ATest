@@ -19,12 +19,12 @@
 				<tr>
 					<td><label class="td_label">环境名</label></td>
 					<td><input id="name" name="name" type="text"
-						class="book_input03" placeholder="必填"></td>
+						class="book_input03" maxlength="50" placeholder="必填"></td>
 				</tr>
 				<tr>
 					<td><label class="td_label">环境地址</label></td>
 					<td><input id="url" name="url" type="text"
-						class="book_input03" placeholder="必填"></td>
+						class="book_input03" maxlength="80" placeholder="必填"></td>
 				</tr>
 			</table>
 			</p>
@@ -51,7 +51,7 @@
 						alert("提交成功");
 						window.location.href = "environmentList";
 					} else
-						alert("数据错误");
+						alert("数据错误！环境名和地址不能为空！");
 				},
 				error : function() {
 					alert("提交失败");

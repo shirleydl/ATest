@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.shirley.aTest.dao.EnvironmentDAO;
+import com.shirley.aTest.dao.InterfaceDAO;
 import com.shirley.aTest.entity.Environment;
 
 /**
@@ -18,6 +19,8 @@ import com.shirley.aTest.entity.Environment;
 public class EnvironmentService implements IEnvironmentService {
 	@Resource(name = "environmentDAO")
 	private EnvironmentDAO environmentDAO;
+	@Resource(name = "interfaceDAO")
+	private InterfaceDAO interfaceDAO;
 
 	@Override
 	public List<Environment> QueryEnvironment(int currentPageNo, int pageSize, String name, String url) {
@@ -40,13 +43,21 @@ public class EnvironmentService implements IEnvironmentService {
 	@Override
 	public Boolean DeleteEnvironments(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		return environmentDAO.DeleteEnvironments(ids);
+		if (interfaceDAO.FindInterfaceEnvironment(ids))
+			return environmentDAO.DeleteEnvironments(ids);
+		return false;
 	}
 
 	@Override
 	public Boolean UpdateEnvironment(Environment environment) {
 		// TODO Auto-generated method stub
 		return environmentDAO.UpdateEnvironment(environment);
+	}
+
+	@Override
+	public Environment QueryEnvironmentById(int id) {
+		// TODO Auto-generated method stub
+		return environmentDAO.QueryEnvironmentById(id);
 	}
 
 }

@@ -16,5 +16,5 @@ public interface IAssertResultService {
 
 	public AssertResult QueryAssert(int assertId);
 
-	public Boolean AddAsserts(AssertResult assertResult);
+	public Boolean DeleteAssertsByTaskId(List<Integer> ids);
 }

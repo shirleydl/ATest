@@ -31,22 +31,22 @@
 					<input id="id" type="hidden" name="id" />
 					<td><label class="td_label">用例名</label></td>
 					<td colspan="2"><input id="name" name="name" type="text"
-						class="book_input03"></td>
+						class="book_input03" maxlength="50" placeholder="必填"></td>
 					<td><label class="td_label">描述</label></td>
 					<td colspan="2"><input id="description" name="description"
-						type="text" class="book_input03"></td>
+						type="text" class="book_input03" maxlength="80"></td>
 
 				</tr>
 				<tr>
 					<td><label class="td_label">所属接口Id</label></td>
 					<td><input id="interfaceId" type="text" name="interfaceId"
-						class="book_input03" autocomplete="off" />
+						class="book_input03" autocomplete="off" placeholder="必填"/>
 					<td><label class="td_label">所属接口名</label></td>
 					<td><input id="interfaceName" type="text" name="interfaceName"
-						class="book_input03" autocomplete="off" />
+						class="book_input03" autocomplete="off" placeholder="必填"/>
 					<td><label class="td_label">所属接口API</label></td>
 					<td><input id="interfaceApi" type="text" name="interfaceApi"
-						class="book_input03" autocomplete="off" />
+						class="book_input03" autocomplete="off" placeholder="必填"/>
 				</tr>
 				<tr>
 					<td><label class="td_label">请求方法</label></td>
@@ -119,6 +119,18 @@
 					<td><label class="td_label">变量名</label></td>
 					<td><label class="td_label">取值</label></td>
 					<td><label class="td_label">操作</label></td>
+				</tr>
+
+			</table>
+			<table id="tb_mock" class="book_table" border="1"
+				cellpadding="10">
+				<tr>
+					<td><label class="td_label">Mock序号</label></td>
+					<td><input id="mockId" type="text" name="mockId"
+						class="book_input03" autocomplete="off"/>
+					<td><label class="td_label">Mock名</label></td>
+					<td><input id="mockName" type="text" name="mockName"
+						class="book_input03" autocomplete="off"/>
 				</tr>
 
 			</table>
@@ -233,7 +245,9 @@
 										+ Data[key]
 										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
 														+ i
-														+ ")' class='add_a'>删除</a></td></tr>");
+														+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+														+ i
+														+ ")' class='add_a'>插入</a></td></tr>");
 								i++;
 							}
 
@@ -283,7 +297,9 @@
 									.append(
 											"<tr id='variable"+_len+"'><td><input id='variableKey"+_len+"' type='text' class='book_input03'></td><td><input type='text' id='variableValue"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
 													+ _len
-													+ ")' class='add_a'>删除</a></td></tr>");
+													+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+													+ _len
+													+ ")' class='add_a'>插入</a></td></tr>");
 						});
 	</script>
 	<script>
@@ -366,6 +382,39 @@
 		}
 	</script>
 	<script>
+	function InsertVariable(index) {
+		let endIndex = $("#tb_variables tr").length - 2;
+		
+		for (let i = endIndex;i >= index; i--) {
+			let nextKeyVal = $("#variableKey" + i).val();
+			let nextValueVal = $("#variableValue" + i).val();
+			$("tr[id=\'variable" + i + "\']")
+					.replaceWith(
+							"<tr id='variable"
+									+ (i + 1)
+									+ "'><td><input id='variableKey"
+									+ (i + 1)
+									+ "' type='text' class='book_input03' value='"
+									+ nextKeyVal
+									+ "'></td><td><input type='text' id='variableValue"
+									+ (i + 1)
+									+ "' class='book_input03' value='"
+									+ nextValueVal
+									+ "'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+									+ (i + 1)
+									+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+									+ (i + 1)
+									+ ")' class='add_a'>插入</a></td></tr>");
+		}
+		
+		$("tr[id='variable" + (index+1) + "']").before(
+				"<tr id='variable"+index+"'><td><input id='variableKey"+index+"' type='text' class='book_input03'></td><td><input type='text' id='variableValue"+index+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+						+ index
+						+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+						+ index
+						+ ")' class='add_a'>插入</a></td></tr>");
+	}
+	
 		function DeleteVariable(index) {
 			let _len = $("#tb_variables tr").length - 1;
 			$("tr[id='variable" + index + "']").remove();//删除当前行
@@ -386,7 +435,9 @@
 										+ nextValueVal
 										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
 										+ (i - 1)
-										+ ")' class='add_a'>删除</a></td></tr>");
+										+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+										+ (i - 1)
+										+ ")' class='add_a'>插入</a></td></tr>");
 			}
 		}
 	</script>
@@ -504,24 +555,12 @@
 			});
 		});
 	</script>
-	<script src="js/layer_v2.1/layer/layer.js"></script>
 	<script>
 		function result() {
 			let id = $("#id").val();
-			layer.open({
-				type : 2,
-				title : '验证信息',
-				shadeClose : true,
-				shade : 0.5,
-				skin : 'layui-layer-rim',
-				//            maxmin: true,
-				closeBtn : 1,
-				area : [ '98%', '92%' ],
-				shadeClose : true,
-				closeBtn : 1,
-				content : 'testCaseResultDetail?id=' + id
-			//iframe的url
-			});
+			let mockId = $("#mockId").val();
+			window.open("testCaseResultDetail?id=" + id+"&mockId="+mockId,"_blank");
+
 		}
 	</script>
 	<script>
@@ -573,6 +612,38 @@
 				if (null != row) {
 					$("#interfaceId").val(row.id);
 					$("#interfaceName").val(row.name);
+				}
+			},
+		});
+		$("#mockId").bigAutocomplete({
+			url : 'queryMockById',
+			title : 'id',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.id + " " + row.name;
+			},
+			formatSelected : function(data, i, row) {
+				return row.id;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#mockName").val(row.name);
+				}
+			},
+		});
+		$("#mockName").bigAutocomplete({
+			url : 'queryMockByName',
+			title : 'name',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.name + " " + row.id;
+			},
+			formatSelected : function(data, i, row) {
+				return row.name;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#mockId").val(row.id);
 				}
 			},
 		});

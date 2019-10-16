@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.shirley.aTest.db.EnvironmentRowMapper;
 import com.shirley.aTest.entity.Environment;
 
 /**
@@ -82,6 +83,17 @@ public class EnvironmentDAO implements IEnvironmentDAO {
 		Object args[] = new Object[] { environment.getName(), environment.getUrl(), environment.getId() };
 		int row = this.jdbcTemplate.update(sql, args);
 		return row > 0;
+	}
+
+	@Override
+	public Environment QueryEnvironmentById(int id) {
+		// TODO Auto-generated method stub
+		String sql = "select name,url from environment where id=?";
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new EnvironmentRowMapper(), id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override

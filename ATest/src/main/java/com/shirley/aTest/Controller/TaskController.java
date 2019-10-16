@@ -27,15 +27,15 @@ import com.shirley.aTest.service.TaskService;
 public class TaskController {
 	@Resource(name = "taskService")
 	private TaskService taskService;
-//	
-//	@Resource(name = "taskWithTestSuiteService")
-//	private TaskWithTestSuiteService taskWithTestSuiteService;
-//	
-//	@Resource(name = "testSuiteWithCaseService")
-//	private TestSuiteWithCaseService testSuiteWithCaseService;
-//	
-//	@Resource(name = "assertResultService")
-//	private AssertResultService assertResultService;
+	//
+	// @Resource(name = "taskWithTestSuiteService")
+	// private TaskWithTestSuiteService taskWithTestSuiteService;
+	//
+	// @Resource(name = "testSuiteWithCaseService")
+	// private TestSuiteWithCaseService testSuiteWithCaseService;
+	//
+	// @Resource(name = "assertResultService")
+	// private AssertResultService assertResultService;
 
 	@RequestMapping(value = "/taskList", method = RequestMethod.GET)
 	public String taskList() {
@@ -52,9 +52,9 @@ public class TaskController {
 		return "taskDetail";
 	}
 
-	@RequestMapping(value = "/setBeforeTask", method = RequestMethod.GET)
-	public String setBeforeTask() {
-		return "setBeforeTask";
+	@RequestMapping(value = "/setBeforeAndReplace", method = RequestMethod.GET)
+	public String setBeforeAndReplace() {
+		return "setBeforeAndReplace";
 	}
 
 	@RequestMapping(value = "/queryTasks", method = RequestMethod.GET)
@@ -138,25 +138,41 @@ public class TaskController {
 		return false;
 	}
 
-	@RequestMapping(value = "/toUpdateBeforeTask", method = RequestMethod.POST)
+	@RequestMapping(value = "/toUpdateIsLoop", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean toUpdateBeforeTask(Integer taskId, Integer beforeTaskId) {
+	public Boolean toUpdateIsLoop(Integer id, Integer isLoop) {
+		if (null != id && null != isLoop) {
+			Task task = new Task();
+			task.setId(id);
+			task.setIsLoop(isLoop);
+			return taskService.UpdateTaskIsLoop(task);
+		}
+		return false;
+	}
+
+	@RequestMapping(value = "/toUpdateBeforeAndReplace", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean toUpdateBeforeAndReplace(Integer taskId, Integer beforeTaskId, Integer replaceInfoId) {
 		if (null != taskId) {
 			Task task = new Task();
 			task.setId(taskId);
 			task.setBeforeTaskId(null != beforeTaskId ? beforeTaskId : 0);
-			return taskService.UpdateTaskBeforeTaskId(task);
+			task.setReplaceInfoId(null != replaceInfoId ? replaceInfoId : 0);
+			return taskService.UpdateTaskBeforeAndReplace(task);
 		}
 		return false;
 	}
 
 	@RequestMapping(value = "/queryTaskById", method = RequestMethod.POST)
 	@ResponseBody
-	public BigAutocompleteDataHelper<Task> queryTaskById(Integer keyword) {
-		List<Task> tasks = taskService.QueryTask(0, 0, keyword, null);
-		BigAutocompleteDataHelper<Task> jsonHelper = new BigAutocompleteDataHelper<Task>();
-		jsonHelper.setData(tasks);
-		return jsonHelper;
+	public BigAutocompleteDataHelper<Task> queryTaskById(String keyword) {
+		if (keyword.matches("[0-9]+") && Integer.parseInt(keyword) > 0) {
+			List<Task> tasks = taskService.QueryTask(0, 0, Integer.parseInt(keyword), null);
+			BigAutocompleteDataHelper<Task> jsonHelper = new BigAutocompleteDataHelper<Task>();
+			jsonHelper.setData(tasks);
+			return jsonHelper;
+		}
+		return null;
 	}
 
 	@RequestMapping(value = "/queryTaskByName", method = RequestMethod.POST)
@@ -168,26 +184,28 @@ public class TaskController {
 		return jsonHelper;
 	}
 
-//	@RequestMapping(value = "/toRequestTaskById", method = RequestMethod.GET)
-//	@ResponseBody
-//	public void toRequestTaskById(Integer taskId) {
-//		List<TaskWithTestSuite> taskWithTestSuites = taskWithTestSuiteService.QueryTaskWithTestSuite(taskId);
-//		Collections.sort(taskWithTestSuites);
-//		for (TaskWithTestSuite taskWithTestSuite : taskWithTestSuites) {
-//			Map<String,String> bindMap=new HashMap<String,String>();
-//			List<Request> requestList  = testSuiteWithCaseService.QueryTestCaseByTestSuiteRequest(taskWithTestSuite.getTestSuiteId());
-//			Collections.sort(requestList);
-//			for (Request request : requestList) {
-//				DoRequest doRequest = new DoRequest(taskId, request,bindMap);
-//				ResponseContent responseContent = new ResponseContent();
-//				responseContent = doRequest.toRequest();
-//				doRequest.toUpdateVariables(responseContent);
-//				bindMap.putAll( doRequest.toBind(responseContent));
-//				AssertResult assertResult=doRequest.toAssert(responseContent);
-//				assertResultService.AddAsserts(assertResult);
-//				}
-//		}
-//		taskService.UpdateTaskStatus(taskId, 3);
-//	}
+	// @RequestMapping(value = "/toRequestTaskById", method = RequestMethod.GET)
+	// @ResponseBody
+	// public void toRequestTaskById(Integer taskId) {
+	// List<TaskWithTestSuite> taskWithTestSuites =
+	// taskWithTestSuiteService.QueryTaskWithTestSuite(taskId);
+	// Collections.sort(taskWithTestSuites);
+	// for (TaskWithTestSuite taskWithTestSuite : taskWithTestSuites) {
+	// Map<String,String> bindMap=new HashMap<String,String>();
+	// List<Request> requestList =
+	// testSuiteWithCaseService.QueryTestCaseByTestSuiteRequest(taskWithTestSuite.getTestSuiteId());
+	// Collections.sort(requestList);
+	// for (Request request : requestList) {
+	// DoRequest doRequest = new DoRequest(taskId, request,bindMap);
+	// ResponseContent responseContent = new ResponseContent();
+	// responseContent = doRequest.toRequest();
+	// doRequest.toUpdateVariables(responseContent);
+	// bindMap.putAll( doRequest.toBind(responseContent));
+	// AssertResult assertResult=doRequest.toAssert(responseContent);
+	// assertResultService.AddAsserts(assertResult);
+	// }
+	// }
+	// taskService.UpdateTaskStatus(taskId, 3);
+	// }
 
 }

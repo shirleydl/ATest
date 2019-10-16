@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.shirley.aTest.entity.AssertResult;
 import com.shirley.aTest.entity.InterfaceCase;
+import com.shirley.aTest.entity.Mock;
 import com.shirley.aTest.entity.Request;
 import com.shirley.aTest.entity.ResponseContent;
 import com.shirley.aTest.jsonHelper.BigAutocompleteDataHelper;
 import com.shirley.aTest.jsonHelper.PageHelper;
 import com.shirley.aTest.method.DoRequest;
 import com.shirley.aTest.service.InterfaceCaseService;
+import com.shirley.aTest.service.MockService;
 
 /**
  * @Description: TODO(接口用例控制类)
@@ -33,6 +35,8 @@ import com.shirley.aTest.service.InterfaceCaseService;
 public class InterfaceCaseController {
 	@Resource(name = "interfaceCaseService")
 	private InterfaceCaseService interfaceCaseService;
+	@Resource(name = "mockService")
+	private MockService mockService;
 
 	@RequestMapping(value = "/interfaceCaseList", method = RequestMethod.GET)
 	public String interfaceCaseList() {
@@ -93,12 +97,15 @@ public class InterfaceCaseController {
 	 */
 	@RequestMapping(value = "/queryInterfaceCaseById", method = RequestMethod.POST)
 	@ResponseBody
-	public BigAutocompleteDataHelper<InterfaceCase> queryInterfaceCaseById(Integer keyword) {
-		List<InterfaceCase> interfaceCases = interfaceCaseService.QueryTestCase(0, 0, (null == keyword ? 0 : keyword),
-				null, null, null);
-		BigAutocompleteDataHelper<InterfaceCase> jsonHelper = new BigAutocompleteDataHelper<InterfaceCase>();
-		jsonHelper.setData(interfaceCases);
-		return jsonHelper;
+	public BigAutocompleteDataHelper<InterfaceCase> queryInterfaceCaseById(String keyword) {
+		if (keyword.matches("[0-9]+") && Integer.parseInt(keyword) > 0) {
+			List<InterfaceCase> interfaceCases = interfaceCaseService.QueryTestCase(0, 0, Integer.parseInt(keyword),
+					null, null, null);
+			BigAutocompleteDataHelper<InterfaceCase> jsonHelper = new BigAutocompleteDataHelper<InterfaceCase>();
+			jsonHelper.setData(interfaceCases);
+			return jsonHelper;
+		}
+		return null;
 	}
 
 	/**
@@ -209,11 +216,18 @@ public class InterfaceCaseController {
 	 */
 	@RequestMapping(value = "/toRequestInterfaceCase", method = RequestMethod.POST)
 	@ResponseBody
-	public AssertResult toRequestInterfaceCase(Integer interfaceCaseId) {
+	public AssertResult toRequestInterfaceCase(Integer interfaceCaseId, Integer mockId) {
 		if (null != interfaceCaseId) {
 			Request request = new Request();
 			request = interfaceCaseService.QueryRequestByTestCaseId(interfaceCaseId);
-			DoRequest doRequest = new DoRequest(0, request, null);
+			Map<String, String> bindMap = new HashMap<String, String>();
+			if (null != mockId) {
+				Mock mock = mockService.QueryMockById(mockId);
+				if (null != mock) {
+					bindMap.putAll(mock.getBindVariableMocks());
+				}
+			}
+			DoRequest doRequest = new DoRequest(0, request, bindMap);
 			ResponseContent responseContent = new ResponseContent();
 			responseContent = doRequest.toRequest();
 			doRequest.toUpdateVariables(responseContent);

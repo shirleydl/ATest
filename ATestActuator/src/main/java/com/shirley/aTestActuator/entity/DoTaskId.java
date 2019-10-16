@@ -8,6 +8,7 @@ package com.shirley.aTestActuator.entity;
 public class DoTaskId {
 	private int id;
 	private int beforeTaskId;
+	private int replaceInfoId;
 
 	public int getId() {
 		return id;
@@ -24,4 +25,13 @@ public class DoTaskId {
 	public void setBeforeTaskId(int beforeTaskId) {
 		this.beforeTaskId = beforeTaskId;
 	}
+
+	public int getReplaceInfoId() {
+		return replaceInfoId;
+	}
+
+	public void setReplaceInfoId(int replaceInfoId) {
+		this.replaceInfoId = replaceInfoId;
+	}
+	
 }

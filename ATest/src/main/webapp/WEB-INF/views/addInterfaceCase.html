@@ -30,10 +30,10 @@
 				<tr>
 					<td><label class="td_label">用例名</label></td>
 					<td colspan="2"><input id="name" name="name" type="text"
-						class="book_input03" placeholder="必填"></td>
+						class="book_input03" maxlength="50" placeholder="必填"></td>
 					<td><label class="td_label">描述</label></td>
 					<td colspan="2"><input id="description" name="description"
-						type="text" class="book_input03"></td>
+						type="text" class="book_input03" maxlength="80"></td>
 
 				</tr>
 				<tr>
@@ -148,7 +148,8 @@
 					<td><input id="variableKey1" type="text" class="book_input03"></td>
 					<td><input id="variableValue1" type="text" class="book_input03"></td>
 					<td><a href="javascript:void(0)" onclick="DeleteVariable(1)"
-						class="add_a">删除</a></td>
+						class="add_a">删除</a> <a href="javascript:void(0)" onclick="InsertVariable(1)"
+						class="add_a">插入</a></td>
 				</tr>
 
 			</table>
@@ -201,7 +202,9 @@
 							.append(
 									"<tr id='variable"+_len+"'><td><input id='variableKey"+_len+"' type='text' class='book_input03'></td><td><input type='text' id='variableValue"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
 											+ _len
-											+ ")' class='add_a'>删除</a></td></tr>");
+											+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+											+ _len
+											+ ")' class='add_a'>插入</a></td></tr>");
 				});
 	</script>
 	<script>
@@ -284,6 +287,40 @@
 		}
 	</script>
 	<script>
+	function InsertVariable(index) {
+		let endIndex = $("#tb_variables tr").length - 2;
+		
+		for (let i = endIndex;i >= index; i--) {
+			let nextKeyVal = $("#variableKey" + i).val();
+			let nextValueVal = $("#variableValue" + i).val();
+			$("tr[id=\'variable" + i + "\']")
+					.replaceWith(
+							"<tr id='variable"
+									+ (i + 1)
+									+ "'><td><input id='variableKey"
+									+ (i + 1)
+									+ "' type='text' class='book_input03' value='"
+									+ nextKeyVal
+									+ "'></td><td><input type='text' id='variableValue"
+									+ (i + 1)
+									+ "' class='book_input03' value='"
+									+ nextValueVal
+									+ "'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+									+ (i + 1)
+									+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+									+ (i + 1)
+									+ ")' class='add_a'>插入</a></td></tr>");
+		}
+		
+		$("tr[id='variable" + (index+1) + "']").before(
+				"<tr id='variable"+index+"'><td><input id='variableKey"+index+"' type='text' class='book_input03'></td><td><input type='text' id='variableValue"+index+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+						+ index
+						+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+						+ index
+						+ ")' class='add_a'>插入</a></td></tr>");
+	}
+	
+	
 		function DeleteVariable(index) {
 			let _len = $("#tb_variables tr").length - 1;
 			$("tr[id='variable" + index + "']").remove();//删除当前行
@@ -304,7 +341,9 @@
 										+ nextValueVal
 										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
 										+ (i - 1)
-										+ ")' class='add_a'>删除</a></td></tr>");
+										+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+										+ (i - 1)
+										+ ")' class='add_a'>插入</a></td></tr>");
 			}
 		}
 	</script>

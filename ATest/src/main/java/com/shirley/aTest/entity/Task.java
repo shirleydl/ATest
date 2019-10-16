@@ -9,7 +9,9 @@ public class Task {
 	private int id;
 	private String name;
 	private int beforeTaskId;
+	private int isLoop;
 	private Long startTime;
+	private int replaceInfoId;
 	private int createrId;
 	private int status;
 	private String createTime;
@@ -39,12 +41,28 @@ public class Task {
 		this.beforeTaskId = beforeTaskId;
 	}
 
+	public int getIsLoop() {
+		return isLoop;
+	}
+
+	public void setIsLoop(int isLoop) {
+		this.isLoop = isLoop;
+	}
+
 	public Long getStartTime() {
 		return startTime;
 	}
 
 	public void setStartTime(Long startTime) {
 		this.startTime = startTime;
+	}
+
+	public int getReplaceInfoId() {
+		return replaceInfoId;
+	}
+
+	public void setReplaceInfoId(int replaceInfoId) {
+		this.replaceInfoId = replaceInfoId;
 	}
 
 	public int getCreaterId() {

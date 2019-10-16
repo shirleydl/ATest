@@ -17,15 +17,16 @@
 			<table id="table" class="book_table" border="1" cellpadding="10">
 				<tr>
 					<td><label class="td_label">环境序号</label></td>
-					<td><input id="id" name="id" type="text" class="book_input03" readonly="readonly"></td>
+					<td><input id="id" name="id" type="text" class="book_input03"
+						readonly="readonly"></td>
 					<td><label class="td_label">环境名</label></td>
 					<td><input id="name" name="name" type="text"
-						class="book_input03" placeholder="必填"></td>
+						class="book_input03" maxlength="50" placeholder="必填"></td>
 				</tr>
 				<tr>
 					<td><label class="td_label">环境地址</label></td>
 					<td colspan="3"><input id="url" name="url" type="text"
-						class="book_input03" placeholder="必填"></td>
+						class="book_input03" maxlength="80" placeholder="必填"></td>
 				</tr>
 			</table>
 			</p>
@@ -47,9 +48,25 @@
 					value[i] = unescape(strs[i].split("=")[1]);
 				}
 			}
-			$("#id").val(value[0]);
-			$("#name").val(value[1]);
-			$("#url").val(value[2]);
+			let environmentId = value[0];
+			$("#id").val(environmentId);
+			$.ajax({
+				type : 'post',
+				url : "toQueryEnvironment",
+				cache : false,
+				data : {
+					"id" : environmentId
+				},
+				success : function(data) {
+					if(data!=null){
+					$("#name").val(data.name);
+					$("#url").val(data.url);
+					}
+				},
+				error : function() {
+					alert("查询失败")
+				}
+			})
 		});
 	</script>
 
@@ -67,7 +84,7 @@
 					if (data) {
 						alert("提交成功");
 					} else
-						alert("数据错误");
+						alert("数据错误！环境序号、名、地址不能为空！");
 				},
 				error : function() {
 					alert("保存失败")

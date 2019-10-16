@@ -30,27 +30,36 @@
 				<tr>
 					<input id="testSuiteId" type="hidden" name="testSuiteId" />
 					<td><label class="td_label">测试集名</label></td>
-					<td colspan="3"><label id="testSuiteName" class="td_label"></label></td>
+					<td colspan="2"><label id="testSuiteName" class="td_label"></label></td>
 					</td>
 					<td><label class="td_label">描述</label></td>
-					<td colspan="3"><label id="description" class="td_label"></label></td>
+					<td colspan="2"><label id="description" class="td_label"></label></td>
 				</tr>
-				<tr id="tr_testcase">
+				<tr>
 					<input id="id" name="id" type="hidden" name="testSuiteId" />
 					<td><label class="td_label">用例号</label></td>
 					<td><input id="interfaceCaseId" name="interfaceCaseId"
-						type="text" class="book_input03" " autocomplete="off"></label></td>
+						type="text" class="book_input03" " autocomplete="off"
+						placeholder="必填"></label></td>
 					<td><label class="td_label">用例名</label></td>
 					<td><input id="interfaceCaseName" name="interfaceCaseName"
-						type="text" class="book_input03" autocomplete="off"></td>
+						type="text" class="book_input03" autocomplete="off"
+						placeholder="必填"></td>
 					<td><label class="td_label">接口API</label></td>
 					<td><input id="interfaceApi" name="interfaceApi" type="text"
 						class="book_input03" readonly="readonly"></td>
-					<td><label class="td_label">优先级</label></td>
+				</tr>
+				<tr>
+				<td><label class="td_label">优先级</label></td>
 					<td><input id="priority" name="priority" type="text"
 						class="book_input03"></td>
+					<td><label class="td_label">延迟启动</label></td>
+					<td><input id="delay" name="delay" type="text"
+						class="book_input03"></td>
+						<td><label class="td_label">是否重定向</label></td>
+					<td><select id="redirect" name="redirect"><option value="0">否</option><option value="1">是</option></select></td>
 				</tr>
-				<tr id="tr_testcase">
+				<tr>
 					<td><label class="td_label">响应时间</label></td>
 					<td><input id="timeout" name="timeout" type="text"
 						class="book_input03"></td>
@@ -60,16 +69,13 @@
 					<td><label class="td_label">重试间隔</label></td>
 					<td><input id="interval" name="interval" type="text"
 						class="book_input03"></td>
-					<td><label class="td_label">延迟启动</label></td>
-					<td><input id="delay" name="delay" type="text"
-						class="book_input03"></td>
 				</tr>
 			</table>
 			<p class="book_foot">
 				<input type="button" id="addCase" value="添加用例" /><input
 					type="button" id="updateCase" value="保存修改" style="display: none" />
-					<input
-					type="button" id="cancel" value="取消" style="display: none" />
+				<input type="button" id="cancel" value="取消" style="display: none" />
+				<input type="button" onclick="ControllerDetail()" value="控制器管理" />
 			</p>
 		</form>
 		<div
@@ -81,16 +87,31 @@
 					<td><label class="td_label">用例名</label></td>
 					<td><label class="td_label">接口API</label></td>
 					<td><label class="td_label">响应时间</label></td>
+					<td><label class="td_label">重定向</label></td>
 					<td><label class="td_label">重试次数</label></td>
 					<td><label class="td_label">重试间隔</label></td>
 					<td><label class="td_label">延迟启动</label></td>
 					<td><label class="td_label">绑定变量</label></td>
+					<td><label class="td_label">循环变量</label></td>
 					<td><label class="td_label">操作</label></td>
 				</tr>
 			</table>
-			
+
 		</div>
-<p class="book_foot"><input type="button" value="执行测试" onclick="result()"/> </p>
+		<table id="tb_mock" class="book_table" border="1" cellpadding="10">
+			<tr>
+				<td><label class="td_label">Mock序号</label></td>
+				<td><input id="mockId" type="text" name="mockId"
+					class="book_input03" autocomplete="off" />
+				<td><label class="td_label">Mock名</label></td>
+				<td><input id="mockName" type="text" name="mockName"
+					class="book_input03" autocomplete="off" />
+			</tr>
+
+		</table>
+		<p class="book_foot">
+			<input type="button" value="执行测试" onclick="result()" />
+		</p>
 		</p>
 
 
@@ -136,6 +157,7 @@
 						},
 						success : function(data) {
 							let arr = data.testSuiteWithCases;
+							$("#priority").val(arr.length);
 							for (let i = 0; i < arr.length; i++) {
 								$("#table")
 										.append(
@@ -167,6 +189,10 @@
 														+ (i + 1)
 														+ "' class='td_label'>"
 														+ arr[i].timeout
+														+ "</label></td><td><label id='redirect"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].redirect
 														+ "</label></td><td><label id='retry"
 														+ (i + 1)
 														+ "' class='td_label'>"
@@ -184,9 +210,16 @@
 														+ "' class='td_label'>"
 														+ (null == arr[i].bindVariables ? "无"
 																: "有")
+														+ "</label></td><td><label id='caseVariablesSplit"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ (null == arr[i].caseVariablesSplit||"" == arr[i].caseVariablesSplit ? "无"
+																: "有")
 														+ "</label></td><td><a href='javascript:void(0)' onclick='Bind("
 														+ arr[i].id
-														+ ")' class='add_a'>绑定变量</a><a href='javascript:void(0)' onclick='EditElement("
+														+ ")' class='add_a'>绑定变量</a> <a href='javascript:void(0)' onclick='caseVariables("
+														+ arr[i].id
+														+ ")' class='add_a'>用例循环变量</a> <a href='javascript:void(0)' onclick='EditElement("
 														+ (i + 1)
 														+ ")' class='add_a'>编辑</a><a href='javascript:void(0)' onclick='CaseDetail("
 														+ arr[i].interfaceCaseId
@@ -200,7 +233,8 @@
 						}
 					})
 		});
-	</script><script>
+	</script>
+	<script>
 		$("#addCase").click(function() {
 			let targetUrl = "toAddTestSuiteWithCase";
 			let data = $('#form_addOrUpdate').serialize();
@@ -221,7 +255,6 @@
 					alert("提交失败");
 				}
 			})
-
 		});
 
 		$("#updateCase").click(function() {
@@ -259,6 +292,7 @@
 			$("#retry").val('');
 			$("#interval").val('');
 			$("#delay").val('');
+			$("#redirect").val('');
 			$("#updateCase").hide();
 			$("#cancel").hide();
 			$("#addCase").show();
@@ -290,11 +324,14 @@
 											.text();
 									let nextTimeoutVal = $("#timeout" + i)
 											.text();
+									let nextRedirectVal= $("#redirect" + i)
+									.text();
 									let nextRetryVal = $("#retry" + i).text();
 									let nextIntervalVal = $("#interval" + i)
 											.text();
 									let nextDelayVal = $("#delay" + i).text();
 									let nextBindVal = $("#bind" + i).text();
+									let nextCaseVariablesSplitVal = $("#caseVariablesSplit" + i).text();
 									$("tr[id=\'" + i + "\']")
 											.replaceWith(
 													"<tr id='"
@@ -325,6 +362,10 @@
 															+ (i - 1)
 															+ "' class='td_label'>"
 															+ nextTimeoutVal
+															+ "</label></td><td><label id='redirect"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextRedirectVal
 															+ "</label></td><td><label id='retry"
 															+ (i - 1)
 															+ "' class='td_label'>"
@@ -341,9 +382,15 @@
 															+ (i - 1)
 															+ "' class='td_label'>"
 															+ nextBindVal
+															+ "</label></td><td><label id='caseVariablesSplit"
+															+ (i - 1)
+															+ "' class='td_label'>"
+															+ nextCaseVariablesSplitVal
 															+ "</label></td><td><a href='javascript:void(0)' onclick='Bind("
 															+ nextIdVal
-															+ ")' class='add_a'>绑定变量</a><a href='javascript:void(0)' onclick='EditElement("
+															+ ")' class='add_a'>绑定变量</a> <a href='javascript:void(0)' onclick='caseVariables("
+															+ nextIdVal
+															+ ")' class='add_a'>用例循环变量</a> <a href='javascript:void(0)' onclick='EditElement("
 															+ (i - 1)
 															+ ")' class='add_a'>编辑</a><a href='javascript:void(0)' onclick='CaseDetail("
 															+ nextInterfaceCaseIdVal
@@ -371,14 +418,15 @@
 			$("#retry").val($("#retry" + index).text());
 			$("#interval").val($("#interval" + index).text());
 			$("#delay").val($("#delay" + index).text());
+			$("#redirect").val($("#redirect" + index).text());
 			$("#updateCase").show();
 			$("#cancel").show();
 			$("#addCase").hide();
 
 		}
 	</script>
-		<script src="js/layer_v2.1/layer/layer.js"></script>
-		<script>
+	<script src="js/layer_v2.1/layer/layer.js"></script>
+	<script>
 		function Bind(id) {
 				layer.open({
 					type : 2,
@@ -397,6 +445,24 @@
 
 		}
 		
+		function caseVariables(id) {
+			layer.open({
+				type : 2,
+				title : '用例循环变量信息',
+				shadeClose : true,
+				shade : 0.5,
+				skin : 'layui-layer-rim',
+				//            maxmin: true,
+				closeBtn : 1,
+				area : [ '60%', '80%' ],
+				shadeClose : true,
+				closeBtn : 1,
+				content : 'queryCaseVariables?testSuiteWithCaseId=' + id
+			//iframe的url
+			});
+
+	}
+		
 		function CaseDetail(interfaceCaseId){
 			layer.open({
 				type : 2,
@@ -413,24 +479,17 @@
 			//iframe的url
 			});
 		}
+		
+		function ControllerDetail(){
+			let testSuiteId=$("#testSuiteId").val();
+			window.open("controllerDetail?testSuiteId=" + testSuiteId);
+		}
 	</script>
 	<script>
 	function result() {
 		let id=$("#testSuiteId").val();
-		layer.open({
-			type : 2,
-			title : '验证信息',
-			shadeClose : true,
-			shade : 0.5,
-			skin : 'layui-layer-rim',
-			//            maxmin: true,
-			closeBtn : 1,
-			area : [ '98%', '98%' ],
-			shadeClose : true,
-			closeBtn : 1,
-			content : 'testSuiteResult?id=' + id
-		//iframe的url
-		});
+		let mockId=$("#mockId").val();
+		window.open("testSuiteResult?id=" + id+"&mockId="+mockId,"_blank");
 	}
 	</script>
 	<script>
@@ -469,6 +528,39 @@
 				if (null != row) {
 					$("#interfaceCaseName").val(row.name);
 					$("#interfaceApi").val(row.interfaceApi);
+				}
+			},
+		});
+		
+		$("#mockId").bigAutocomplete({
+			url : 'queryMockById',
+			title : 'id',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.id + " " + row.name;
+			},
+			formatSelected : function(data, i, row) {
+				return row.id;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#mockName").val(row.name);
+				}
+			},
+		});
+		$("#mockName").bigAutocomplete({
+			url : 'queryMockByName',
+			title : 'name',
+			custom : false,
+			formatItem : function(data, i, row) {
+				return row.name + " " + row.id;
+			},
+			formatSelected : function(data, i, row) {
+				return row.name;
+			},
+			callback : function(row) {
+				if (null != row) {
+					$("#mockId").val(row.id);
 				}
 			},
 		});

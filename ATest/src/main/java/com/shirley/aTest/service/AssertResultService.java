@@ -38,9 +38,10 @@ public class AssertResultService implements IAssertResultService {
 	}
 
 	@Override
-	public Boolean AddAsserts(AssertResult assertResult) {
+	public Boolean DeleteAssertsByTaskId(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		return assertResultDAO.AddAsserts(assertResult);
+		assertResultDAO.DeleteAssertsByTaskId(ids);
+		return true;
 	}
 
 }

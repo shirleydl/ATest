@@ -34,7 +34,7 @@ public class TaskDAO implements ITaskDAO {
 	public List<Task> QueryTask(int currentPageNo, int pageSize, int id, String name) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer(
-				"select id,name,beforeTask_id,status,starttime,updatetime from task where 1=1");
+				"select id,name,beforeTask_id,replaceInfo_id,status,isLoop,starttime,updatetime from task where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 
 		if (0 != id) {
@@ -59,7 +59,9 @@ public class TaskDAO implements ITaskDAO {
 			task.setId((Integer) row.get("id"));
 			task.setName((String) row.get("name"));
 			task.setBeforeTaskId((Integer) row.get("beforeTask_id"));
+			task.setReplaceInfoId((Integer) row.get("replaceInfo_id"));
 			task.setStatus((Integer) row.get("status"));
+			task.setIsLoop((Integer) row.get("isLoop"));
 			task.setStartTime((Long) row.get("starttime"));
 			task.setUpdateTime(df.format((Timestamp) row.get("updatetime")));
 			testSuiteLists.add(task);
@@ -88,7 +90,31 @@ public class TaskDAO implements ITaskDAO {
 	public Task QueryTaskById(int id) {
 		// TODO Auto-generated method stub
 		String sql = "select * from task where id=?";
-		return this.jdbcTemplate.queryForObject(sql, new TaskRowMapper(), id);
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new TaskRowMapper(), id);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@Override
+	public Boolean FindTaskRaplace(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		String sql = "select count(id) from task where replaceInfo_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		int row = this.jdbcN.queryForObject(sql, paramMap, Integer.class);
+		return row < 1;
+	}
+	
+	@Override
+	public Boolean FindTaskBeforeTask(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		String sql = "select count(id) from task where beforeTask_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		int row = this.jdbcN.queryForObject(sql, paramMap, Integer.class);
+		return row < 1;
 	}
 
 	@Override
@@ -128,10 +154,10 @@ public class TaskDAO implements ITaskDAO {
 	}
 
 	@Override
-	public Boolean UpdateTaskBeforeTaskId(Task task) {
+	public Boolean UpdateTaskBeforeAndReplace(Task task) {
 		// TODO Auto-generated method stub
-		String sql = "update task set beforeTask_id=? where id = ?";
-		Object args[] = new Object[] { task.getBeforeTaskId(), task.getId() };
+		String sql = "update task set beforeTask_id=?,replaceInfo_id=? where id = ?";
+		Object args[] = new Object[] { task.getBeforeTaskId(), task.getReplaceInfoId(), task.getId() };
 		int row = this.jdbcTemplate.update(sql, args);
 		return row > 0;
 	}
@@ -141,6 +167,15 @@ public class TaskDAO implements ITaskDAO {
 		// TODO Auto-generated method stub
 		String sql = "update task set status=? where id = ?";
 		Object args[] = new Object[] { status, id };
+		int row = this.jdbcTemplate.update(sql, args);
+		return row > 0;
+	}
+
+	@Override
+	public Boolean UpdateTaskIsLoop(Task task) {
+		// TODO Auto-generated method stub
+		String sql = "update task set isLoop=? where id = ?";
+		Object args[] = new Object[] { task.getIsLoop(), task.getId() };
 		int row = this.jdbcTemplate.update(sql, args);
 		return row > 0;
 	}

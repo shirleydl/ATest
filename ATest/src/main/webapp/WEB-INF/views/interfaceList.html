@@ -89,6 +89,12 @@
 											valign : 'middle'
 										},
 										{
+											title : '所属环境',
+											field : 'environmentName',
+											align : 'center',
+											valign : 'middle'
+										},
+										{
 											title : 'API',
 											field : 'api',
 											align : 'center',
@@ -145,7 +151,7 @@
 						url : 'queryInterfaces'
 					});
 				} else
-					alert("数据错误");
+					alert("数据错误！已存在用例的接口不能删除！");
 			},
 			error : function(data) {
 				alert("提交失败！");

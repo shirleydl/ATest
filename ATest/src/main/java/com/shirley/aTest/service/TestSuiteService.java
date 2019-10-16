@@ -6,7 +6,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.shirley.aTest.dao.ProductProjectWithSuiteDAO;
+import com.shirley.aTest.dao.SuiteWithCaseControllerDAO;
+import com.shirley.aTest.dao.TaskWithTestSuiteDAO;
 import com.shirley.aTest.dao.TestSuiteDAO;
+import com.shirley.aTest.dao.TestSuiteWithCaseDAO;
 import com.shirley.aTest.entity.TestSuite;
 import com.shirley.aTest.entity.TestSuiteWithCase;
 
@@ -19,6 +23,14 @@ import com.shirley.aTest.entity.TestSuiteWithCase;
 public class TestSuiteService implements ITestSuiteService {
 	@Resource(name = "testSuiteDAO")
 	private TestSuiteDAO testSuiteDAO;
+	@Resource(name = "testSuiteWithCaseDAO")
+	private TestSuiteWithCaseDAO testSuiteWithCaseDAO;
+	@Resource(name = "taskWithTestSuiteDAO")
+	private TaskWithTestSuiteDAO taskWithTestSuiteDAO;
+	@Resource(name = "productProjectWithSuiteDAO")
+	private ProductProjectWithSuiteDAO productProjectWithSuiteDAO;
+	@Resource(name = "suiteWithCaseControllerDAO")
+	private SuiteWithCaseControllerDAO suiteWithCaseControllerDAO;
 
 	@Override
 	public List<TestSuite> QueryTestSuite(int currentPageNo, int pageSize, int id, String name, String testCaseName) {
@@ -47,7 +59,15 @@ public class TestSuiteService implements ITestSuiteService {
 	@Override
 	public Boolean DeleteTestSuites(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		return testSuiteDAO.DeleteTestSuites(ids);
+		if(testSuiteDAO.DeleteTestSuites(ids)){
+			testSuiteWithCaseDAO.DeleteTestSuiteWithCaseBySuiteId(ids);
+			taskWithTestSuiteDAO.DeleteTaskWithTestSuiteBySuiteId(ids);
+			productProjectWithSuiteDAO.DeleteProductProjectWithSuiteBySuiteId(ids);
+			suiteWithCaseControllerDAO.DeleteSuiteWithCaseControllersBySuiteId(ids);
+			return true;
+		}
+		else
+			return false;
 	}
 
 	@Override

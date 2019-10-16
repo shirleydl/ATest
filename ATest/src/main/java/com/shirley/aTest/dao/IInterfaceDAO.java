@@ -24,4 +24,6 @@ public interface IInterfaceDAO {
 	public Boolean DeleteInterfaces(List<Integer> ids);
 
 	public Boolean UpdateInterface(Interface interfaceObject);
+
+	public Boolean FindInterfaceEnvironment(List<Integer> ids);
 }

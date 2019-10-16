@@ -36,9 +36,6 @@ import org.apache.http.util.EntityUtils;
 import com.shirley.aTestActuator.entity.ResponseContent;
 
 public class HttpClientUtil {
-	private RequestConfig requestConfigDefault = RequestConfig.custom().setSocketTimeout(8000).setConnectTimeout(8000)
-			.setConnectionRequestTimeout(8000).build();
-
 	private static HttpClientUtil instance = null;
 
 	private HttpClientUtil() {
@@ -98,7 +95,6 @@ public class HttpClientUtil {
 		try {
 			// 设置参数
 			StringEntity stringEntity = new StringEntity(params, "UTF-8");
-			stringEntity.setContentType("application/x-www-form-urlencoded");
 			httpPost.setEntity(stringEntity);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -176,10 +172,7 @@ public class HttpClientUtil {
 			if (null == httpClient)
 				// 创建默认的httpClient实例.
 				httpClient = HttpClients.createDefault();
-			if (null != requestConfig)
 				httpPost.setConfig(requestConfig);
-			else
-				httpPost.setConfig(requestConfigDefault);
 			if (null != headers && headers.size() > 0) {
 				for (String key : headers.keySet()) {
 					httpPost.addHeader(key, headers.get(key));
@@ -252,10 +245,7 @@ public class HttpClientUtil {
 			if (null == httpClient)
 				// 创建默认的httpClient实例.
 				httpClient = HttpClients.createDefault();
-			if (null != requestConfig)
-				httpGet.setConfig(requestConfig);
-			else
-				httpGet.setConfig(requestConfigDefault);
+			httpGet.setConfig(requestConfig);
 			if (null != headers && headers.size() > 0) {
 				for (String key : headers.keySet()) {
 					httpGet.addHeader(key, headers.get(key));
@@ -305,10 +295,7 @@ public class HttpClientUtil {
 					.load(new URL(httpGet.getURI().toString()));
 			DefaultHostnameVerifier hostnameVerifier = new DefaultHostnameVerifier(publicSuffixMatcher);
 			httpClient = HttpClients.custom().setSSLHostnameVerifier(hostnameVerifier).build();
-			if (null != requestConfig)
-				httpGet.setConfig(requestConfig);
-			else
-				httpGet.setConfig(requestConfigDefault);
+			httpGet.setConfig(requestConfig);
 			if (null != headers && headers.size() > 0) {
 				for (String key : headers.keySet()) {
 					httpGet.addHeader(key, headers.get(key));

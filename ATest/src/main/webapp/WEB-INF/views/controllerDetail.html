@@ -1,0 +1,340 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="css/all.css" rel="stylesheet" type="text/css">
+<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
+	type="text/css">
+<link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
+<style>
+.input-default {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 2px; /*html5*/
+	text-indent: 0 !important;
+	min-height: 22px;
+}
+</style>
+
+</head>
+
+<body style="background-color: #e6ecf5">
+
+	<div class="book_con01">
+		<h1 class="book_h01">控制器信息</h1>
+		<form id="form_addOrUpdate" method="post">
+			<table class="book_table" border="1" cellpadding="10">
+				<tr>
+					<input id="testSuiteId" type="hidden" name="testSuiteId" />
+					<td><label class="td_label">测试集名</label></td>
+					<td colspan="4"><label id="testSuiteName" class="td_label"></label></td>
+					<td><label class="td_label">描述</label></td>
+					<td colspan="4"><label id="description" class="td_label"></label></td>
+				</tr>
+				<input id="id" type="hidden" name="id" />
+				<tr>
+				<td><label class="td_label">执行优先级</label></td>
+					<td><input id="priority" name="priority"
+						type="text" class="book_input03" maxlength="11" placeholder="必填"></td>
+					<td><label class="td_label">控制器类型</label></td>
+					<td><select id="controllerType" name="controllerType"><option value="LOOP">循环</option><option value="CONDITION">条件</option></select></td>
+					
+					<td><label class="td_label">开始优先级</label></td>
+					<td><input id="startPriority" name="startPriority"
+						type="text" class="book_input03" maxlength="11" placeholder="必填"></td>
+					<td><label class="td_label">结束优先级</label></td>
+					<td><input id="endPriority" name="endPriority"
+						type="text" class="book_input03" maxlength="11" placeholder="必填"></td>
+						<td><label class="td_label">循环次数</label></td>
+					<td><input id="loopCount" name="loopCount"
+						type="text" class="book_input03" maxlength="11"></td>
+				</tr>
+
+			</table>
+			<p class="book_foot">
+				<input type="button" id="addController" value="添加控制器" /><input
+					type="button" id="updateController" value="保存修改" style="display: none" />
+					<input
+					type="button" id="cancel" value="取消" style="display: none" />
+			</p>
+			</form>
+		<div style="overflow-x: auto; overflow-y: auto; height: 251px; width: 100%;">
+			<table id="table" class="book_table" border="1" cellpadding="10">
+				<tr>
+					<td><label class="td_label">执行优先级</label></td>
+					<td><label class="td_label">控制器类型</label></td>
+					<td><label class="td_label">开始优先级</label></td>
+					<td><label class="td_label">结束优先级</label></td>
+					<td><label class="td_label">循环次数</label></td>
+					<td><label class="td_label">条件</label></td>
+					<td><label class="td_label">操作</label></td>
+				</tr>
+			</table>
+
+		</div>
+	</div>
+	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
+
+	<script>
+		$(function() {
+			let url = decodeURI(window.location.search);
+			let value;
+			if (url.indexOf("?") != -1) {
+				let strs = url.substr(1).split("&");
+				value = new Array(strs.length);
+				for (let i = 0; i < strs.length; i++) {
+					value[i] = unescape(strs[i].split("=")[1]);
+				}
+			}
+			let testSuiteId = value[0];
+			$("#testSuiteId").val(testSuiteId);
+			$.ajax({
+						type : 'post',
+						url : "toQueryTestSuite",
+						cache : false,
+						data : {
+							"id" : testSuiteId
+						},
+						success : function(data) {
+							$("#testSuiteName").text(data.name);
+							$("#description").text(data.description);
+						},
+						error : function() {
+							alert("查询失败")
+						}
+					});
+					
+					$.ajax({
+						type : 'post',
+						url : "toQuerySuiteWithCaseControllerList",
+						cache : false,
+						data : {
+							"testSuiteId" : testSuiteId
+						},
+						success : function(data) {
+							let arr = data.suiteWithCaseControllers;
+							for (let i = 0; i < arr.length; i++) {
+								$("#table")
+										.append(
+												"<tr id='"
+														+ (i + 1)
+														+ "'><input id='id"
+														+ (i + 1)
+														+ "' type='hidden' name='id"
+														+ (i + 1)
+														+ "' value='"
+														+ arr[i].id
+														+ "' /><td><label id='priority"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].priority
+														+ "</label></td><td><label id='controllerType"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].controllerType
+														+ "</label></td><td><label id='startPriority"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].startPriority
+														+ "</label></td><td><label id='endPriority"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].endPriority
+														+ "</label></td><td><label id='loopCount"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ arr[i].loopCount
+														+ "</label></td><td><label id='assert"
+														+ (i + 1)
+														+ "' class='td_label'>"
+														+ (null == arr[i].asserts||arr[i].asserts=="" ? "不启动"
+																: "启动")
+														+ "</label></td><td><a href='javascript:void(0)' onclick='EditElement("
+														+ (i + 1)
+														+ ")' class='add_a'>编辑</a> <a href='javascript:void(0)' onclick='startAssert("
+														+ arr[i].id
+														+ ")' class='add_a'>启动条件</a> <a href='javascript:void(0)' onclick='DeleteElement("
+														+ (i + 1)
+														+ ")' class='add_a'>删除</a></td></tr>");
+							}
+						},
+						error : function() {
+							alert("查询失败")
+						}
+					})
+		});
+	</script>
+	<script>
+		$("#addController").click(function() {
+			let targetUrl = "toAddSuiteWithCaseController";
+			let data = $('#form_addOrUpdate').serialize();
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+						location.reload();
+					} else
+						alert("数据错误");
+				},
+				error : function() {
+					alert("提交失败");
+				}
+			})
+
+		});
+
+		$("#updateController").click(function() {
+			let targetUrl = "toUpdateSuiteWithCaseController";
+			let data = $('#form_addOrUpdate').serialize();
+			$.ajax({
+				type : 'post',
+				url : targetUrl,
+				cache : false,
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					if (data) {
+						alert("提交成功");
+						$("#updateController").hide();
+						$("#cancel").hide();
+						$("#addController").show();
+						location.reload();
+					} else
+						alert("数据错误");
+				},
+				error : function() {
+					alert("提交失败");
+				}
+			})
+
+		});
+		$("#cancel").click(function() {
+			$("#id").val('');
+			$("#controllerType").val('');
+			$("#priority").val('');
+			$("#startPriority").val('');
+			$("#endPriority").val('');
+			$("#loopCount").val('');
+			$("#updateController").hide();
+			$("#cancel").hide();
+			$("#addController").show();
+		})
+	</script>
+	<script>
+		function DeleteElement(index) {
+			$.ajax({
+						type : 'post',
+						url : "toDelSuiteWithCaseController",
+						cache : false,
+						data : {
+							"id" : $("#id" + index).val()
+						},
+						success : function(data) {
+							if (data) {
+								let _len = $("#table tr").length;
+								$("tr[id='" + index + "']").remove();//删除当前行
+								for (let i = index + 1, j = _len; i < j; i++) {
+									let nextIdVal = $("#id" + i).val();
+									let nextControllerTypeVal = $(
+											"#controllerType" + i).text();
+									let nextPriorityVal = $("#priority" + i)
+											.text();
+									let nextStartPriorityVal = $("#startPriority" + i)
+											.text();
+									let nextEndPriorityVal = $("#endPriority" + i).text();
+									let nextLoopCountVal=$("#loopCount" + i).text();
+									let nextAssertVal = $("#assert" + i).text();
+									$("tr[id=\'" + i + "\']")
+											.replaceWith(
+													"<tr id='"
+													+ (i - 1)
+													+ "'><input id='id"
+													+ (i - 1)
+													+ "' type='hidden' name='id"
+													+ (i - 1)
+													+ "' value='"
+													+ nextIdVal
+													+ "' /><td><label id='priority"
+													+ (i - 1)
+													+ "' class='td_label'>"
+													+ nextPriorityVal
+													+ "</label></td><td><label id='controllerType"
+													+ (i - 1)
+													+ "' class='td_label'>"
+													+ nextControllerTypeVal
+													+ "</label></td><td><label id='startPriority"
+													+ (i - 1)
+													+ "' class='td_label'>"
+													+ nextStartPriorityVal
+													+ "</label></td><td><label id='endPriority"
+													+ (i - 1)
+													+ "' class='td_label'>"
+													+ nextEndPriorityVal
+													+ "</label></td><td><label id='loopCount"
+													+ (i - 1)
+													+ "' class='td_label'>"
+													+ nextLoopCountVal
+													+ "</label></td><td><label id='assert"
+													+ (i - 1)
+													+ "' class='td_label'>"
+													+ nextAssertVal
+													+ "</label></td><td><a href='javascript:void(0)' onclick='EditElement("
+													+ (i - 1)
+													+ ")' class='add_a'>编辑</a> <a href='javascript:void(0)' onclick='startAssert("
+													+ nextIdVal
+													+ ")' class='add_a'>启动条件</a> <a href='javascript:void(0)' onclick='DeleteElement("
+													+ (i - 1)
+													+ ")' class='add_a'>删除</a></td></tr>");
+								}
+							} else
+								alert("数据错误");
+						},
+						error : function() {
+							alert("提交失败");
+						}
+					})
+		}
+	</script>
+	<script>
+		function EditElement(index) {
+			$("#id").val($("#id" + index).val());
+			$("#controllerType").val($("#controllerType" + index).text());
+			$("#priority").val($("#priority" + index).text());
+			$("#startPriority").val($("#startPriority" + index).text());
+			$("#endPriority").val($("#endPriority" + index).text());
+			$("#loopCount").val($("#loopCount" + index).text());
+			$("#updateController").show();
+			$("#cancel").show();
+			$("#addController").hide();
+		}
+	</script>
+	<script src="js/layer_v2.1/layer/layer.js"></script>
+	<script>
+		function startAssert(id) {
+				layer.open({
+					type : 2,
+					title : '启动条件信息',
+					shadeClose : true,
+					shade : 0.5,
+					skin : 'layui-layer-rim',
+					//            maxmin: true,
+					closeBtn : 1,
+					area : [ '70%', '90%' ],
+					shadeClose : true,
+					closeBtn : 1,
+					content : 'queryAsserts?SuiteWithCaseControllerId=' + id
+				//iframe的url
+				});
+
+		}
+
+	</script>
+</body>
+</html>

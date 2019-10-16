@@ -137,7 +137,7 @@
 				<td><label class="td_label">组合函数，加密字符串</label></td>
 				<td>
 					<p>
-						<label class="td_label">获取前一个函数值的加密值：${xxx}&_&${Custom_Md5(Encryption32)}</label>
+						<label class="td_label">获取前一个函数值的加密值：${xxx}&_&${Custom_getMd5(Encryption32)}</label>
 					</p>
 				</td>
 			</tr>
@@ -147,6 +147,24 @@
 				<td>
 					<p>
 						<label class="td_label">获取前一个函数值的大写字符串：${xxx}&_&${Custom_toUpperCase()}</label>
+					</p>
+				</td>
+			</tr>
+						<tr>
+				<td><label class="td_label">${Custom_toEncodeURI()}</label></td>
+				<td><label class="td_label">组合函数，转换urlEncode字符串</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取前一个函数值的urlEncode字符串：${xxx}&_&${Custom_toEncodeURI()}</label>
+					</p>
+				</td>
+			</tr>
+				<tr>
+				<td><label class="td_label">${Custom_toReplaceEnter()}</label></td>
+				<td><label class="td_label">组合函数，替换字符为回车换行\r\n</label></td>
+				<td>
+					<p>
+						<label class="td_label">获取前一个函数值替换字符为回车换行\r\n后的值：${xxx}&_&${Custom_toReplaceEnter(oldString)}</label>
 					</p>
 				</td>
 			</tr>

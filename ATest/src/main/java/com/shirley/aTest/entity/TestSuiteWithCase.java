@@ -15,10 +15,13 @@ public class TestSuiteWithCase implements Comparable<TestSuiteWithCase> {
 	private String interfaceApi;
 	private int priority;
 	private int timeout;
+	private int redirect;
 	private int retry;
 	private int interval;
 	private int delay;
 	private Map<String, String> bindVariables;
+	private String caseVariablesSplit;
+	private Map<String, String> caseVariables;
 
 	public int getId() {
 		return id;
@@ -76,6 +79,14 @@ public class TestSuiteWithCase implements Comparable<TestSuiteWithCase> {
 		this.timeout = timeout;
 	}
 
+	public int getRedirect() {
+		return redirect;
+	}
+
+	public void setRedirect(int redirect) {
+		this.redirect = redirect;
+	}
+
 	public int getRetry() {
 		return retry;
 	}
@@ -106,6 +117,22 @@ public class TestSuiteWithCase implements Comparable<TestSuiteWithCase> {
 
 	public void setBindVariables(Map<String, String> bindVariables) {
 		this.bindVariables = bindVariables;
+	}
+
+	public String getCaseVariablesSplit() {
+		return caseVariablesSplit;
+	}
+
+	public void setCaseVariablesSplit(String caseVariablesSplit) {
+		this.caseVariablesSplit = caseVariablesSplit;
+	}
+
+	public Map<String, String> getCaseVariables() {
+		return caseVariables;
+	}
+
+	public void setCaseVariables(Map<String, String> caseVariables) {
+		this.caseVariables = caseVariables;
 	}
 
 	@Override

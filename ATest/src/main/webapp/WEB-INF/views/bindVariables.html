@@ -49,7 +49,7 @@
 			let map = {};
 			let mapJson="";
 			let _len = $("#table tr").length;
-			for (let i = 1; i <= _len; i++) {
+			for (let i = 1; i < _len; i++) {
 				let keystr = $("#key" + i).val();
 				let valuestr = $("#value" + i).val();
 				map[keystr]=valuestr;

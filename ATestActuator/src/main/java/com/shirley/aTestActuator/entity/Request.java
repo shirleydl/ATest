@@ -1,5 +1,6 @@
 package com.shirley.aTestActuator.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +9,11 @@ import java.util.Map;
  * @author 371683941@qq.com
  * @date 2019年7月8日 下午3:07:09
  */
-public class Request implements Comparable<Request> {
+public class Request implements Comparable<Request>,Serializable{
+	private static final long serialVersionUID = 1L;
 	private String url;
 	private String api;
+	private int caseId;
 	private String method;
 	private Map<String, String> headers;
 	private Map<String, String> paramMap;
@@ -18,12 +21,15 @@ public class Request implements Comparable<Request> {
 	private List<Asserts> asserts;
 	private int priority;
 	private int timeout;
+	private int redirect;
 	private int retry;
 	private int interval;
 	private int delay;
 	private Map<String, String> bindVariables;
 	private Map<String, String> variables;
-
+	private String caseVariableSplit;
+	private Map<String, String> caseVariables;
+	
 	public String getUrl() {
 		return url;
 	}
@@ -38,6 +44,14 @@ public class Request implements Comparable<Request> {
 
 	public void setApi(String api) {
 		this.api = api;
+	}
+
+	public int getCaseId() {
+		return caseId;
+	}
+
+	public void setCaseId(int caseId) {
+		this.caseId = caseId;
 	}
 
 	public String getMethod() {
@@ -96,6 +110,14 @@ public class Request implements Comparable<Request> {
 		this.timeout = timeout;
 	}
 
+	public int getRedirect() {
+		return redirect;
+	}
+
+	public void setRedirect(int redirect) {
+		this.redirect = redirect;
+	}
+
 	public int getRetry() {
 		return retry;
 	}
@@ -135,7 +157,27 @@ public class Request implements Comparable<Request> {
 	public void setVariables(Map<String, String> variables) {
 		this.variables = variables;
 	}
+	
+	public String getCaseVariableSplit() {
+		return caseVariableSplit;
+	}
 
+	public void setCaseVariableSplit(String caseVariableSplit) {
+		this.caseVariableSplit = caseVariableSplit;
+	}
+
+	public Map<String, String> getCaseVariables() {
+		return caseVariables;
+	}
+
+	public void setCaseVariables(Map<String, String> caseVariables) {
+		this.caseVariables = caseVariables;
+	}
+
+	public void putVariables(Map<String, String> variables) {
+		this.variables.putAll(variables);
+	}
+	
 	@Override
 	public int compareTo(Request request) {
 		// TODO Auto-generated method stub

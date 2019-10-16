@@ -18,8 +18,8 @@ public class AssertsDAO {
 
 	public void AddAsserts(AssertResult assertResult) {
 		// TODO Auto-generated method stub
-		String sql = "insert into asserts (task_id,url,requestcontent,responsecontent,assertresult,status) values (?,?,?,?,?,?)";
-		this.jdbcTemplate.update(sql, new Object[] { assertResult.getTaskId(), assertResult.getUrl(),
+		String sql = "insert into asserts (task_id,case_id,url,requestcontent,responsecontent,assertresult,status) values (?,?,?,?,?,?,?)";
+		this.jdbcTemplate.update(sql, new Object[] { assertResult.getTaskId(), assertResult.getCaseId(),assertResult.getUrl(),
 				assertResult.getRequestContent().length() > 5000 ? assertResult.getRequestContent().substring(0, 5000)
 						: assertResult.getRequestContent(),
 				assertResult.getResponseContent().length() > 5000 ? assertResult.getResponseContent().substring(0, 5000)

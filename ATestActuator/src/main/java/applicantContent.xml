@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
@@ -12,7 +12,7 @@
 		<!--加载驱动类 -->
 		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
 		<!--数据库访问地址 -->
-		<property name="url" value="jdbc:mysql://localhost:3306/atest?serverTimezone=UTC"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/atest?serverTimezone=GMT%2B8"></property>
 		<!--数据库访问用户名 -->
 		<property name="username" value="atest"></property>
 		<!--数据库访问密码 -->

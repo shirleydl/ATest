@@ -4,12 +4,14 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.shirley.aTest.db.AssertResultRowMapper;
@@ -25,11 +27,13 @@ public class AssertResultDAO implements IAssertResultDAO {
 	// 获取JdbcTemplate实例
 	@Resource(name = "jdbcTemplate")
 	private JdbcTemplate jdbcTemplate;
+	@Resource(name = "namedParameterJdbcTemplate")
+	private NamedParameterJdbcTemplate jdbcN;
 
 	@Override
 	public List<AssertResult> QueryAsserts(int currentPageNo, int pageSize, int taskId) {
 		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer("select * from asserts where 1=1");
+		StringBuffer sql = new StringBuffer("select id,case_id,url,status,createtime from asserts where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != taskId) {
 			sql.append(" and task_id = ?");
@@ -47,6 +51,7 @@ public class AssertResultDAO implements IAssertResultDAO {
 		for (Map<String, Object> row : list) {
 			AssertResult assertResult = new AssertResult();
 			assertResult.setId((Integer) row.get("id"));
+			assertResult.setCaseId((Integer) row.get("case_id"));
 			assertResult.setUrl((String) row.get("url"));
 			assertResult.setStatus((String) row.get("status"));
 			assertResult.setCreateTime(df.format((Timestamp) row.get("createtime")));
@@ -71,22 +76,23 @@ public class AssertResultDAO implements IAssertResultDAO {
 	@Override
 	public AssertResult QueryAssert(int assertId) {
 		// TODO Auto-generated method stub
-		String sql = "select * from asserts where id=?";
-		return this.jdbcTemplate.queryForObject(sql, new AssertResultRowMapper(), assertId);
+		String sql = "select id,task_id,url,requestcontent,responsecontent,assertresult,status,createtime from asserts where id=?";
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new AssertResultRowMapper(), assertId);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
+	
 	@Override
-	public Boolean AddAsserts(AssertResult assertResult) {
+	public Boolean DeleteAssertsByTaskId(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		String sql = "insert into asserts (task_id,url,requestcontent,responsecontent,assertresult,status) values (?,?,?,?,?,?)";
-		int row = this.jdbcTemplate.update(sql, new Object[] { assertResult.getTaskId(), assertResult.getUrl(),
-				assertResult.getRequestContent().length() > 5000 ? assertResult.getRequestContent().substring(0, 5000)
-						: assertResult.getRequestContent(),
-				assertResult.getResponseContent().length() > 5000 ? assertResult.getResponseContent().substring(0, 5000)
-						: assertResult.getResponseContent(),
-				assertResult.getAssertResult(), assertResult.getStatus() });
+		String sql = "delete from asserts where task_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		int row=this.jdbcN.update(sql, paramMap);
 		return row > 0;
-
 	}
 
 }

@@ -35,7 +35,7 @@ public class TestCaseDAO implements ITestCaseDAO {
 			String interfaceApi) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer(
-				"select distinct testcase.id,testcase.name,interface.name as interfacename,interface.api from testcase left join interface on testcase.interface_id=interface.id where 1=1");
+				"select testcase.id,testcase.name,interface.name as interfacename,interface.api,environment.url from testcase left join interface on testcase.interface_id=interface.id left join environment on interface.environment_id=environment.id where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != id) {
 			sql.append(" and testcase.id = ?");
@@ -65,7 +65,7 @@ public class TestCaseDAO implements ITestCaseDAO {
 			testCase.setId((Integer) row.get("id"));
 			testCase.setName((String) row.get("name"));
 			testCase.setInterfaceName((String) row.get("interfacename"));
-			testCase.setInterfaceApi((String) row.get("api"));
+			testCase.setInterfaceApi((String) row.get("url")+(String) row.get("api"));
 			testCaseLists.add(testCase);
 		}
 		return testCaseLists;
@@ -90,7 +90,7 @@ public class TestCaseDAO implements ITestCaseDAO {
 	public int QueryTestCaseCount(int id, String name, String interfaceName, String interfaceApi) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer(
-				"select count(distinct testcase.id) from testcase left join interface on testcase.interface_id=interface.id where 1=1");
+				"select count(testcase.id) from testcase left join interface on testcase.interface_id=interface.id where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != id) {
 			sql.append(" and testcase.id = ?");
@@ -116,7 +116,11 @@ public class TestCaseDAO implements ITestCaseDAO {
 	public InterfaceCase QueryTestCaseById(int id) {
 		// TODO Auto-generated method stub
 		String sql = "select * from testcase where id=?";
-		return this.jdbcTemplate.queryForObject(sql, new InterfaceCaseRowMapper(), id);
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new InterfaceCaseRowMapper(), id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -140,6 +144,16 @@ public class TestCaseDAO implements ITestCaseDAO {
 		int row = this.jdbcN.update(sql, paramMap);
 		return row > 0;
 	}
+	
+	@Override
+	public Boolean FindCaseInterface(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		String sql = "select count(id) from testcase where interface_id in(:ids)";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		int row = this.jdbcN.queryForObject(sql, paramMap, Integer.class);
+		return row < 1;
+	}
 
 	@Override
 	public Boolean UpdateTestCase(InterfaceCase testCase) {
@@ -157,6 +171,10 @@ public class TestCaseDAO implements ITestCaseDAO {
 	public Request QueryRequestByTestCaseId(int id) {
 		// TODO Auto-generated method stub
 		String sql = "select environment.url,interface.api,testcase.method,testcase.headers,testcase.params,testcase.asserts,testcase.variables from testcase left join interface on testcase.interface_id=interface.id left join environment on interface.environment_id=environment.id where testcase.id=?";
-		return this.jdbcTemplate.queryForObject(sql, new RequestRowMapper(), id);
+		try {
+			return this.jdbcTemplate.queryForObject(sql, new RequestRowMapper(), id);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

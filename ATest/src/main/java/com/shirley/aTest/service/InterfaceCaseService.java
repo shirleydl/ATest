@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.shirley.aTest.dao.TestCaseDAO;
+import com.shirley.aTest.dao.TestSuiteWithCaseDAO;
 import com.shirley.aTest.entity.InterfaceCase;
 import com.shirley.aTest.entity.Request;
 
@@ -19,6 +20,8 @@ import com.shirley.aTest.entity.Request;
 public class InterfaceCaseService implements IInterfaceCaseService {
 	@Resource(name = "testCaseDAO")
 	private TestCaseDAO testCaseDAO;
+	@Resource(name = "testSuiteWithCaseDAO")
+	private TestSuiteWithCaseDAO testSuiteWithCaseDAO;
 
 	@Override
 	public List<InterfaceCase> QueryTestCase(int currentPageNo, int pageSize, int id, String name, String interfaceName,
@@ -54,7 +57,12 @@ public class InterfaceCaseService implements IInterfaceCaseService {
 	@Override
 	public Boolean DeleteTestCases(List<Integer> ids) {
 		// TODO Auto-generated method stub
-		return testCaseDAO.DeleteTestCases(ids);
+		if (testCaseDAO.DeleteTestCases(ids)) {
+			testSuiteWithCaseDAO.DeleteTestSuiteWithCaseByCaseId(ids);
+			return true;
+		}
+		return false;
+
 	}
 
 	@Override
