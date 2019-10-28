@@ -16,6 +16,15 @@
 	text-indent: 0 !important;
 	min-height: 22px;
 }
+
+.paramDiv {
+	position: absolute;
+	width: 60%;
+	top: 150px;
+	left: 180px;
+	background: #ffffff;
+	z-index: 999;
+}
 </style>
 
 </head>
@@ -80,7 +89,8 @@
 			<table id="tb_params" class="book_table" border="1" cellpadding="10">
 				<tr>
 					<td colspan="2"><label class="td_label">请求参数</label></td>
-					<td><input type="button" id="addParam" value="添加栏位" /></td>
+					<td><input type="button" id="addParam" value="添加栏位" /> <input
+						type="button" id="importParam" value="导入参数" /></td>
 				</tr>
 				<tr>
 					<td><label class="td_label">参数名</label></td>
@@ -137,7 +147,8 @@
 				cellpadding="10">
 				<tr>
 					<td colspan="2"><label class="td_label">用例变量</label></td>
-					<td><input type="button" id="addVariable" value="添加栏位" /></td>
+					<td><input type="button" id="addVariable" value="添加栏位" /> <input
+						type="button" id="importVariable" value="导入变量" /></td>
 				</tr>
 				<tr>
 					<td><label class="td_label">变量名</label></td>
@@ -146,21 +157,41 @@
 				</tr>
 				<tr id="variable1">
 					<td><input id="variableKey1" type="text" class="book_input03"></td>
-					<td><input id="variableValue1" type="text" class="book_input03"></td>
+					<td><input id="variableValue1" type="text"
+						class="book_input03"></td>
 					<td><a href="javascript:void(0)" onclick="DeleteVariable(1)"
-						class="add_a">删除</a> <a href="javascript:void(0)" onclick="InsertVariable(1)"
-						class="add_a">插入</a></td>
+						class="add_a">删除</a> <a href="javascript:void(0)"
+						onclick="InsertVariable(1)" class="add_a">插入</a></td>
 				</tr>
 
 			</table>
 
 			<p class="book_foot">
 				<input type="button" id="Sumbit" value="提交" /> <input type="button"
-					id="Clean" value="清除" /> <input type="button"
-					id="Return" value="返回" />
+					id="Clean" value="清除" /> <input type="button" id="Return"
+					value="返回" />
 			</p>
 		</form>
 	</div>
+
+	<div class="paramDiv" id="paramDiv" style="display: none">
+		<h1 class="book_h01">输入传值源数据</h1>
+		<table class="book_table" border="1" cellpadding="10">
+			<tr>
+				<td><textarea id="paramString" type="text"
+						class="online_input01"></textarea></td>
+			</tr>
+
+		</table>
+
+		<p class="book_foot">
+			<input type="hidden" id="paramType" /> <input type="button"
+				onclick="importParams()" value="确定" /><input type="button"
+				onclick="closeDiv()" value="关闭" />
+		</p>
+
+	</div>
+
 	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
 	<script src="js/editor/js/input-autocomplete.js"></script>
 	<script>
@@ -206,6 +237,68 @@
 											+ _len
 											+ ")' class='add_a'>插入</a></td></tr>");
 				});
+		$("#importParam")
+		.click(
+				function() {
+				$("#paramDiv").show();
+				$("#paramType").val("param");
+				}
+		);
+		
+		$("#importVariable").click(
+				function() {
+				$("#paramDiv").show();
+				$("#paramType").val("variable");
+				}
+		);
+		
+
+	</script>
+	<script>
+	   function importParams(id) {
+       	let str=decodeURIComponent($("#paramString").val());
+       	let paramType=$("#paramType").val();
+       	let params= new Array();
+       	console.log("123"+str);
+       	params=str.split("&");
+       	let paramValue="";
+       	if(paramType=="param"){
+       	for (i=0;i<params.length ;i++ ) 
+       	{
+       		if(1<params[i].split("=").length){
+       			paramValue=params[i].split("=")[1]
+       		}
+       		let _len = $("#tb_params tr").length - 1;
+			$("#tb_params")
+					.append(
+							"<tr id='param"+_len+"'><td><input id='paramKey"+_len+"' type='text' class='book_input03' value='"+params[i].split("=")[0]+"'></td><td><input type='text' id='paramValue"+_len+"' class='book_input03' value='"+paramValue+"'></td><td><a href='javascript:void(0)' onclick='DeleteParam("
+									+ _len
+									+ ")' class='add_a'>删除</a></td></tr>");
+       	}
+       	}else{
+       		for (i=0;i<params.length ;i++ ) 
+           	{
+           		if(1<params[i].split("=").length){
+           			paramValue=params[i].split("=")[1]
+           		}
+           		let _len = $("#tb_variables tr").length - 1;
+				$("#tb_variables")
+						.append(
+								"<tr id='variable"+_len+"'><td><input id='variableKey"+_len+"' type='text' class='book_input03' value='"+params[i].split("=")[0]+"'></td><td><input type='text' id='variableValue"+_len+"' class='book_input03' value='"+paramValue+"'></td><td><a href='javascript:void(0)' onclick='DeleteVariable("
+										+ _len
+										+ ")' class='add_a'>删除</a> <a href='javascript:void(0)' onclick='InsertVariable("
+										+ _len
+										+ ")' class='add_a'>插入</a></td></tr>");
+           	}
+       	}
+       	closeDiv();
+       		
+       }
+	   
+	    function closeDiv() {
+	      	 $("#paramDiv").hide();
+	          }
+
 	</script>
 	<script>
 		function DeleteHeader(index) {

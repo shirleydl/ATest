@@ -43,6 +43,9 @@ public class DoRequest {
 				}
 			}
 		}
+		
+		// 获取url值
+		request.setUrl(getValue.getValue(request.getUrl()));
 
 		// 获取请求头值
 		if (null != request.getHeaders() && request.getHeaders().size() > 0) {

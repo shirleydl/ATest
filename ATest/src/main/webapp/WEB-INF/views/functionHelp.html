@@ -122,6 +122,18 @@
 					</p>
 				</td>
 			</tr>
+			<tr>
+				<td><label class="td_label">${Custom_toDbRCUD()}</label></td>
+				<td><label class="td_label">执行sql获取信息</label></td>
+				<td>
+					<p>
+						<label class="td_label">连接指定数据库执行sql，获取第一行第一个字段信息：${Custom_toDbRCUD(type,driver,url,user,password,sql)}</label>
+					</p>
+					<p>
+						<label class="td_label">type：R为查询，C为增删改</label>
+					</p>
+				</td>
+			</tr>
 			</tr>
 			<tr>
 				<td><label class="td_label">${Custom_substring()}</label></td>
@@ -168,6 +180,7 @@
 					</p>
 				</td>
 			</tr>
+
 		</table>
 		</p>
 	</div>
