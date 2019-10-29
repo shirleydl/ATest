@@ -64,19 +64,20 @@ public class DBUtil {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
+		String result="";
 		try {
 			connection = getConnection(driver, url, user, password);
 			preparedStatement = connection.prepareStatement(sql);
 			resultSet = preparedStatement.executeQuery();
-			while (resultSet.next() != false) {
-				return resultSet.getObject(1).toString();
+			if (resultSet.next() != false) {
+				result=resultSet.getObject(1).toString();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			release(connection, preparedStatement, resultSet);
 		}
-		return "";
+		return result+"";
 	}
 
 	/**
@@ -88,16 +89,16 @@ public class DBUtil {
 	public String CUD(String driver,String url,String user,String password,String sql) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
+		int result=0;
 		try {
 			connection = getConnection(driver, url, user, password);
 			preparedStatement = connection.prepareStatement(sql);
-			 int result=preparedStatement.executeUpdate();
-			 return result+"";
+			result=preparedStatement.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			release(connection, preparedStatement, null);
 		}
-		return "";
+		return result+"";
 	}
 }
