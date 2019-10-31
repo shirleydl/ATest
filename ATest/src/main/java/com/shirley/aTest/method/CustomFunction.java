@@ -67,7 +67,7 @@ public class CustomFunction {
 	public String _toUpperCase(Map<String, String> object) {
 		return object.get("param0").toUpperCase();
 	}
-	
+
 	/**
 	 * param0=value
 	 */
@@ -79,10 +79,9 @@ public class CustomFunction {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * param0=value
-	 * param1=old char
+	 * param0=value param1=old char
 	 */
 	public String _toReplaceEnter(Map<String, String> object) {
 		try {
@@ -91,5 +90,21 @@ public class CustomFunction {
 			// TODO Auto-generated catch block
 			return null;
 		}
+	}
+
+	/**
+	 * param0=type,param1=driver,param2=url,param3=user,param4=password,param5=
+	 * sql
+	 * 
+	 */
+	public String _toDbRCUD(Map<String, String> object) {
+		DBUtil dBUtil = new DBUtil();
+		if (object.get("param0").equals("R"))
+			return dBUtil.query(object.get("param1"), object.get("param2"), object.get("param3"), object.get("param4"),
+					object.get("param5"));
+		if (object.get("param0").equals("C"))
+			return dBUtil.CUD(object.get("param1"), object.get("param2"), object.get("param3"), object.get("param4"),
+					object.get("param5")) + "";
+		return "";
 	}
 }

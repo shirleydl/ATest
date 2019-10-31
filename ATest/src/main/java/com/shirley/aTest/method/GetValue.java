@@ -29,13 +29,12 @@ public class GetValue {
 		this.variables = variables;
 		this.responseContent = responseContent;
 	}
-	
+
 	/**
 	 * 获取各种类型的值
 	 */
 	public String getValue(String value) {
 		String addValues[] = null;
-//		GetValue getValue = new GetValue(bindVariables, variables, responseContent);
 		String valueStr = "";
 		String splitStr = "&" + "+" + "&";
 		// 判断是否有拼接值
@@ -77,10 +76,6 @@ public class GetValue {
 						}
 					} else if (null != responseContent && !"Header:all".equals(type) && type.contains("Header:")) {
 						value = getHeaderValue(responseContent.getHeaders(), type.substring(type.indexOf(":") + 1));
-					} else if (null != bindVariables && type.contains("Bind:")) {
-						value = bindVariables.get(type.substring(type.indexOf(":") + 1));
-					} else if (null != variables && type.contains("Variable:")) {
-						value = variables.get(type.substring(type.indexOf(":") + 1));
 					} else if (type.contains("Custom_") && type.contains("(") && type.contains(")")
 							&& type.indexOf(")") > type.indexOf("(")) {
 						String method = type.substring(type.indexOf("_"), type.indexOf("("));
@@ -109,6 +104,10 @@ public class GetValue {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+					} else if (null != bindVariables && type.contains("Bind:")) {
+						value = bindVariables.get(type.substring(type.indexOf(":") + 1));
+					} else if (null != variables && type.contains("Variable:")) {
+						value = variables.get(type.substring(type.indexOf(":") + 1));
 					} else if (type.contains("_JS(") && type.contains(")")) {
 						JavaScriptFunction javaScriptFunction = new JavaScriptFunction();
 						value = javaScriptFunction.jsFunction(
@@ -242,6 +241,9 @@ public class GetValue {
 	public String getVariableValue(String str) {
 		if (str.contains("${VAR(") && str.contains("}") && null != variables) {
 			return variables.get(str.substring(str.indexOf("${VAR(") + 6, str.indexOf(")}")));
+		}
+		if (null != bindVariables && str.contains("${Bind:")) {
+			return bindVariables.get(str.substring(str.indexOf("${Bind:") + 7, str.indexOf("}")));
 		}
 		return str;
 	}
