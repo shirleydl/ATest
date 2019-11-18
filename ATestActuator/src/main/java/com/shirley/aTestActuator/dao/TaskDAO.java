@@ -22,43 +22,58 @@ public class TaskDAO {
 	}
 
 	public List<DoTaskId> QueryDoTaskId() {
-		// TODO Auto-generated method stub
-		String sql = "select id,beforeTask_id,replaceInfo_id from task where startTime < unix_timestamp(now())*1000 and status=1";
+		String sql = "select id,name,beforeTask_id,replaceInfo_id,email_id,isSend from task where startTime < unix_timestamp(now())*1000 and status=1 and isLoop=0";
 		List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql);
 		List<DoTaskId> doTaskIds = new ArrayList<DoTaskId>();
 		for (Map<String, Object> row : list) {
 			DoTaskId doTaskId = new DoTaskId();
 			doTaskId.setId((Integer) row.get("id"));
+			doTaskId.setName((String) row.get("name"));
 			doTaskId.setBeforeTaskId((Integer) row.get("beforeTask_id"));
 			doTaskId.setReplaceInfoId((Integer) row.get("replaceInfo_id"));
+			doTaskId.setIsSend((Integer) row.get("isSend"));
+			doTaskId.setEmailId((Integer) row.get("email_id"));
 			doTaskIds.add(doTaskId);
 		}
 		return doTaskIds;
 	}
 	
 	public List<DoTaskId> QueryByTaskName(String taskName) {
-		// TODO Auto-generated method stub
-		String sql = "select id,beforeTask_id,replaceInfo_id from task where isLoop=1 and name like ?";
+				String sql = "select id,name,beforeTask_id,replaceInfo_id,email_id,isSend from task where isLoop=1 and name like ? and status in(1,3)";
 		List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql,taskName);
 		List<DoTaskId> doTaskIds = new ArrayList<DoTaskId>();
 		for (Map<String, Object> row : list) {
 			DoTaskId doTaskId = new DoTaskId();
 			doTaskId.setId((Integer) row.get("id"));
+			doTaskId.setName((String) row.get("name"));
 			doTaskId.setBeforeTaskId((Integer) row.get("beforeTask_id"));
 			doTaskId.setReplaceInfoId((Integer) row.get("replaceInfo_id"));
+			doTaskId.setIsSend((Integer) row.get("isSend"));
+			doTaskId.setEmailId((Integer) row.get("email_id"));
 			doTaskIds.add(doTaskId);
 		}
 		return doTaskIds;
 	}
 
 	public Boolean UpdateTaskStatus(int id, int status) {
-		// TODO Auto-generated method stub
-		String sql = "update task set status=? where id = ?";
+		String sql = "update task set status=? where id = ? and status=1";
 		Object args[] = new Object[] { status, id };
 		int row = this.jdbcTemplate.update(sql, args);
-		if (row > 0) {
-			return true;
-		}
-		return false;
+		return row > 0;
 	}
+	
+	public Boolean UpdateTaskStatusFromName(int id, int status) {
+		String sql = "update task set status=? where id = ? and status in(1,3)";
+		Object args[] = new Object[] { status, id };
+		int row = this.jdbcTemplate.update(sql, args);
+		return row > 0;
+	}
+	
+	public Boolean UpdateFinishTaskStatus(int id, int status) {
+		String sql = "update task set status=? where id = ? and status=2";
+		Object args[] = new Object[] { status, id };
+		int row = this.jdbcTemplate.update(sql, args);
+		return row > 0;
+	}
+	
 }

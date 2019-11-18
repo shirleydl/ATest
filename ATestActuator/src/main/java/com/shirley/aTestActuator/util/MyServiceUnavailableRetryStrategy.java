@@ -1,4 +1,4 @@
-package com.shirley.aTest.method;
+package com.shirley.aTestActuator.util;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;

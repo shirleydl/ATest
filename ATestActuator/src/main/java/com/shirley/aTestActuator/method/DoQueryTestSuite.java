@@ -80,9 +80,14 @@ public class DoQueryTestSuite implements Runnable {
 		}
 		try {
 			latch.await();
-			taskDao.UpdateTaskStatus(doTaskId.getId(), 3);
+			taskDao.UpdateFinishTaskStatus(doTaskId.getId(), 3);
 			Date date = new Date();
 			System.out.println("Task " + doTaskId.getId() + " finish " + date);
+			if (doTaskId.getIsSend() == 1 && doTaskId.getEmailId() != 0) {
+				SendReport sendReport = new SendReport(doTaskId.getId(), doTaskId.getEmailId(),
+						doTaskId.getName(), jdbcTemplate);
+				sendReport.toDo();
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

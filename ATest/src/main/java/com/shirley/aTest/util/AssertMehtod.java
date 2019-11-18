@@ -1,4 +1,4 @@
-package com.shirley.aTestActuator.method;
+package com.shirley.aTest.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +54,6 @@ public class AssertMehtod {
 			}
 			return false;
 		} catch (Exception e) {
-			e.printStackTrace();
 			return false;
 		}
 	}

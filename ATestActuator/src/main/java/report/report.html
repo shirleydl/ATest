@@ -1,0 +1,290 @@
+﻿<html>
+
+<head>
+    <title>{{taskName}}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <!-- 引入 echarts.js -->
+    <style type="text/css" media="screen">
+    body {
+        margin: 0;
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+        font-size: 18px;
+        line-height: 1.5;
+        line-height: 1.5;
+        color: #333333;
+    }
+
+    .table {
+        margin-bottom: 1px;
+        width: 100%;
+    }
+
+    .container-fluid {
+        padding-right: 50px;
+        padding-left: 50px;
+    }
+
+    .nav-tabs li {
+        width: 186px;
+        text-align: center;
+    }
+
+    .detailDiv {
+        position: fixed;
+        width: 80%;
+        top: 10%;
+        left: 10%;
+        height: 90%;
+        overflow: auto;
+        background: #fdfdfd;
+        z-index: 999;
+    }
+
+    .book_table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .online_input01 {
+        width: 97%;
+        margin-left: 1%;
+        height: 450px;
+        resize: none;
+        border: 1px solid #EEEEEE;
+        border-radius: 5px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="page-header">
+            <h1 class="text-primary" style="font-size: 45px; line-height: 75px">{{taskName}}</h1>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-4" style="Background-Color: #F5F5F5; height: 300px">
+                <h3 style="line-height: 25px">测试基本信息</h3>
+                <table class="table table-hover table-bordered" style="width: 100% height:11px">
+                    <tbody>
+                        <tr class="info">
+                            <td class="text-center">开始时间</td>
+                            <td class="text-center"><label id="startTime"></label></td>
+                        </tr>
+                        <tr class="info">
+                            <td class="text-center">结束时间</td>
+                            <td class="text-center"><label id="endTime"></label></td>
+                        </tr>
+                        <tr class="info">
+                            <td class="text-center">总用例数</td>
+                            <td class="text-center"><label id="sumCases"></label></td>
+                        </tr>
+                        <tr class="info">
+                            <td class="text-center">成功用例数</td>
+                            <td class="text-center"><label id="sumSuccessCases"></label></td>
+                        </tr>
+                        <tr class="info">
+                            <td class="text-center">失败用例数</td>
+                            <td class="text-center"><label id="sumFailCases"></label></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-8">
+                <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                <div id="main" style="height: 300px;">
+                    <canvas id="canvas_circle" width="500" height="300">
+                        浏览器不支持canvas
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        <div>
+            <span>&nbsp;</span>
+        </div>
+        <div class="col-md-12">
+            <div class="tabbable" id="tabs-957640">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a id="allCount" href="#panel-0" data-toggle="tab" style="Background-Color: #428bca; color: #fff;">全 部</a></li>
+                    <li><a id="successCount" href="#panel-1" data-toggle="tab" style="Background-Color: #5cb85c; color: #fff;">成 功</a></li>
+                    <li><a id="failCount" href="#panel-2" data-toggle="tab" style="Background-Color: #d9534f; color: #fff;">失 败</a></li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" id="panel-0">
+                    <table id="allCases" class="table table-hover table-bordered">
+                        <tr>
+                            <td><label>结果序号</label></td>
+                            <td><label>用例序号</label></td>
+                            <td><label>用例名</label></td>
+                            <td><label>地址</label></td>
+                            <td><label>执行时间</label></td>
+                            <td><label>结果</label></td>
+                            <td><label>用例描述</label></td>
+                            <td><label>详情</label></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tab-pane" id="panel-1">
+                    <table id="successCases" class="table table-hover table-bordered">
+                        <tr>
+                            <td><label>报告序号</label></td>
+                            <td><label>用例序号</label></td>
+                            <td><label>用例名</label></td>
+                            <td><label>地址</label></td>
+                            <td><label>用例描述</label></td>
+                            <td><label>详情</label></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tab-pane" id="panel-2">
+                    <table id="failCases" class="table table-hover table-bordered">
+                        <tr>
+                            <td><label>报告序号</label></td>
+                            <td><label>用例序号</label></td>
+                            <td><label>用例名</label></td>
+                            <td><label>地址</label></td>
+                            <td><label>用例描述</label></td>
+                            <td><label>详情</label></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="detailDiv" id="detailDiv" style="display: none">
+        <div style="margin: 6; text-align: right;"><input type="button" onclick="closeDiv('+index+')" value="关闭" /></div>
+        <div class="container-fluid">
+            <h1 class="text-primary" id="headText" style="font-size: 30px; line-height: 30px"></h1>
+            <p>
+                <table id="table" class="book_table" border="1" cellpadding="10">
+                    <tr>
+                        <td><label>请求内容</label></td>
+                        <td><label>响应内容</label></td>
+                    </tr>
+                    <tr>
+                        <td><textarea type="text" id="requestContent" class="online_input01" readonly="readonly"></textarea></td>
+                        <td><textarea type="text" id="responseContent" class="online_input01" readonly="readonly"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><label>验证内容</label></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><textarea type="text" id="assertResult" class="online_input01" style="height: 300px;" readonly="readonly"></textarea></td>
+                    </tr>
+                </table>
+            </p>
+        </div>
+    </div>
+    <script src="asserts.json"></script>
+    <script>
+    $("#startTime").text(asserts[0].createTime);
+    $("#endTime").text(asserts[asserts.length - 1].createTime);
+    $("#sumCases").text(asserts.length);
+    $("#allCount").text("全部(" + asserts.length + ")");
+    let successCount = 0;
+    let failCount = 0;
+
+    for (let i = 0; i < asserts.length; i++) {
+        $("#allCases").append(
+            "<tr><td><label>" + asserts[i].id + "</label></td><td><label>" + asserts[i].caseId + "</label></td><td><label>" + asserts[i].caseName + "</label></td><td><label>" + asserts[i].url + "</label></td><td><label>" + asserts[i].createTime + "</label></td><td><label>" + asserts[i].status + "</label></td><td><label>" + asserts[i].caseDescription + "</label></td><td><a href='javascript:void(0)' onclick='detail(" +
+            i +
+            ")'>查看</a></td></tr>");
+
+        if (asserts[i].status == "success") {
+            successCount++;
+            $("#successCases").append(
+                "<tr><td><label>" + asserts[i].id + "</label></td><td><label>" + asserts[i].caseId + "</label></td><td><label>" + asserts[i].caseName + "</label></td><td><label>" + asserts[i].url + "</label></td><td><label>" + asserts[i].caseDescription + "</label></td><td><a href='javascript:void(0)' onclick='detail(" +
+                i +
+                ")'>查看</a></td></tr>");
+        } else {
+            failCount++;
+            $("#failCases").append(
+                "<tr><td><label>" + asserts[i].id + "</label></td><td><label>" + asserts[i].caseId + "</label></td><td><label>" + asserts[i].caseName + "</label></td><td><label>" + asserts[i].url + "</label></td><td><label>" + asserts[i].caseDescription + "</label></td><td><a href='javascript:void(0)' onclick='detail(" +
+                i +
+                ")'>查看</a></td></tr>");
+        }
+    }
+
+    $("#sumSuccessCases").text(successCount);
+    $("#sumFailCases").text(failCount);
+    $("#successCount").text("成功(" + successCount + ")");
+    $("#failCount").text("失败(" + failCount + ")");
+
+
+
+
+
+    function detail(index) {
+        $("#requestContent").text(asserts[index].requestContent);
+        $("#responseContent").text(asserts[index].responseContent);
+        $("#assertResult").text(asserts[index].assertResult);
+        $("#headText").text("报告序号：" + asserts[index].id);
+        $('#detailDiv').show();
+
+    }
+
+    function closeDiv() {
+        $('#detailDiv').hide();
+    }
+    </script>
+    <script>
+    //绘制饼图  
+    function drawCircle(canvasId, data_arr, color_arr, text_arr) {
+        let c = document.getElementById(canvasId);
+        let ctx = c.getContext("2d");
+
+        let radius = c.height / 2 - 20; //半径  
+        let ox = radius + 20,
+            oy = radius + 20; //圆心  
+
+        let width = 30,
+            height = 10; //图例宽和高  
+        let posX = ox * 2 + 20,
+            posY = 30; //  
+        let textX = posX + width + 5,
+            textY = posY + 10;
+
+        let startAngle = 0; //起始弧度  
+        let endAngle = 0; //结束弧度  
+        for (let i = 0; i < data_arr.length; i++) {
+            //绘制饼图  
+            endAngle = endAngle + data_arr[i] * Math.PI * 2; //结束弧度  
+            ctx.fillStyle = color_arr[i];
+            ctx.beginPath();
+            ctx.moveTo(ox, oy); //移动到到圆心  
+            ctx.arc(ox, oy, radius, startAngle, endAngle, false);
+            ctx.closePath();
+            ctx.fill();
+            startAngle = endAngle; //设置起始弧度  
+
+            //绘制比例图及文字  
+            ctx.fillStyle = color_arr[i];
+            ctx.fillRect(posX, posY + 20 * i, width, height);
+            ctx.moveTo(posX, posY + 20 * i);
+            ctx.font = 'bold 12px 微软雅黑'; //斜体 30像素 微软雅黑字体  
+            ctx.fillStyle = color_arr[i]; //"#000000";  
+            let percent = text_arr[i] + "：" + 100 * data_arr[i] + "%";
+            ctx.fillText(percent, textX, textY + 20 * i);
+        }
+    }
+
+    function init() {
+        //绘制饼图  
+        //比例数据和颜色  
+        let success=Math.round(successCount / asserts.length * 100) / 100;
+        let data_arr = [success,  Math.round((1-success)* 100)/100];
+        let color_arr = ["#5cb85c", "#d9534f"];
+        let text_arr = ["成功用例数", "失败用例数"];
+
+        drawCircle("canvas_circle", data_arr, color_arr, text_arr);
+    }
+
+    //页面加载时执行init()函数  
+    window.onload = init;
+    </script>
+</body>
+
+</html>

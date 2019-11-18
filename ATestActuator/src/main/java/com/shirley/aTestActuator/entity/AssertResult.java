@@ -6,13 +6,17 @@ package com.shirley.aTestActuator.entity;
  * @date 2019年7月8日 下午2:56:48
  */
 public class AssertResult {
+	private int id;
 	private int taskId;
-	private String url;
 	private int caseId;
+	private String caseName;
+	private String caseDescription;
+	private String url;
 	private String requestContent;
 	private String responseContent;
 	private String assertResult;
 	private String status;
+	private String createTime;
 
 	public int getTaskId() {
 		return taskId;
@@ -69,5 +73,40 @@ public class AssertResult {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getCaseName() {
+		return caseName;
+	}
+
+	public void setCaseName(String caseName) {
+		this.caseName = caseName;
+	}
+
+	public String getCaseDescription() {
+		return caseDescription;
+	}
+
+	public void setCaseDescription(String caseDescription) {
+		this.caseDescription = caseDescription;
+	}
+	
+	
+	
 
 }

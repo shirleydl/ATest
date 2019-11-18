@@ -7,8 +7,11 @@ package com.shirley.aTestActuator.entity;
  */
 public class DoTaskId {
 	private int id;
+	private String name;
 	private int beforeTaskId;
 	private int replaceInfoId;
+	private int emailId;
+	private int isSend;
 
 	public int getId() {
 		return id;
@@ -16,6 +19,14 @@ public class DoTaskId {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getBeforeTaskId() {
@@ -33,5 +44,25 @@ public class DoTaskId {
 	public void setReplaceInfoId(int replaceInfoId) {
 		this.replaceInfoId = replaceInfoId;
 	}
+
+	public int getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(int emailId) {
+		this.emailId = emailId;
+	}
+
+	public int getIsSend() {
+		return isSend;
+	}
+
+	public void setIsSend(int isSend) {
+		this.isSend = isSend;
+	}
+	
+	
+	
+	
 	
 }

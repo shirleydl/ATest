@@ -15,6 +15,9 @@ import com.shirley.aTest.entity.DoIndex;
 import com.shirley.aTest.entity.Request;
 import com.shirley.aTest.entity.ResponseContent;
 import com.shirley.aTest.entity.SuiteWithCaseController;
+import com.shirley.aTest.util.AssertMehtod;
+import com.shirley.aTest.util.GetValue;
+import com.shirley.aTest.util.ListCopy;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)

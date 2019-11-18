@@ -1,4 +1,4 @@
-package com.shirley.aTestActuator.method;
+package com.shirley.aTest.util;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -15,8 +15,6 @@ public class JavaScriptFunction {
 		try {
 			return (String) engine.eval(jsStr);
 		} catch (ScriptException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			return "";
 		}
 	}

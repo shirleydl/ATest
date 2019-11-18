@@ -24,6 +24,8 @@ public class TaskRowMapper implements RowMapper<Task> {
 		int id = rs.getInt("id");
 		String name = rs.getString("name");
 		int status = rs.getInt("status");
+		int isSend = rs.getInt("isSend");
+		int emailId = rs.getInt("email_id");
 		Long startTime = rs.getLong("starttime");
 		Timestamp updateTime = rs.getTimestamp("updatetime");
 		// 把数据封装对象
@@ -32,6 +34,7 @@ public class TaskRowMapper implements RowMapper<Task> {
 		task.setId(id);
 		task.setName(name);
 		task.setStatus(status);
+		task.setEmailId(emailId);
 		task.setStartTime(startTime);
 		task.setUpdateTime(df.format(updateTime));
 		return task;

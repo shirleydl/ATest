@@ -1,8 +1,6 @@
-package com.shirley.aTestActuator.method;
+package com.shirley.aTest.util;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * md5加密处理(组合函数)
@@ -24,13 +22,10 @@ public class Md5 {
 					buf.append("0");
 				buf.append(Integer.toHexString(i));
 			}
-			re_md5 = buf.toString();
-		} catch (UnsupportedEncodingException e) {
+			return buf.toString();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			return re_md5;
 		}
-		return re_md5;
 	}
 }

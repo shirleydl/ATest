@@ -10,6 +10,8 @@ public class Task {
 	private String name;
 	private int beforeTaskId;
 	private int isLoop;
+	private int isSend;
+	private int emailId;
 	private Long startTime;
 	private int replaceInfoId;
 	private int createrId;
@@ -47,6 +49,22 @@ public class Task {
 
 	public void setIsLoop(int isLoop) {
 		this.isLoop = isLoop;
+	}
+
+	public int getIsSend() {
+		return isSend;
+	}
+
+	public void setIsSend(int isSend) {
+		this.isSend = isSend;
+	}
+
+	public int getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(int emailId) {
+		this.emailId = emailId;
 	}
 
 	public Long getStartTime() {

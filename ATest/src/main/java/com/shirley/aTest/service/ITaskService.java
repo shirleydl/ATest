@@ -26,7 +26,9 @@ public interface ITaskService {
 
 	public Boolean UpdateTaskStatus(int id, int status);
 
-	public Boolean UpdateTaskBeforeAndReplace(Task task);
+	public Boolean UpdateTaskConfig(Task task);
 
 	public Boolean UpdateTaskIsLoop(Task task);
+	
+	public Boolean UpdateTaskIsSend(Task task);
 }

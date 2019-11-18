@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80017
 File Encoding         : 65001
 
-Date: 2019-09-30 11:12:32
+Date: 2019-11-18 15:20:09
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -45,6 +45,20 @@ CREATE TABLE `controller` (
   `loopcount` int(11) NOT NULL DEFAULT '0',
   `asserts` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `priority` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for email
+-- ----------------------------
+DROP TABLE IF EXISTS `email`;
+CREATE TABLE `email` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `from_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `pass` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `receives_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -132,6 +146,8 @@ CREATE TABLE `task` (
   `starttime` bigint(15) NOT NULL DEFAULT '0',
   `replaceInfo_id` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '0',
+  `isSend` int(1) NOT NULL DEFAULT '0',
+  `email_id` int(11) NOT NULL DEFAULT '0',
   `createtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

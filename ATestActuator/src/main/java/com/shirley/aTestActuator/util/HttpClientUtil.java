@@ -1,4 +1,4 @@
-package com.shirley.aTest.method;
+package com.shirley.aTestActuator.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
-import com.shirley.aTest.entity.ResponseContent;
+import com.shirley.aTestActuator.entity.ResponseContent;
 
 public class HttpClientUtil {
 	private static HttpClientUtil instance = null;
@@ -96,10 +96,11 @@ public class HttpClientUtil {
 			// 设置参数
 			StringEntity stringEntity = new StringEntity(params, "UTF-8");
 			httpPost.setEntity(stringEntity);
+			return sendHttpPost(httpPost, headers, requestConfig, executionCount, retryInterval);
 		} catch (Exception e) {
-			e.printStackTrace();
+			return null;
 		}
-		return sendHttpPost(httpPost, headers, requestConfig, executionCount, retryInterval);
+
 	}
 
 	/**
@@ -122,10 +123,10 @@ public class HttpClientUtil {
 		}
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+			return sendHttpPost(httpPost, headers, requestConfig, executionCount, retryInterval);
 		} catch (Exception e) {
-			e.printStackTrace();
+			return null;
 		}
-		return sendHttpPost(httpPost, headers, requestConfig, executionCount, retryInterval);
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class HttpClientUtil {
 			if (null == httpClient)
 				// 创建默认的httpClient实例.
 				httpClient = HttpClients.createDefault();
-				httpPost.setConfig(requestConfig);
+			httpPost.setConfig(requestConfig);
 			if (null != headers && headers.size() > 0) {
 				for (String key : headers.keySet()) {
 					httpPost.addHeader(key, headers.get(key));
@@ -188,7 +189,7 @@ public class HttpClientUtil {
 		} catch (InterruptedIOException e) {
 			responseContent.setContent("请求超时！");
 		} catch (Exception e) {
-			e.printStackTrace();
+			responseContent.setContent("请求报错！");
 		} finally {
 			try {
 				// 关闭连接,释放资源
@@ -260,7 +261,7 @@ public class HttpClientUtil {
 		} catch (InterruptedIOException e) {
 			responseContent.setContent("请求超时！");
 		} catch (Exception e) {
-			e.printStackTrace();
+			responseContent.setContent("请求报错！");
 		} finally {
 			try {
 				// 关闭连接,释放资源
@@ -310,7 +311,7 @@ public class HttpClientUtil {
 		} catch (InterruptedIOException e) {
 			responseContent.setContent("请求超时！");
 		} catch (Exception e) {
-			e.printStackTrace();
+			responseContent.setContent("请求报错！");
 		} finally {
 			try {
 				// 关闭连接,释放资源

@@ -1,4 +1,4 @@
-package com.shirley.aTest.method;
+package com.shirley.aTest.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -30,15 +30,16 @@ public class RunScript {
 			return (String) in.invokeFunction(method, value);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return "找不到文件";
 		} catch (ScriptException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return "脚本错误";
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return "找不到方法";
+		} catch (Exception e) {
+			return "执行错误";
 		}
-		return "";
 
 	}
 }

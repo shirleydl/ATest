@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.shirley.aTestActuator.dao.AssertsDAO;
 import com.shirley.aTestActuator.dao.TaskDAO;
 import com.shirley.aTestActuator.entity.DoTaskId;
 
@@ -24,7 +25,9 @@ public class StartTask {
 
 	public static void main(String[] args) {
 		final TaskDAO taskDao = new TaskDAO();
+		final AssertsDAO assertsDAO = new AssertsDAO();
 		taskDao.setJdbcTemplate(jdbcTemplate);
+		assertsDAO.setJdbcTemplate(jdbcTemplate);
 		Runnable runnable = new Runnable() {
 			public void run() {
 				// task to run goes here
@@ -33,9 +36,11 @@ public class StartTask {
 					Date date = new Date();
 					System.out.println("=====start " + date + "=====");
 					for (DoTaskId doTaskId : doTaskIds) {
-						taskDao.UpdateTaskStatus(doTaskId.getId(), 2);
-						DoQueryTestSuite doQueryTestSuite = new DoQueryTestSuite(taskDao, doTaskId, jdbcTemplate);
-						new Thread(doQueryTestSuite).start();
+						if (taskDao.UpdateTaskStatus(doTaskId.getId(), 2)) {
+							assertsDAO.DeleteAssertsByTaskId(doTaskId.getId());
+							DoQueryTestSuite doQueryTestSuite = new DoQueryTestSuite(taskDao, doTaskId, jdbcTemplate);
+							new Thread(doQueryTestSuite).start();
+						}
 					}
 
 				}

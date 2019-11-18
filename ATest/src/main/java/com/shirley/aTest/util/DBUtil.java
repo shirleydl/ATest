@@ -1,4 +1,4 @@
-package com.shirley.aTestActuator.method;
+package com.shirley.aTest.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +14,7 @@ public class DBUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public Connection getConnection(String driver,String url,String user,String password) throws Exception {
+	public Connection getConnection(String driver, String url, String user, String password) throws Exception {
 		// 加载运行时类对象
 		Class.forName(driver);
 		// 通过DriverManager得到连接
@@ -28,27 +28,22 @@ public class DBUtil {
 	 * @param connection
 	 * @param statement
 	 * @param resultSet
+	 * @throws SQLException
 	 */
 	public void release(Connection connection, Statement statement, ResultSet resultSet) {
 		try {
 			if (resultSet != null) {
 				resultSet.close();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		try {
 			if (statement != null) {
 				statement.close();
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		try {
+
 			if (connection != null) {
 				connection.close();
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -59,25 +54,22 @@ public class DBUtil {
 	 * 
 	 * @param sql
 	 *            字符串，要执行的sql语句 如果其中有变量的话，就用 ‘"+变量+"’
+	 * @throws Exception
+	 * 
 	 */
-	public String query(String driver,String url,String user,String password,String sql) {
+	public String query(String driver, String url, String user, String password, String sql) throws Exception {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		String result="";
-		try {
-			connection = getConnection(driver, url, user, password);
-			preparedStatement = connection.prepareStatement(sql);
-			resultSet = preparedStatement.executeQuery();
-			if (resultSet.next() != false) {
-				result=resultSet.getObject(1).toString();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			release(connection, preparedStatement, resultSet);
+		String result = "";
+		connection = getConnection(driver, url, user, password);
+		preparedStatement = connection.prepareStatement(sql);
+		resultSet = preparedStatement.executeQuery();
+		if (resultSet.next() != false) {
+			result = resultSet.getObject(1).toString();
 		}
-		return result+"";
+		release(connection, preparedStatement, resultSet);
+		return result + "";
 	}
 
 	/**
@@ -85,20 +77,16 @@ public class DBUtil {
 	 * 
 	 * @param sql
 	 *            字符串，要执行的sql语句 如果其中有变量的话，就用 ‘"+变量+"’
+	 * @throws Exception
 	 */
-	public String CUD(String driver,String url,String user,String password,String sql) {
+	public String CUD(String driver, String url, String user, String password, String sql) throws Exception {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
-		int result=0;
-		try {
-			connection = getConnection(driver, url, user, password);
-			preparedStatement = connection.prepareStatement(sql);
-			result=preparedStatement.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			release(connection, preparedStatement, null);
-		}
-		return result+"";
+		int result = 0;
+		connection = getConnection(driver, url, user, password);
+		preparedStatement = connection.prepareStatement(sql);
+		result = preparedStatement.executeUpdate();
+		release(connection, preparedStatement, null);
+		return result + "";
 	}
 }

@@ -79,15 +79,21 @@ public class TaskService implements ITaskService {
 	}
 
 	@Override
-	public Boolean UpdateTaskBeforeAndReplace(Task task) {
+	public Boolean UpdateTaskConfig(Task task) {
 		// TODO Auto-generated method stub
-		return taskDAO.UpdateTaskBeforeAndReplace(task);
+		return taskDAO.UpdateTaskConfig(task);
 	}
 
 	@Override
 	public Boolean UpdateTaskIsLoop(Task task) {
 		// TODO Auto-generated method stub
 		return taskDAO.UpdateTaskIsLoop(task);
+	}
+
+	@Override
+	public Boolean UpdateTaskIsSend(Task task) {
+		// TODO Auto-generated method stub
+		return taskDAO.UpdateTaskIsSend(task);
 	}
 
 }

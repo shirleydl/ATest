@@ -52,9 +52,9 @@ public class TaskController {
 		return "taskDetail";
 	}
 
-	@RequestMapping(value = "/setBeforeAndReplace", method = RequestMethod.GET)
-	public String setBeforeAndReplace() {
-		return "setBeforeAndReplace";
+	@RequestMapping(value = "/setConfig", method = RequestMethod.GET)
+	public String setConfig() {
+		return "setConfig";
 	}
 
 	@RequestMapping(value = "/queryTasks", method = RequestMethod.GET)
@@ -150,15 +150,38 @@ public class TaskController {
 		return false;
 	}
 
-	@RequestMapping(value = "/toUpdateBeforeAndReplace", method = RequestMethod.POST)
+	@RequestMapping(value = "/toUpdateIsSend", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean toUpdateBeforeAndReplace(Integer taskId, Integer beforeTaskId, Integer replaceInfoId) {
+	public Boolean toUpdateIsSend(Integer id, Integer isSend) {
+		if (null != id && null != isSend) {
+			Task task = new Task();
+			if (0 == isSend) {
+				task.setId(id);
+				task.setIsSend(isSend);
+				return taskService.UpdateTaskIsSend(task);
+			}
+			if (1 == isSend) {
+				task = taskService.QueryTaskById(id);
+				if (0 != task.getEmailId()) {
+					task.setIsSend(isSend);
+					return taskService.UpdateTaskIsSend(task);
+				}
+			}
+		}
+		return false;
+
+	}
+
+	@RequestMapping(value = "/toUpdateConfig", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean toUpdateConfig(Integer taskId, Integer beforeTaskId, Integer replaceInfoId, Integer emailId) {
 		if (null != taskId) {
 			Task task = new Task();
 			task.setId(taskId);
 			task.setBeforeTaskId(null != beforeTaskId ? beforeTaskId : 0);
 			task.setReplaceInfoId(null != replaceInfoId ? replaceInfoId : 0);
-			return taskService.UpdateTaskBeforeAndReplace(task);
+			task.setEmailId(null != emailId ? emailId : 0);
+			return taskService.UpdateTaskConfig(task);
 		}
 		return false;
 	}

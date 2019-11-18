@@ -23,7 +23,7 @@
 <body style="background-color: #e6ecf5">
 
 	<div class="book_con01">
-		<h1 class="book_h01">设置前置/替换</h1>
+		<h1 class="book_h01">任务设置</h1>
 		<p class="book_p">
 		<table class="book_table" border="1" cellpadding="10">
 			<input id="fromTaskId" type="hidden" name="fromTaskId" />
@@ -41,6 +41,14 @@
 					class="book_input03" " autocomplete="off"></label></td>
 				<td><label class="td_label">替换名</label></td>
 				<td><input id="replaceName" name="replaceName" type="text"
+					class="book_input03" autocomplete="off"></td>
+			</tr>
+			<tr>
+				<td><label class="td_label">报告邮箱序号</label></td>
+				<td><input id="emailId" name="emailId" type="text"
+					class="book_input03" " autocomplete="off"></label></td>
+				<td><label class="td_label">报告邮箱名</label></td>
+				<td><input id="emailName" name="emailName" type="text"
 					class="book_input03" autocomplete="off"></td>
 			</tr>
 		</table>
@@ -68,6 +76,7 @@
 			$("#fromTaskId").val(value[0]);
 			$("#taskId").val(value[1]);
 			$("#replaceInfoId").val(value[2]);
+			$("#emailId").val(value[3]);
 
 		});
 	</script>
@@ -76,7 +85,8 @@
 			let fromTaskId=$("#fromTaskId").val();
 			let beforeTaskId=$("#taskId").val();
 			let replaceInfoId=$("#replaceInfoId").val();
-			let targetUrl = "toUpdateBeforeAndReplace";
+			let emailId=$("#emailId").val();
+			let targetUrl = "toUpdateConfig";
 			$.ajax({
 				type : 'post',
 				url : targetUrl,
@@ -84,7 +94,8 @@
 				data : {
 					"taskId" : fromTaskId,
 					"beforeTaskId" : beforeTaskId,
-					"replaceInfoId" : replaceInfoId
+					"replaceInfoId" : replaceInfoId,
+					"emailId" : emailId
 				},
 				dataType : 'json',
 				success : function(data) {
@@ -174,6 +185,42 @@
 					$("#replaceInfoId").val("");
 			},
 		});
+	
+	$("#emailId").bigAutocomplete({
+		url : 'queryEmailById',
+		title : 'name',
+		custom : false,
+		formatItem : function(data, i, row) {
+			return row.id + " " + row.name;
+		},
+		formatSelected : function(data, i, row) {
+			return row.id;
+		},
+		callback : function(row) {
+			if (null != row) {
+				$("#emailName").val(row.name);
+			}else
+				$("#emailName").val("");
+		},
+	});
+	
+	$("#emailName").bigAutocomplete({
+		url : 'queryEmailsByName',
+		title : 'name',
+		custom : false,
+		formatItem : function(data, i, row) {
+			return row.id + " " + row.name;
+		},
+		formatSelected : function(data, i, row) {
+			return row.name;
+		},
+		callback : function(row) {
+			if (null != row) {
+				$("#emailId").val(row.id);
+			}else
+				$("#emailId").val("");
+		},
+	});
 
 	</script>
 </body>

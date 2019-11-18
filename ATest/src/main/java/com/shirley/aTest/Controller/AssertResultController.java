@@ -1,6 +1,5 @@
 package com.shirley.aTest.Controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -61,15 +60,5 @@ public class AssertResultController {
 		if (null != assertResultId)
 			return assertResultService.QueryAssert(assertResultId);
 		return null;
-	}
-	
-	/**
-	 * 清空结果（by 任务id集）
-	 */
-	@RequestMapping(value = "/toDelAssertResult", method = RequestMethod.POST)
-	@ResponseBody
-	public Boolean toDelAssertResult(Integer[] ids) {
-		List<Integer> idList = Arrays.asList(ids);
-		return assertResultService.DeleteAssertsByTaskId(idList);
 	}
 }

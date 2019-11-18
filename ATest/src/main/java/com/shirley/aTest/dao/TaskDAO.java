@@ -34,7 +34,7 @@ public class TaskDAO implements ITaskDAO {
 	public List<Task> QueryTask(int currentPageNo, int pageSize, int id, String name) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer(
-				"select id,name,beforeTask_id,replaceInfo_id,status,isLoop,starttime,updatetime from task where 1=1");
+				"select id,name,beforeTask_id,replaceInfo_id,status,isLoop,isSend,email_id,starttime,updatetime from task where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 
 		if (0 != id) {
@@ -62,6 +62,8 @@ public class TaskDAO implements ITaskDAO {
 			task.setReplaceInfoId((Integer) row.get("replaceInfo_id"));
 			task.setStatus((Integer) row.get("status"));
 			task.setIsLoop((Integer) row.get("isLoop"));
+			task.setEmailId((Integer) row.get("email_id"));
+			task.setIsSend((Integer) row.get("isSend"));
 			task.setStartTime((Long) row.get("starttime"));
 			task.setUpdateTime(df.format((Timestamp) row.get("updatetime")));
 			testSuiteLists.add(task);
@@ -96,7 +98,7 @@ public class TaskDAO implements ITaskDAO {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public Boolean FindTaskRaplace(List<Integer> ids) {
 		// TODO Auto-generated method stub
@@ -106,7 +108,7 @@ public class TaskDAO implements ITaskDAO {
 		int row = this.jdbcN.queryForObject(sql, paramMap, Integer.class);
 		return row < 1;
 	}
-	
+
 	@Override
 	public Boolean FindTaskBeforeTask(List<Integer> ids) {
 		// TODO Auto-generated method stub
@@ -154,10 +156,11 @@ public class TaskDAO implements ITaskDAO {
 	}
 
 	@Override
-	public Boolean UpdateTaskBeforeAndReplace(Task task) {
+	public Boolean UpdateTaskConfig(Task task) {
 		// TODO Auto-generated method stub
-		String sql = "update task set beforeTask_id=?,replaceInfo_id=? where id = ?";
-		Object args[] = new Object[] { task.getBeforeTaskId(), task.getReplaceInfoId(), task.getId() };
+		String sql = "update task set beforeTask_id=?,replaceInfo_id=?,email_id=? where id = ?";
+		Object args[] = new Object[] { task.getBeforeTaskId(), task.getReplaceInfoId(), task.getEmailId(),
+				task.getId() };
 		int row = this.jdbcTemplate.update(sql, args);
 		return row > 0;
 	}
@@ -176,6 +179,15 @@ public class TaskDAO implements ITaskDAO {
 		// TODO Auto-generated method stub
 		String sql = "update task set isLoop=? where id = ?";
 		Object args[] = new Object[] { task.getIsLoop(), task.getId() };
+		int row = this.jdbcTemplate.update(sql, args);
+		return row > 0;
+	}
+	
+	@Override
+	public Boolean UpdateTaskIsSend(Task task) {
+		// TODO Auto-generated method stub
+		String sql = "update task set isSend=? where id = ?";
+		Object args[] = new Object[] { task.getIsSend(), task.getId() };
 		int row = this.jdbcTemplate.update(sql, args);
 		return row > 0;
 	}

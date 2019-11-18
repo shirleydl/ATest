@@ -12,6 +12,9 @@ import com.shirley.aTest.entity.AssertResult;
 import com.shirley.aTest.entity.Asserts;
 import com.shirley.aTest.entity.Request;
 import com.shirley.aTest.entity.ResponseContent;
+import com.shirley.aTest.util.AssertMehtod;
+import com.shirley.aTest.util.GetValue;
+import com.shirley.aTest.util.HttpClientUtil;
 
 /**
  * @Description: TODO(执行请求和断言)

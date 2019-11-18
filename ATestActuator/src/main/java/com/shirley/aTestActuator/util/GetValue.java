@@ -1,6 +1,5 @@
-package com.shirley.aTestActuator.method;
+package com.shirley.aTestActuator.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,21 +87,12 @@ public class GetValue {
 						try {
 							value = (String) customFunction.getClass().getMethod(method, new Class[] { Map.class })
 									.invoke(customFunction, new Object[] { paramValue });
-						} catch (IllegalAccessException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IllegalArgumentException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InvocationTargetException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						} catch (NoSuchMethodException e) {
 							// TODO Auto-generated catch block
 							value = "method not found!";
-						} catch (SecurityException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							value="method error!";
 						}
 					} else if (null != bindVariables && type.contains("Bind:")) {
 						value = bindVariables.get(type.substring(type.indexOf(":") + 1));
@@ -155,21 +145,12 @@ public class GetValue {
 					try {
 						value = (String) customFunction.getClass().getMethod(method, new Class[] { Map.class })
 								.invoke(customFunction, new Object[] { paramValue });
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					} catch (NoSuchMethodException e) {
 						// TODO Auto-generated catch block
 						value = "method not found!";
-					} catch (SecurityException e) {
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						value="method error!";
 					}
 				}
 			}
