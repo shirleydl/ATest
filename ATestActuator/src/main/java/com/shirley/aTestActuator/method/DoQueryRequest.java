@@ -17,6 +17,7 @@ import com.shirley.aTestActuator.entity.Replace;
 import com.shirley.aTestActuator.entity.Request;
 import com.shirley.aTestActuator.entity.ResponseContent;
 import com.shirley.aTestActuator.entity.SuiteWithCaseController;
+import com.shirley.aTestActuator.entity.ThreadDataManager;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -31,13 +32,13 @@ public class DoQueryRequest implements Runnable {
 	private int testSuiteId;
 	private CountDownLatch latch;
 	private Map<String, String> bindMapAll;
-	private DoQueryTestSuite callBack;
+	private ThreadDataManager threadDataManager;
 	private Boolean toAssertsOrNot;
 	private Replace replace;
 
-	public DoQueryRequest(DoQueryTestSuite callBack, int testSuiteId, int taskId, CountDownLatch latch,
+	public DoQueryRequest(ThreadDataManager threadDataManager, int testSuiteId, int taskId, CountDownLatch latch,
 			JdbcTemplate jdbcTemplate, Boolean toAssertsOrNot, Map<String, String> bindMapAll, Replace replace) {
-		this.callBack = callBack;
+		this.threadDataManager = threadDataManager;
 		this.testSuiteId = testSuiteId;
 		this.taskId = taskId;
 		this.latch = latch;
@@ -70,7 +71,7 @@ public class DoQueryRequest implements Runnable {
 		doIndex.setControllerIndex(0);
 
 		for (int i = 0; i < requestList.size(); i++) {
-			TestSuiteController controller = new TestSuiteController(taskId, bindMap, assertsDAO, replace);
+			TestSuiteController controller = new TestSuiteController(taskId,testSuiteId,bindMap, assertsDAO, replace);
 			doIndex.setRequestIndex(i);// 初始请求开始位置
 			/**
 			 * 判断当前请求是否需进入控制器
@@ -109,7 +110,7 @@ public class DoQueryRequest implements Runnable {
 				/**
 				 * 开始请求、断言
 				 */
-				DoRequest doRequest = new DoRequest(taskId, requestList.get(i), bindMap);
+				DoRequest doRequest = new DoRequest(taskId,testSuiteId,requestList.get(i), bindMap);
 				ResponseContent responseContent = new ResponseContent();
 				responseContent = doRequest.toRequest();
 				doRequest.toUpdateVariables(responseContent);
@@ -120,8 +121,8 @@ public class DoQueryRequest implements Runnable {
 				}
 			}
 		}
-		if (null != callBack) {
-			callBack.putAllBindMapAll(bindMap);
+		if (null != threadDataManager&&threadDataManager.isCallback()) {
+			threadDataManager.setBindMapAll(bindMap);
 		}
 		latch.countDown();
 	}

@@ -33,7 +33,7 @@ public class AssertResultDAO implements IAssertResultDAO {
 	@Override
 	public List<AssertResult> QueryAsserts(int currentPageNo, int pageSize, int taskId) {
 		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer("select id,case_id,url,status,createtime from asserts where 1=1");
+		StringBuffer sql = new StringBuffer("select id,suite_id,case_id,url,status,createtime from asserts where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != taskId) {
 			sql.append(" and task_id = ?");
@@ -51,6 +51,7 @@ public class AssertResultDAO implements IAssertResultDAO {
 		for (Map<String, Object> row : list) {
 			AssertResult assertResult = new AssertResult();
 			assertResult.setId((Integer) row.get("id"));
+			assertResult.setTestSuiteId((Integer) row.get("suite_id"));
 			assertResult.setCaseId((Integer) row.get("case_id"));
 			assertResult.setUrl((String) row.get("url"));
 			assertResult.setStatus((String) row.get("status"));

@@ -1,114 +1,102 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
-<link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
-	type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/all.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/froala_editor.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body style="background-color: #e6ecf5">
+    <div class="book_con01">
+        <form id="form_update" action="updateEmail" method="post">
+            <p class="book_p">
+                <table class="book_table" border="1" cellpadding="10">
+                    <tr>
+                        <td><label class="td_label">邮箱序号</label></td>
+                        <td><input id="id" name="id" type="text" class="book_input03" readonly="readonly"></td>
+                        <td><label class="td_label">邮箱名</label></td>
+                        <td colspan="3"><input id="name" name="name" type="text" class="book_input03" maxlength="50" placeholder="必填"></td>
+                    </tr>
+                    <tr>
+                        <td><label class="td_label">发件人</label></td>
+                        <td><input id="from" name="from" type="text" class="book_input03" maxlength="50" placeholder="必填"></td>
+                        <td><label class="td_label">密码</label></td>
+                        <td><input id="pass" name="pass" type="password" class="book_input03" maxlength="50" placeholder="必填"></td>
+                        <td><label class="td_label">发件人服务器</label></td>
+                        <td><input id="host" name="host" type="text" class="book_input03" maxlength="50" placeholder="必填"></td>
+                    </tr>
+                    <tr>
+                        <td><label class="td_label">收件人</label></td>
+                        <td colspan="5"><input id="receives" name="receives" type="text" class="book_input03" maxlength="50" placeholder="必填，多个收件人以‘,’分开"></td>
+                    </tr>
+                </table>
+            </p>
+            <p class="book_foot">
+                <input type="button" id="Sumbit" value="提交" />
+            </p>
+        </form>
+    </div>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script>
+    $(function() {
+        let url = decodeURI(window.location.search);
+        let value;
+        if (url.indexOf("?") != -1) {
+            let strs = url.substr(1).split("&");
+            value = new Array(strs.length);
+            for (let i = 0; i < strs.length; i++) {
+                value[i] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        let emailId = value[0];
+        $("#id").val(emailId);
+        $.ajax({
+            type: 'post',
+            url: "toQueryEmail",
+            cache: false,
+            data: {
+                "id": emailId
+            },
+            success: function(data) {
+                if (data != null) {
+                    $("#name").val(data.name);
+                    $("#from").val(data.from);
+                    $("#pass").val(data.pass);
+                    $("#host").val(data.host);
+                    $("#receives").val(data.receives);
+                }
+            },
+            error: function() {
+                alert("查询失败")
+            }
+        })
+    });
+    </script>
+    <script>
+    $("#Sumbit").click(function() {
+        let targetUrl = $("#form_update").attr("action");
+        let data = $("#form_update").serialize();
+        $.ajax({
+            type: 'post',
+            url: targetUrl,
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    alert("提交成功");
+                } else
+                    alert("数据错误！必填不能为空！");
+            },
+            error: function() {
+                alert("保存失败")
+            }
+        })
 
-	<div class="book_con01">
-		<form id="form_update" action="updateEmail" method="post">
-			<p class="book_p">
-			<table class="book_table" border="1" cellpadding="10">
-				<tr>
-					<td><label class="td_label">邮箱序号</label></td>
-					<td><input id="id" name="id" type="text" class="book_input03"
-						readonly="readonly"></td>
-					<td><label class="td_label">邮箱名</label></td>
-					<td colspan="3"><input id="name" name="name" type="text"
-						class="book_input03" maxlength="50" placeholder="必填"></td>
-
-				</tr>
-				<tr>
-					<td><label class="td_label">发件人</label></td>
-					<td><input id="from" name="from" type="text"
-						class="book_input03" maxlength="50" placeholder="必填"></td>
-					<td><label class="td_label">密码</label></td>
-					<td><input id="pass" name="pass" type="password"
-						class="book_input03" maxlength="50" placeholder="必填"></td>
-					<td><label class="td_label">发件人服务器</label></td>
-					<td><input id="host" name="host" type="text"
-						class="book_input03" maxlength="50" placeholder="必填"></td>
-				</tr>
-				<tr>
-					<td><label class="td_label">收件人</label></td>
-					<td colspan="5"><input id="receives" name="receives"
-						type="text" class="book_input03" maxlength="50"
-						placeholder="必填，多个收件人以‘,’分开"></td>
-				</tr>
-			</table>
-			</p>
-			<p class="book_foot">
-				<input type="button" id="Sumbit" value="提交" />
-			</p>
-		</form>
-	</div>
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-
-	<script>
-		$(function() {
-			let url = decodeURI(window.location.search);
-			let value;
-			if (url.indexOf("?") != -1) {
-				let strs = url.substr(1).split("&");
-				value = new Array(strs.length);
-				for (let i = 0; i < strs.length; i++) {
-					value[i] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			let emailId = value[0];
-			$("#id").val(emailId);
-			$.ajax({
-				type : 'post',
-				url : "toQueryEmail",
-				cache : false,
-				data : {
-					"id" : emailId
-				},
-				success : function(data) {
-					if(data!=null){
-					$("#name").val(data.name);
-					$("#from").val(data.from);
-					$("#pass").val(data.pass);
-					$("#host").val(data.host);
-					$("#receives").val(data.receives);
-					}
-				},
-				error : function() {
-					alert("查询失败")
-				}
-			})
-		});
-	</script>
-
-	<script>
-		$("#Sumbit").click(function() {
-			let targetUrl = $("#form_update").attr("action");
-			let data = $("#form_update").serialize();
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : data,
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-					} else
-						alert("数据错误！必填不能为空！");
-				},
-				error : function() {
-					alert("保存失败")
-				}
-			})
-
-		});
-	</script>
-
+    });
+    </script>
 </body>
+
 </html>

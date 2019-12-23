@@ -40,7 +40,7 @@ public class RequestRowMapper implements RowMapper<Request> {
 		request.setMethod(method);
 		try {
 			request.setHeaders((gson.fromJson(headers, map.getClass())));
-			if ("raw".equals(method)) {
+			if ("raw".equals(method)||"get_url".equals(method)) {
 				request.setParamStr(params);
 			} else {
 				request.setParamMap((gson.fromJson(params, map.getClass())));

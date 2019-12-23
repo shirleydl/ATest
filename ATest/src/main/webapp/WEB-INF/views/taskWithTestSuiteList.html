@@ -1,242 +1,225 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<meta http-equiv="Content-Type" content="text/html" ; charset="utf-8" />
-<title></title>
-
-<link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/bstable/css/bootstrap.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/bstable/css/bootstrap-table.css" rel="stylesheet"
-	type="text/css">
-
+    <meta http-equiv="Content-Type" content="text/html" ; charset="utf-8" />
+    <title></title>
+    <link href="css/all.css" rel="stylesheet" type="text/css">
+    <link href="js/bstable/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="js/bstable/css/bootstrap-table.css" rel="stylesheet" type="text/css">
 </head>
+
 <body>
+    <div class="div_find">
+        <p>
+            <label id="taskIdStr" class="find_labela"></label> <label id="taskNameStr" class="find_labela"></label> <input id="taskId" name="taskId" type="hidden"> <label class="find_labela">测试集号：</label><input id="testSuiteId" name="testSuiteId" type="text" class="find_input">
+            <label class="find_labela">测试集名：</label><input id="testSuiteName" name="testSuiteName" type="text" class="find_input"> <input type="button" value="搜索" class="find_but" id="search_btn"> <input type="button" value="重置" class="find_but" id="clean_btn"> <input type="button" id="Return" class="find_but" value="返回任务列表" />
+        </p>
+    </div>
+    <p class="p_but">
+        <i class="add_i"></i><a href="javascript:void(0)" onclick="addTaskWithSuite()" class="add_a">新增</a> <i class="del_i"></i><a href="javascript:void(0)" onclick="DeleteByIds()" class="add_a">删除</a>
+    </p>
+    <p>
+        <table id="table" class="table_style" style="margin: 0 auto">
+        </table>
+    </p>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script src="js/bstable/js/bootstrap.min.js"></script>
+    <script src="js/bstable/js/bootstrap-table.js"></script>
+    <script src="js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        let url = decodeURI(window.location.search);
+        let value;
+        if (url.indexOf("?") != -1) {
+            let strs = url.substr(1).split("&");
+            value = new Array(strs.length);
+            for (i = 0; i < strs.length; i++) {
+                value[i] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        let taskId = value[0];
+        $("#taskId").val(taskId);
+        $("#taskIdStr").text("任务序号：" + taskId);
+        $.ajax({
+            type: 'post',
+            url: "toQueryTask",
+            cache: false,
+            data: {
+                "id": taskId
+            },
+            success: function(data) {
+                if (data != null) {
+                    $("#taskNameStr").text("任务名：" + data.name);
+                }
+            },
+            error: function() {
+                alert("查询失败")
+            }
+        })
 
-	<div class="div_find">
-		<p>
-			<label id="taskIdStr" class="find_labela"></label> <label
-				id="taskNameStr" class="find_labela"></label> <input id="taskId"
-				name="taskId" type="hidden"> <label class="find_labela">测试集号：</label><input
-				id="testSuiteId" name="testSuiteId" type="text" class="find_input">
-			<label class="find_labela">测试集名：</label><input id="testSuiteName"
-				name="testSuiteName" type="text" class="find_input"> <input
-				type="button" value="搜索" class="find_but" id="search_btn"> <input
-				type="button" value="重置" class="find_but" id="clean_btn"> <input
-				type="button" id="Return" class="find_but" value="返回任务列表" />
-		</p>
-	</div>
-	<p class="p_but">
+        $('#table')
+            .bootstrapTable({
+                method: "get",
+                url: "toQueryTaskWithTestSuites",
+                striped: true,
+                dataType: "json",
+                pagination: true, //分页
+                cache: false,
+                sidePagination: 'server',
+                pageSize: 10,
+                pageNumber: 1,
+                singleSelect: false,
+                search: false, //显示搜索框
+                contentType: "application/x-www-form-urlencoded",
+                queryParams: function(params) { //配置参数  
+                    let temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的  
+                        testSuiteName: $("#testSuiteName").val(),
+                        testSuiteId: $("#testSuiteId").val(),
+                        taskId: taskId,
+                        pageNumber: (params.offset / params.limit) + 1,
+                        pageSize: params.limit
+                    };
+                    return temp;
+                },
+                columns: [{
+                        title: "全选",
+                        checkbox: true,
+                        field: 'check',
+                        align: 'center',
+                        valign: 'middle'
+                    },
+                    {
+                        title: "测试集序号",
+                        field: 'testSuiteId',
+                        align: 'center',
+                        valign: 'middle'
+                    },
+                    {
+                        title: '测试集名',
+                        field: 'testSuiteName',
+                        align: 'center',
+                        valign: 'middle'
+                    },
+                    {
+                        title: '操作',
+                        field: 'opear',
+                        align: 'center',
+                        formatter: function(value, row) {
+                            let e = '<a  href="#" title="测试集信息" onclick="testSuiteInfo(\'' +
+                                row.testSuiteId + '\')">编辑</a> <a  href="#" title="测试集用例信息" onclick="testCaseInfo(\'' +
+                                row.testSuiteId + '\')">用例管理</a>';
+                            return e;
+                        }
+                    }
+                ]
+            });
+    })
 
-		<i class="add_i"></i><a href="javascript:void(0)"
-			onclick="addTaskWithSuite()" class="add_a">新增</a> <i class="del_i"></i><a
-			href="javascript:void(0)" onclick="DeleteByIds()" class="add_a">删除</a>
-	</p>
-	<p>
-	<table id="table" class="table_style" style="margin: 0 auto">
-	</table>
-	</p>
+    $('#search_btn').click(function() {
+        $('#table').bootstrapTable('refresh', {
+            url: 'toQueryTaskWithTestSuites'
+        });
+    })
+    $('#clean_btn').click(function() {
+        $('#testSuiteName').val("");
+        $('#testSuiteId').val("");
+    })
 
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-	<script src="js/bstable/js/bootstrap.min.js"></script>
-	<script src="js/bstable/js/bootstrap-table.js"></script>
-	<script src="js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
-	<script type="text/javascript">
-		$(function() {
-			let url = decodeURI(window.location.search);
-			let value;
-			if (url.indexOf("?") != -1) {
-				let strs = url.substr(1).split("&");
-				value = new Array(strs.length);
-				for (i = 0; i < strs.length; i++) {
-					value[i] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			let taskId = value[0];
-			$("#taskId").val(taskId);
-			$("#taskIdStr").text("任务序号："+taskId);	
-			$.ajax({
-				type : 'post',
-				url : "toQueryTask",
-				cache : false,
-				data : {
-					"id" : taskId
-				},
-				success : function(data) {
-					if(data!=null){
-					$("#taskNameStr").text("任务名："+data.name);
-					}
-				},
-				error : function() {
-					alert("查询失败")
-				}
-			})
-			
-			$('#table')
-					.bootstrapTable(
-							{
-								method : "get",
-								url : "toQueryTaskWithTestSuites",
-								striped : true,
-								dataType : "json",
-								pagination : true, //分页
-								cache : false,
-								sidePagination : 'server',
-								pageSize : 10,
-								pageNumber : 1,
-								singleSelect : false,
-								search : false, //显示搜索框
-								contentType : "application/x-www-form-urlencoded",
-								queryParams : function(params) { //配置参数  
-									let temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的  
-										testSuiteName : $("#testSuiteName").val(),
-										testSuiteId : $("#testSuiteId").val(),
-										taskId : taskId,
-										pageNumber : (params.offset / params.limit) + 1,
-										pageSize : params.limit
-									};
-									return temp;
-								},
-								columns : [
-										{
-											title : "全选",
-											checkbox : true,
-											field : 'check',
-											align : 'center',
-											valign : 'middle'
-										},
-										{
-											title : "测试集序号",
-											field : 'testSuiteId',
-											align : 'center',
-											valign : 'middle'
-										},
-										{
-											title : '测试集名',
-											field : 'testSuiteName',
-											align : 'center',
-											valign : 'middle'
-										},
-										{
-											title : '操作',
-											field : 'opear',
-											align : 'center',
-											formatter : function(value, row) {
-												let e = '<a  href="#" title="测试集信息" onclick="testSuiteInfo(\''
-														+ row.testSuiteId + '\')">编辑</a> <a  href="#" title="测试集用例信息" onclick="testCaseInfo(\''
-														+ row.testSuiteId + '\')">用例管理</a>';
-												return e;
-											}
-										} ]
-							});
-		})
 
-		$('#search_btn').click(function() {
-			$('#table').bootstrapTable('refresh', {
-				url : 'toQueryTaskWithTestSuites'
-			});
-		})
-		$('#clean_btn').click(function() {
-			$('#testSuiteName').val("");
-			$('#testSuiteId').val("");
-		})
-		
-				
-		$("#Return").click(function() {
-			window.location.href = "taskList";
-		})
+    $("#Return").click(function() {
+        window.location.href = "taskList";
+    })
 
-		function DeleteByIds() {
-			let ids = new Array()
-			let rows = $("#table").bootstrapTable('getSelections');
-			if (rows.length <= 0) {
-				alert("请选中一行")
-			} else {
-				for (let i = 0; i < rows.length; i++) {
-					ids.push(rows[i].id);
-				}
-				let url = "toDelTaskWithTestSuite";
-				$.ajax({
-					traditional : true,//这使json格式的字符不会被转码
-					data : {
-						"ids" : ids,
-					},
-					type : "post",
-					url : url,
-					success : function(data) {
-						if (data) {
-							alert("提交成功！");
-							$('#table').bootstrapTable('refresh', {
-								url : 'toQueryTaskWithTestSuites'
-							});
-						} else
-							alert("数据错误");
-					},
-					error : function(data) {
-						alert("提交失败！");
-					}
-				});
-			}
-		}
-	</script>
+    function DeleteByIds() {
+        let ids = new Array()
+        let rows = $("#table").bootstrapTable('getSelections');
+        if (rows.length <= 0) {
+            alert("请选中一行")
+        } else {
+            for (let i = 0; i < rows.length; i++) {
+                ids.push(rows[i].id);
+            }
+            let url = "toDelTaskWithTestSuite";
+            $.ajax({
+                traditional: true, //这使json格式的字符不会被转码
+                data: {
+                    "ids": ids,
+                },
+                type: "post",
+                url: url,
+                success: function(data) {
+                    if (data) {
+                        alert("提交成功！");
+                        $('#table').bootstrapTable('refresh', {
+                            url: 'toQueryTaskWithTestSuites'
+                        });
+                    } else
+                        alert("数据错误");
+                },
+                error: function(data) {
+                    alert("提交失败！");
+                }
+            });
+        }
+    }
+    </script>
+    <script src="js/layer_v2.1/layer/layer.js"></script>
+    <script>
+    function testSuiteInfo(id) {
+        layer.open({
+            type: 2,
+            title: '测试集信息',
+            shadeClose: true,
+            shade: 0.5,
+            skin: 'layui-layer-rim',
+            //maxmin: true,
+            closeBtn: 1,
+            area: ['98%', '92%'],
+            shadeClose: true,
+            content: 'queryTestSuite?id=' + id
+            //iframe的url
+        });
+    }
 
-	<script src="js/layer_v2.1/layer/layer.js"></script>
-	<script>
-		function testSuiteInfo(id) {
-			layer.open({
-				type : 2,
-				title : '测试集信息',
-				shadeClose : true,
-				shade : 0.5,
-				skin : 'layui-layer-rim',
-				//maxmin: true,
-				closeBtn : 1,
-				area : [ '98%', '92%' ],
-				shadeClose : true,
-				content : 'queryTestSuite?id=' + id
-			//iframe的url
-			});
-		}
-		
-		function testCaseInfo(id) {
-			layer.open({
-				type : 2,
-				title : '测试集用例信息',
-				shadeClose : true,
-				shade : 0.5,
-				skin : 'layui-layer-rim',
-				//            maxmin: true,
-				closeBtn : 1,
-				area : [ '100%', '100%' ],
-				shadeClose : true,
-				content : 'queryTestSuiteWithCase?testSuiteId=' + id
-			//iframe的url
-			});
-		}
-		
-		function addTaskWithSuite() {
-			let taskId = $("#taskId").val();
-			layer.open({
-				type : 2,
-				title : '添加测试集',
-				shadeClose : true,
-				shade : 0.5,
-				skin : 'layui-layer-rim',
-				//            maxmin: true,
-				closeBtn : 1,
-				area : [ '100%', '100%' ],
-				shadeClose : true,
-				content : 'addTaskWithSuite?taskId=' + taskId,
-				end: function () {
-					$('#table').bootstrapTable('refresh', {
-						url : 'toQueryTaskWithTestSuites'
-					});
-					}
-				
-			//iframe的url
-			});
-		}
+    function testCaseInfo(id) {
+        layer.open({
+            type: 2,
+            title: '测试集用例信息',
+            shadeClose: true,
+            shade: 0.5,
+            skin: 'layui-layer-rim',
+            //            maxmin: true,
+            closeBtn: 1,
+            area: ['100%', '100%'],
+            shadeClose: true,
+            content: 'queryTestSuiteWithCase?testSuiteId=' + id
+            //iframe的url
+        });
+    }
 
-	</script>
+    function addTaskWithSuite() {
+        let taskId = $("#taskId").val();
+        layer.open({
+            type: 2,
+            title: '添加测试集',
+            shadeClose: true,
+            shade: 0.5,
+            skin: 'layui-layer-rim',
+            //            maxmin: true,
+            closeBtn: 1,
+            area: ['100%', '100%'],
+            shadeClose: true,
+            content: 'addTaskWithSuite?taskId=' + taskId,
+            end: function() {
+                $('#table').bootstrapTable('refresh', {
+                    url: 'toQueryTaskWithTestSuites'
+                });
+            }
+
+            //iframe的url
+        });
+    }
+    </script>
 </body>
+
 </html>

@@ -8,6 +8,7 @@ package com.shirley.aTest.entity;
 public class AssertResult {
 	private int id;
 	private int taskId;
+	private int testSuiteId;
 	private int caseId;
 	private String url;
 	private String requestContent;
@@ -30,6 +31,14 @@ public class AssertResult {
 
 	public void setTaskId(int taskId) {
 		this.taskId = taskId;
+	}
+
+	public int getTestSuiteId() {
+		return testSuiteId;
+	}
+
+	public void setTestSuiteId(int testSuiteId) {
+		this.testSuiteId = testSuiteId;
 	}
 
 	public int getCaseId() {

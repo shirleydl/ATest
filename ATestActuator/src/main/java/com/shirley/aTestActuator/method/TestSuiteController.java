@@ -27,11 +27,13 @@ import com.shirley.aTestActuator.util.ListCopy;
 public class TestSuiteController {
 	private Map<String, String> bindMap;
 	private int taskId;
+	private int testSuiteId;
 	private AssertsDAO assertsDAO;
 	private Replace replace;
 
-	public TestSuiteController(int taskId, Map<String, String> bindMap, AssertsDAO assertsDAO, Replace replace) {
+	public TestSuiteController(int taskId,int testSuiteId, Map<String, String> bindMap, AssertsDAO assertsDAO, Replace replace) {
 		this.taskId = taskId;
+		this.testSuiteId = testSuiteId;
 		this.bindMap = bindMap;
 		this.assertsDAO = assertsDAO;
 		this.replace = replace;
@@ -209,7 +211,7 @@ public class TestSuiteController {
 					/**
 					 * 开始请求、断言
 					 */
-					DoRequest doRequest = new DoRequest(taskId, loopRequests.get(i), bindMap);
+					DoRequest doRequest = new DoRequest(taskId,testSuiteId,loopRequests.get(i), bindMap);
 					ResponseContent responseContent = new ResponseContent();
 					responseContent = doRequest.toRequest();
 					doRequest.toUpdateVariables(responseContent);

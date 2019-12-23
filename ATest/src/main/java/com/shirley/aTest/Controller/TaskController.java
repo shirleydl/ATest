@@ -174,13 +174,14 @@ public class TaskController {
 
 	@RequestMapping(value = "/toUpdateConfig", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean toUpdateConfig(Integer taskId, Integer beforeTaskId, Integer replaceInfoId, Integer emailId) {
+	public Boolean toUpdateConfig(Integer taskId, Integer beforeTaskId, Integer replaceInfoId, Integer emailId,Integer isFailSend) {
 		if (null != taskId) {
 			Task task = new Task();
 			task.setId(taskId);
 			task.setBeforeTaskId(null != beforeTaskId ? beforeTaskId : 0);
 			task.setReplaceInfoId(null != replaceInfoId ? replaceInfoId : 0);
 			task.setEmailId(null != emailId ? emailId : 0);
+			task.setIsFailSend(null != isFailSend ? isFailSend : 0);
 			return taskService.UpdateTaskConfig(task);
 		}
 		return false;

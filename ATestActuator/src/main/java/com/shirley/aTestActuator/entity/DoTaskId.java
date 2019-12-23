@@ -11,6 +11,7 @@ public class DoTaskId {
 	private int beforeTaskId;
 	private int replaceInfoId;
 	private int emailId;
+	private int isFailSend;
 	private int isSend;
 
 	public int getId() {
@@ -51,6 +52,14 @@ public class DoTaskId {
 
 	public void setEmailId(int emailId) {
 		this.emailId = emailId;
+	}
+
+	public int getIsFailSend() {
+		return isFailSend;
+	}
+
+	public void setIsFailSend(int isFailSend) {
+		this.isFailSend = isFailSend;
 	}
 
 	public int getIsSend() {

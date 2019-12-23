@@ -1,128 +1,120 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
-<link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
-<style>
-.input-default {
-	padding: 5px;
-	border: 1px solid #ccc;
-	border-radius: 2px; /*html5*/
-	text-indent: 0 !important;
-	min-height: 22px;
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/all.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/froala_editor.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
+    <style>
+        .input-default {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 2px; /*html5*/
+    text-indent: 0 !important;
+    min-height: 22px;
 }
 </style>
-
 </head>
 
 <body style="background-color: #e6ecf5">
+    <div class="book_con01">
+        <h1 class="book_h01">添加测试集</h1>
+        <p class="book_p">
+            <table class="book_table" border="1" cellpadding="10">
+                <input id="productProjectId" type="hidden" name="productProjectId" />
+                <tr>
+                    <td><label class="td_label">测试集号</label></td>
+                    <td><input id="testSuiteId" name="testSuiteId" type="text" class="book_input03" " autocomplete=" off" placeholder="必填"></td>
+                    <td><label class="td_label">测试集名</label></td>
+                    <td><input id="testSuiteName" name="testSuiteName" type="text" class="book_input03" autocomplete="off" placeholder="必填"></td>
+                </tr>
+            </table>
+            <p class="book_foot">
+                <input type="button" id="Sumbit" value="确定添加" />
+            </p>
+        </p>
+    </div>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script src="js/editor/js/input-autocomplete.js"></script>
+    <script>
+    $(function() {
+        let url = decodeURI(window.location.search);
+        let value;
+        if (url.indexOf("?") != -1) {
+            let strs = url.substr(1).split("&");
+            value = new Array(strs.length);
+            for (let i = 0; i < strs.length; i++) {
+                value[i] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        $("#productProjectId").val(value[0]);
 
-	<div class="book_con01">
-		<h1 class="book_h01">添加测试集</h1>
-		<p class="book_p">
-			<table class="book_table" border="1" cellpadding="10">
-			<input id="productProjectId" type="hidden" name="productProjectId" />
-				<tr>
-					<td><label class="td_label">测试集号</label></td>
-					<td><input id="testSuiteId" name="testSuiteId"
-						type="text" class="book_input03" " autocomplete="off" placeholder="必填"></label></td>
-					<td><label class="td_label">测试集名</label></td>
-					<td><input id="testSuiteName" name="testSuiteName"
-						type="text" class="book_input03" autocomplete="off" placeholder="必填"></td>
-				</tr>
-			</table>
-			<p class="book_foot">
-				<input type="button" id="Sumbit" value="确定添加" />
-			</p>
-		</p>
+    });
+    </script>
+    <script>
+    $("#Sumbit").click(function() {
+        let productProjectId = $("#productProjectId").val();
+        let testSuiteId = $("#testSuiteId").val();
+        let targetUrl = "toAddProductProjectWithSuite";
+        $.ajax({
+            type: 'post',
+            url: targetUrl,
+            cache: false,
+            data: {
+                "productProjectId": productProjectId,
+                "testSuiteId": testSuiteId
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    alert("提交成功");
+                } else
+                    alert("数据错误或该测试集已存在！");
+            },
+            error: function() {
+                alert("提交失败");
+            }
+        })
 
+    });
+    </script>
+    <script>
+    $("#testSuiteName").bigAutocomplete({
+        url: 'queryTestSuiteByName',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.name + " " + row.id;
+        },
+        formatSelected: function(data, i, row) {
+            return row.name;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#testSuiteId").val(row.id);
+            }
+        },
+    });
 
-	</div>
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-	<script src="js/editor/js/input-autocomplete.js"></script>
-
-	<script>
-		$(function() {
-			let url = decodeURI(window.location.search);
-			let value;
-			if (url.indexOf("?") != -1) {
-				let strs = url.substr(1).split("&");
-				value = new Array(strs.length);
-				for (let i = 0; i < strs.length; i++) {
-					value[i] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			$("#productProjectId").val(value[0]);			
-
-		});
-	</script><script>
-		$("#Sumbit").click(function() {
-			let productProjectId=$("#productProjectId").val();
-			let testSuiteId=$("#testSuiteId").val();
-			let targetUrl = "toAddProductProjectWithSuite";
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : {
-					"productProjectId" : productProjectId,
-					"testSuiteId" : testSuiteId
-				},
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-					} else
-						alert("数据错误或该测试集已存在！");
-				},
-				error : function() {
-					alert("提交失败");
-				}
-			})
-
-		});
-
-	</script>
-		
-	<script>
-		$("#testSuiteName").bigAutocomplete({
-			url : 'queryTestSuiteByName',
-			title : 'name',
-			custom : false,
-			formatItem : function(data, i, row) {
-				return row.name + " " + row.id;
-			},
-			formatSelected : function(data, i, row) {
-				return row.name;
-			},
-			callback : function(row) {
-				if (null != row) {
-					$("#testSuiteId").val(row.id);
-				}
-			},
-		});
-
-		$("#testSuiteId").bigAutocomplete({
-			url : 'queryTestSuiteById',
-			title : 'name',
-			custom : false,
-			formatItem : function(data, i, row) {
-				return row.id + " " + row.name;
-			},
-			formatSelected : function(data, i, row) {
-				return row.id;
-			},
-			callback : function(row) {
-				if (null != row) {
-					$("#testSuiteName").val(row.name);
-				}
-			},
-		});
-	</script>
+    $("#testSuiteId").bigAutocomplete({
+        url: 'queryTestSuiteById',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.id + " " + row.name;
+        },
+        formatSelected: function(data, i, row) {
+            return row.id;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#testSuiteName").val(row.name);
+            }
+        },
+    });
+    </script>
 </body>
+
 </html>

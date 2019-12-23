@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80017
 File Encoding         : 65001
 
-Date: 2019-11-18 15:20:09
+Date: 2019-12-23 11:00:12
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS `asserts`;
 CREATE TABLE `asserts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `task_id` int(11) NOT NULL DEFAULT '0',
+  `suite_id` int(11) NOT NULL DEFAULT '0',
   `case_id` int(11) NOT NULL DEFAULT '0',
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `requestcontent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -148,6 +149,7 @@ CREATE TABLE `task` (
   `status` int(11) NOT NULL DEFAULT '0',
   `isSend` int(1) NOT NULL DEFAULT '0',
   `email_id` int(11) NOT NULL DEFAULT '0',
+  `isFailSend` int(1) NOT NULL DEFAULT '0',
   `createtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

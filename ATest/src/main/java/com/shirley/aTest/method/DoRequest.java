@@ -115,18 +115,20 @@ public class DoRequest {
 				responseContent = HttpClientUtil.getInstance().sendHttpGet(request.getUrl() + request.getApi(),
 						request.getHeaders(), requestConfig, request.getRetry(), request.getInterval());
 
-		}
-		if ("form".equals(request.getMethod())) {
+		}else if ("form".equals(request.getMethod())) {
 			responseContent = HttpClientUtil.getInstance().sendHttpPost(request.getUrl() + request.getApi(),
 					request.getParamMap(), request.getHeaders(), requestConfig, request.getRetry(),
 					request.getInterval());
 
-		}
-		if ("raw".equals(request.getMethod())) {
+		}else if ("raw".equals(request.getMethod())) {
 			responseContent = HttpClientUtil.getInstance().sendHttpPost(request.getUrl() + request.getApi(),
 					request.getParamStr(), request.getHeaders(), requestConfig, request.getRetry(),
 					request.getInterval());
 
+		}else if ("get_url".equals(request.getMethod())) {
+			responseContent = HttpClientUtil.getInstance().sendHttpGet(request.getUrl() + request.getApi()+
+					request.getParamStr(), request.getHeaders(), requestConfig, request.getRetry(),
+					request.getInterval());
 		}
 
 		return responseContent;

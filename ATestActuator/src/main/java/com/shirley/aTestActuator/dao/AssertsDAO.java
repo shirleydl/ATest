@@ -24,17 +24,19 @@ public class AssertsDAO {
 	}
 
 	public void AddAsserts(AssertResult assertResult) {
-		String sql = "insert into asserts (task_id,case_id,url,requestcontent,responsecontent,assertresult,status) values (?,?,?,?,?,?,?)";
-		this.jdbcTemplate.update(sql, new Object[] { assertResult.getTaskId(), assertResult.getCaseId(),assertResult.getUrl(),
+		String sql = "insert into asserts (task_id,suite_id,case_id,url,requestcontent,responsecontent,assertresult,status) values (?,?,?,?,?,?,?,?)";
+		this.jdbcTemplate.update(sql, new Object[] { assertResult.getTaskId(), assertResult.getTestSuiteId(),
+				assertResult.getCaseId(), assertResult.getUrl(),
 				assertResult.getRequestContent().length() > 5000 ? assertResult.getRequestContent().substring(0, 5000)
 						: assertResult.getRequestContent(),
 				assertResult.getResponseContent().length() > 5000 ? assertResult.getResponseContent().substring(0, 5000)
 						: assertResult.getResponseContent(),
 				assertResult.getAssertResult(), assertResult.getStatus() });
 	}
-	
+
 	public List<AssertResult> QueryAsserts(int taskId) {
-		StringBuffer sql = new StringBuffer("select asserts.id,asserts.case_id,asserts.url,asserts.status,asserts.createtime,asserts.requestcontent,asserts.responsecontent,asserts.assertresult,testcase.name,testcase.description from asserts left join testcase on asserts.case_id=testcase.id where 1=1");
+		StringBuffer sql = new StringBuffer(
+				"select asserts.id,asserts.case_id,asserts.url,asserts.status,asserts.createtime,asserts.requestcontent,asserts.responsecontent,asserts.assertresult,testcase.name,testcase.description from asserts left join testcase on asserts.case_id=testcase.id where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != taskId) {
 			sql.append(" and asserts.task_id = ?");
@@ -59,8 +61,8 @@ public class AssertsDAO {
 		}
 		return assertResultList;
 	}
-	
-	public int QueryAssertsCount(int taskId,String status) {
+
+	public int QueryAssertsCount(int taskId, String status) {
 		StringBuffer sql = new StringBuffer("select count(id) from asserts where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 		if (0 != taskId) {
@@ -74,7 +76,7 @@ public class AssertsDAO {
 
 		return this.jdbcTemplate.queryForObject(sql.toString(), queryList.toArray(), Integer.class);
 	}
-	
+
 	public Boolean DeleteAssertsByTaskId(int id) {
 		String sql = "delete from asserts where task_id = ?";
 		int row = this.jdbcTemplate.update(sql, new Object[] { id });

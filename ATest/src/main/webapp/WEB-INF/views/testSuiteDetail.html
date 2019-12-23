@@ -1,100 +1,93 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
-<link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
-	type="text/css">
 
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/all.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/froala_editor.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body style="background-color: #e6ecf5">
+    <div class="book_con01">
+        <h1 class="book_h01">测试集信息</h1>
+        <form id="form_update" action="toUpdateTestSuite" method="post">
+            <p class="book_p">
+                <table class="book_table" border="1" cellpadding="10">
+                    <tr>
+                        <input id="testSuiteId" type="hidden" name="testSuiteId" />
+                        <td><label class="td_label">测试集名</label></td>
+                        <td><input id="name" name="name" type="text" class="book_input03" maxlength="50" placeholder="必填"></td>
+                        <td><label class="td_label">描述</label></td>
+                        <td><input id="description" name="description" type="text" class="book_input03" maxlength="80"></td>
+                    </tr>
+                </table>
+            </p>
+            <p class="book_foot">
+                <input type="button" id="Sumbit" value="提交" /><input type="button" id="Clean" value="清除" />
+            </p>
+        </form>
+    </div>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script>
+    $("#Sumbit").click(function() {
+        let targetUrl = $("#form_update").attr("action");
+        let data = $('#form_update').serialize();
+        $.ajax({
+            type: 'post',
+            url: targetUrl,
+            cache: false,
+            data: data,
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    alert("提交成功");
+                } else
+                    alert("数据错误");
+            },
+            error: function() {
+                alert("提交失败");
+            }
+        })
 
-	<div class="book_con01">
-		<h1 class="book_h01">测试集信息</h1>
-		<form id="form_update" action="toUpdateTestSuite" method="post">
-			<p class="book_p">
-			<table class="book_table" border="1" cellpadding="10">
-				<tr>
-					<input id="testSuiteId" type="hidden" name="testSuiteId" />
-					<td><label class="td_label">测试集名</label></td>
-					<td><input id="name" name="name" type="text"
-						class="book_input03" maxlength="50" placeholder="必填"></td>
-					<td><label class="td_label">描述</label></td>
-					<td><input id="description" name="description" type="text"
-						class="book_input03" maxlength="80"></td>
-				</tr>
-			</table>
-			</p>
-			<p class="book_foot">
-				<input type="button" id="Sumbit" value="提交" /><input type="button"
-					id="Clean" value="清除" />
-			</p>
-		</form>
-	</div>
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-	
-	<script>
-		$("#Sumbit").click(function() {
-			let targetUrl = $("#form_update").attr("action");
-			let data = $('#form_update').serialize();
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : data,
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-					} else
-						alert("数据错误");
-				},
-				error : function() {
-					alert("提交失败");
-				}
-			})
+    });
 
-		});
-
-		$("#Clean").click(function() {
-			$(".book_table input").each(function() {
-				$(this).val('');
-			});
-		})
-	</script>
-	<script>
-		$(function() {
-			let url = decodeURI(window.location.search);
-			let value;
-			if (url.indexOf("?") != -1) {
-				let strs = url.substr(1).split("&");
-				value = new Array(strs.length);
-				for (i = 0; i < strs.length; i++) {
-					value[i] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			let testSuiteId = value[0];
-			$("#testSuiteId").val(testSuiteId);
-			$.ajax({
-				type : 'post',
-				url : "toQueryTestSuite",
-				cache : false,
-				data : {
-					"id" : testSuiteId
-				},
-				success : function(data) {
-					$("#name").val(data.name);
-					$("#description").val(data.description);
-				},
-				error : function() {
-					alert("查询失败")
-				}
-			})
-		});
-	</script>
-
+    $("#Clean").click(function() {
+        $(".book_table input").each(function() {
+            $(this).val('');
+        });
+    })
+    </script>
+    <script>
+    $(function() {
+        let url = decodeURI(window.location.search);
+        let value;
+        if (url.indexOf("?") != -1) {
+            let strs = url.substr(1).split("&");
+            value = new Array(strs.length);
+            for (i = 0; i < strs.length; i++) {
+                value[i] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        let testSuiteId = value[0];
+        $("#testSuiteId").val(testSuiteId);
+        $.ajax({
+            type: 'post',
+            url: "toQueryTestSuite",
+            cache: false,
+            data: {
+                "id": testSuiteId
+            },
+            success: function(data) {
+                $("#name").val(data.name);
+                $("#description").val(data.description);
+            },
+            error: function() {
+                alert("查询失败")
+            }
+        })
+    });
+    </script>
 </body>
+
 </html>

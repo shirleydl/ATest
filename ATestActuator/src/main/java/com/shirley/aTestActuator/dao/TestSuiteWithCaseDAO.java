@@ -42,7 +42,7 @@ public class TestSuiteWithCaseDAO {
 			request.setCaseId((Integer)row.get("id"));
 			request.setMethod((String) row.get("method"));
 			request.setHeaders((gson.fromJson((String) row.get("headers"), map.getClass())));
-			if ("raw".equals(request.getMethod())) {
+			if ("raw".equals(request.getMethod())||"get_url".equals(request.getMethod())) {
 				request.setParamStr((String) row.get("params"));
 			} else {
 				request.setParamMap((gson.fromJson((String) row.get("params"), map.getClass())));

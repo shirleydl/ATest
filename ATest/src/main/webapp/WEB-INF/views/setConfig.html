@@ -1,227 +1,220 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
-<link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
-<style>
-.input-default {
-	padding: 5px;
-	border: 1px solid #ccc;
-	border-radius: 2px; /*html5*/
-	text-indent: 0 !important;
-	min-height: 22px;
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/all.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/froala_editor.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/input-autocomplete.css" rel="stylesheet" />
+    <style>
+        .input-default {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 2px; /*html5*/
+    text-indent: 0 !important;
+    min-height: 22px;
 }
 </style>
-
 </head>
 
 <body style="background-color: #e6ecf5">
+    <div class="book_con01">
+        <h1 class="book_h01">任务设置</h1>
+        <p class="book_p">
+            <table class="book_table" border="1" cellpadding="10">
+                <input id="fromTaskId" type="hidden" name="fromTaskId" />
+                <tr>
+                    <td><label class="td_label">前置任务号</label></td>
+                    <td><input id="taskId" name="taskId" type="text" class="book_input03" " autocomplete=" off"></label></td>
+                    <td><label class="td_label">前置任务名</label></td>
+                    <td colspan="2"><input id="taskName" name="taskName" type="text" class="book_input03" autocomplete="off"></td>
+                </tr>
+                <tr>
+                    <td><label class="td_label">替换号</label></td>
+                    <td><input id="replaceInfoId" name="replaceInfoId" type="text" class="book_input03" " autocomplete=" off"></label></td>
+                    <td><label class="td_label">替换名</label></td>
+                    <td colspan="2"><input id="replaceName" name="replaceName" type="text" class="book_input03" autocomplete="off"></td>
+                </tr>
+                <tr>
+                    <td><label class="td_label">报告邮箱序号</label></td>
+                    <td><input id="emailId" name="emailId" type="text" class="book_input03" " autocomplete=" off"></label></td>
+                    <td><label class="td_label">报告邮箱名</label></td>
+                    <td><input id="emailName" name="emailName" type="text" class="book_input03" autocomplete="off"></td>
+                    <td><label class="td_label">仅失败发送</label><input id="isFailSend" name="isFailSend" type="checkbox" value="isFailSend"/></td>
+                </tr>
+            </table>
+            <p class="book_foot">
+                <input type="button" id="Sumbit" value="确定设置" />
+            </p>
+        </p>
+    </div>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script src="js/editor/js/input-autocomplete.js"></script>
+    <script>
+    $(function() {
+        let url = decodeURI(window.location.search);
+        let value;
+        if (url.indexOf("?") != -1) {
+            let strs = url.substr(1).split("&");
+            value = new Array(strs.length);
+            for (let i = 0; i < strs.length; i++) {
+                value[i] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        $("#fromTaskId").val(value[0]);
+        $("#taskId").val(value[1]);
+        $("#replaceInfoId").val(value[2]);
+        $("#emailId").val(value[3]);
+        if("1"==value[4]){
+        	$("input[value='isFailSend']").attr(
+                'checked', 'true');
+        	}
 
-	<div class="book_con01">
-		<h1 class="book_h01">任务设置</h1>
-		<p class="book_p">
-		<table class="book_table" border="1" cellpadding="10">
-			<input id="fromTaskId" type="hidden" name="fromTaskId" />
-			<tr>
-				<td><label class="td_label">前置任务号</label></td>
-				<td><input id="taskId" name="taskId" type="text"
-					class="book_input03" " autocomplete="off"></label></td>
-				<td><label class="td_label">前置任务名</label></td>
-				<td><input id="taskName" name="taskName" type="text"
-					class="book_input03" autocomplete="off"></td>
-			</tr>
-			<tr>
-				<td><label class="td_label">替换号</label></td>
-				<td><input id="replaceInfoId" name="replaceInfoId" type="text"
-					class="book_input03" " autocomplete="off"></label></td>
-				<td><label class="td_label">替换名</label></td>
-				<td><input id="replaceName" name="replaceName" type="text"
-					class="book_input03" autocomplete="off"></td>
-			</tr>
-			<tr>
-				<td><label class="td_label">报告邮箱序号</label></td>
-				<td><input id="emailId" name="emailId" type="text"
-					class="book_input03" " autocomplete="off"></label></td>
-				<td><label class="td_label">报告邮箱名</label></td>
-				<td><input id="emailName" name="emailName" type="text"
-					class="book_input03" autocomplete="off"></td>
-			</tr>
-		</table>
-		<p class="book_foot">
-			<input type="button" id="Sumbit" value="确定设置" />
-		</p>
-		</p>
+    });
+    </script>
+    <script>
+    $("#Sumbit").click(function() {
+        let fromTaskId = $("#fromTaskId").val();
+        let beforeTaskId = $("#taskId").val();
+        let replaceInfoId = $("#replaceInfoId").val();
+        let emailId = $("#emailId").val();
+        let isFailSend=$("#isFailSend").prop("checked")?1:0;
+        let targetUrl = "toUpdateConfig";
+        $.ajax({
+            type: 'post',
+            url: targetUrl,
+            cache: false,
+            data: {
+                "taskId": fromTaskId,
+                "beforeTaskId": beforeTaskId,
+                "replaceInfoId": replaceInfoId,
+                "emailId": emailId,
+                "isFailSend":isFailSend
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    alert("提交成功");
+                } else
+                    alert("数据错误或任务号已被使用！");
+            },
+            error: function() {
+                alert("提交失败");
+            }
+        })
 
+    });
+    </script>
+    <script>
+    $("#taskId").bigAutocomplete({
+        url: 'queryTaskById',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.id + " " + row.name;
+        },
+        formatSelected: function(data, i, row) {
+            return row.id;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#taskName").val(row.name);
+            } else
+                $("#taskName").val("");
+        },
+    });
 
-	</div>
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-	<script src="js/editor/js/input-autocomplete.js"></script>
+    $("#taskName").bigAutocomplete({
+        url: 'queryTaskByName',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.name + " " + row.id;
+        },
+        formatSelected: function(data, i, row) {
+            return row.name;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#taskId").val(row.id);
+            } else
+                $("#taskId").val("");
+        },
+    });
 
-	<script>
-		$(function() {
-			let url = decodeURI(window.location.search);
-			let value;
-			if (url.indexOf("?") != -1) {
-				let strs = url.substr(1).split("&");
-				value = new Array(strs.length);
-				for (let i = 0; i < strs.length; i++) {
-					value[i] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			$("#fromTaskId").val(value[0]);
-			$("#taskId").val(value[1]);
-			$("#replaceInfoId").val(value[2]);
-			$("#emailId").val(value[3]);
+    $("#replaceInfoId").bigAutocomplete({
+        url: 'queryReplaceById',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.id + " " + row.name;
+        },
+        formatSelected: function(data, i, row) {
+            return row.id;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#replaceName").val(row.name);
+            } else
+                $("#replaceName").val("");
+        },
+    });
 
-		});
-	</script>
-	<script>
-		$("#Sumbit").click(function() {
-			let fromTaskId=$("#fromTaskId").val();
-			let beforeTaskId=$("#taskId").val();
-			let replaceInfoId=$("#replaceInfoId").val();
-			let emailId=$("#emailId").val();
-			let targetUrl = "toUpdateConfig";
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : {
-					"taskId" : fromTaskId,
-					"beforeTaskId" : beforeTaskId,
-					"replaceInfoId" : replaceInfoId,
-					"emailId" : emailId
-				},
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-					} else
-						alert("数据错误或任务号已被使用！");
-				},
-				error : function() {
-					alert("提交失败");
-				}
-			})
+    $("#replaceName").bigAutocomplete({
+        url: 'queryReplaceByName',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.name + " " + row.id;
+        },
+        formatSelected: function(data, i, row) {
+            return row.name;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#replaceInfoId").val(row.id);
+            } else
+                $("#replaceInfoId").val("");
+        },
+    });
 
-		});
+    $("#emailId").bigAutocomplete({
+        url: 'queryEmailById',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.id + " " + row.name;
+        },
+        formatSelected: function(data, i, row) {
+            return row.id;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#emailName").val(row.name);
+            } else
+                $("#emailName").val("");
+        },
+    });
 
-	</script>
-
-	<script>
-	$("#taskId").bigAutocomplete({
-		url : 'queryTaskById',
-		title : 'name',
-		custom : false,
-		formatItem : function(data, i, row) {
-			return row.id + " " + row.name;
-		},
-		formatSelected : function(data, i, row) {
-			return row.id;
-		},
-		callback : function(row) {
-			if (null != row) {
-				$("#taskName").val(row.name);
-			}else
-				$("#taskName").val("");
-		},
-	});
-	
-	$("#taskName").bigAutocomplete({
-			url : 'queryTaskByName',
-			title : 'name',
-			custom : false,
-			formatItem : function(data, i, row) {
-				return row.name + " " + row.id;
-			},
-			formatSelected : function(data, i, row) {
-				return row.name;
-			},
-			callback : function(row) {
-				if (null != row) {
-					$("#taskId").val(row.id);
-				}else
-					$("#taskId").val("");
-			},
-		});
-	
-	$("#replaceInfoId").bigAutocomplete({
-			url : 'queryReplaceById',
-			title : 'name',
-			custom : false,
-			formatItem : function(data, i, row) {
-				return row.id + " " + row.name;
-			},
-			formatSelected : function(data, i, row) {
-				return row.id;
-			},
-			callback : function(row) {
-				if (null != row) {
-					$("#replaceName").val(row.name);
-				}else
-					$("#replaceName").val("");
-			},
-		});
-	
-	$("#replaceName").bigAutocomplete({
-			url : 'queryReplaceByName',
-			title : 'name',
-			custom : false,
-			formatItem : function(data, i, row) {
-				return row.name + " " + row.id;
-			},
-			formatSelected : function(data, i, row) {
-				return row.name;
-			},
-			callback : function(row) {
-				if (null != row) {
-					$("#replaceInfoId").val(row.id);
-				}else
-					$("#replaceInfoId").val("");
-			},
-		});
-	
-	$("#emailId").bigAutocomplete({
-		url : 'queryEmailById',
-		title : 'name',
-		custom : false,
-		formatItem : function(data, i, row) {
-			return row.id + " " + row.name;
-		},
-		formatSelected : function(data, i, row) {
-			return row.id;
-		},
-		callback : function(row) {
-			if (null != row) {
-				$("#emailName").val(row.name);
-			}else
-				$("#emailName").val("");
-		},
-	});
-	
-	$("#emailName").bigAutocomplete({
-		url : 'queryEmailsByName',
-		title : 'name',
-		custom : false,
-		formatItem : function(data, i, row) {
-			return row.id + " " + row.name;
-		},
-		formatSelected : function(data, i, row) {
-			return row.name;
-		},
-		callback : function(row) {
-			if (null != row) {
-				$("#emailId").val(row.id);
-			}else
-				$("#emailId").val("");
-		},
-	});
-
-	</script>
+    $("#emailName").bigAutocomplete({
+        url: 'queryEmailsByName',
+        title: 'name',
+        custom: false,
+        formatItem: function(data, i, row) {
+            return row.id + " " + row.name;
+        },
+        formatSelected: function(data, i, row) {
+            return row.name;
+        },
+        callback: function(row) {
+            if (null != row) {
+                $("#emailId").val(row.id);
+            } else
+                $("#emailId").val("");
+        },
+    });
+    </script>
 </body>
+
 </html>

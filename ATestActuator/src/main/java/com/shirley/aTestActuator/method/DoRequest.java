@@ -24,14 +24,16 @@ import com.shirley.aTestActuator.util.HttpClientUtil;
 public class DoRequest {
 	private Request request;
 	private int taskId;
+	private int testSuiteId;
 	private Map<String, String> bindVariables;
 	private Map<String, String> variables = new HashMap<String, String>();
 
 	/**
 	 * 请求初始化，把请求的值转换成对应真实的值。包括请求头、请求参数、测试集绑定变量、用例变量
 	 */
-	public DoRequest(int taskId, Request request, Map<String, String> bindVariables) {
+	public DoRequest(int taskId,int testSuiteId, Request request, Map<String, String> bindVariables) {
 		this.taskId = taskId;
+		this.testSuiteId = testSuiteId;
 		this.bindVariables = bindVariables;
 		Map<String, String> headers = new HashMap<String, String>();
 		Map<String, String> paramMap = new HashMap<String, String>();
@@ -115,18 +117,20 @@ public class DoRequest {
 				responseContent = HttpClientUtil.getInstance().sendHttpGet(request.getUrl() + request.getApi(),
 						request.getHeaders(), requestConfig, request.getRetry(), request.getInterval());
 
-		}
-		if ("form".equals(request.getMethod())) {
+		}else if ("form".equals(request.getMethod())) {
 			responseContent = HttpClientUtil.getInstance().sendHttpPost(request.getUrl() + request.getApi(),
 					request.getParamMap(), request.getHeaders(), requestConfig, request.getRetry(),
 					request.getInterval());
 
-		}
-		if ("raw".equals(request.getMethod())) {
+		}else if ("raw".equals(request.getMethod())) {
 			responseContent = HttpClientUtil.getInstance().sendHttpPost(request.getUrl() + request.getApi(),
 					request.getParamStr(), request.getHeaders(), requestConfig, request.getRetry(),
 					request.getInterval());
 
+		}else if ("get_url".equals(request.getMethod())) {
+			responseContent = HttpClientUtil.getInstance().sendHttpGet(request.getUrl() + request.getApi()+
+					request.getParamStr(), request.getHeaders(), requestConfig, request.getRetry(),
+					request.getInterval());
 		}
 
 		return responseContent;
@@ -172,6 +176,7 @@ public class DoRequest {
 		String allStatus = "success";
 		AssertResult assertResult = new AssertResult();
 		assertResult.setTaskId(taskId);
+		assertResult.setTestSuiteId(testSuiteId);
 		assertResult.setCaseId(request.getCaseId());
 		assertResult.setUrl(request.getUrl() + request.getApi());
 		assertResult.setRequestContent(request.toString());

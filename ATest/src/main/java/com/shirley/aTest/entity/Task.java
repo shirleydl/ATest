@@ -12,6 +12,7 @@ public class Task {
 	private int isLoop;
 	private int isSend;
 	private int emailId;
+	private int isFailSend;
 	private Long startTime;
 	private int replaceInfoId;
 	private int createrId;
@@ -65,6 +66,14 @@ public class Task {
 
 	public void setEmailId(int emailId) {
 		this.emailId = emailId;
+	}
+
+	public int getIsFailSend() {
+		return isFailSend;
+	}
+
+	public void setIsFailSend(int isFailSend) {
+		this.isFailSend = isFailSend;
 	}
 
 	public Long getStartTime() {

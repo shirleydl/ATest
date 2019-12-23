@@ -1,162 +1,157 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
-<link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
-	type="text/css">
 
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/all.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/froala_editor.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body style="background-color: #e6ecf5">
+    <div class="book_con01">
+        <h1 class="book_h01">控制器启动条件信息</h1>
+        <p class="book_p">
+            <input id="suiteWithCaseControllerId" name="suiteWithCaseControllerId" type="hidden">
+            <table id="tb_asserts" class="book_table" border="1" cellpadding="10">
+                <tr>
+                    <td><label class="td_label">取值</label></td>
+                    <td><label class="td_label">验证方法</label></td>
+                    <td><label class="td_label">预期值</label></td>
+                    <td><label class="td_label">操作</label></td>
+                </tr>
+            </table>
+        </p>
+        <p class="book_foot">
+            <input type="button" id="addAssert" value="添加栏位" /> <input type="button" id="Sumbit" value="提交" />
+        </p>
+    </div>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script>
+    $("#addAssert").click(
+        function() {
+            let _len = $("#tb_asserts tr").length;
+            $("#tb_asserts")
+                .append(
+                    "<tr id='assert" + _len + "'><td><input id='assertKey" + _len + "' type='text' class='book_input03'></td><td><select id='assertMethod" + _len + "'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue" + _len + "' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteAssert(" +
+                    _len +
+                    ")' class='add_a'>删除</a></td></tr>");
+        });
 
-	<div class="book_con01">
-		<h1 class="book_h01">控制器启动条件信息</h1>
-		<p class="book_p">
-			<input id="suiteWithCaseControllerId" name="suiteWithCaseControllerId"
-				type="hidden">
-		<table id="tb_asserts" class="book_table" border="1" cellpadding="10">
-				<tr>
-					<td><label class="td_label">取值</label></td>
-					<td><label class="td_label">验证方法</label></td>
-					<td><label class="td_label">预期值</label></td>
-					<td><label class="td_label">操作</label></td>
-				</tr>
-			</table>
-		</p>
-		<p class="book_foot">
-			<input type="button" id="addAssert" value="添加栏位" /> <input type="button"
-				id="Sumbit" value="提交" />
-		</p>
-	</div>
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-	<script>
-	$("#addAssert").click(
-			function() {
-				let _len = $("#tb_asserts tr").length;
-				$("#tb_asserts")
-						.append(
-								"<tr id='assert"+_len+"'><td><input id='assertKey"+_len+"' type='text' class='book_input03'></td><td><select id='assertMethod"+_len+"'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteAssert("
-										+ _len
-										+ ")' class='add_a'>删除</a></td></tr>");
-			});
+    $("#Sumbit").click(function() {
+        let targetUrl = "toUpdateAssert";
+        let suiteWithCaseControllerId = $("#suiteWithCaseControllerId").val();
+        let assertList = [];
+        let assertJson = "";
+        let _lena = $("#tb_asserts tr").length - 1;
 
-		$("#Sumbit").click(function() {
-			let targetUrl = "toUpdateAssert";
-			let suiteWithCaseControllerId=$("#suiteWithCaseControllerId").val();
-			let assertList = [];
-			let assertJson="";
-			let _lena = $("#tb_asserts tr").length-1;
+        for (let i = 1; i <= _lena; i++) {
+            let assert = new Object();
+            assert.key = $("#assertKey" + i).val();
+            assert.method = $("#assertMethod" + i).val();
+            assert.value = $("#assertValue" + i).val();
+            if (assert.key != "")
+                assertList.push(assert);
+        }
+        if (assertList.length > 0) {
+            assertJson = JSON.stringify(assertList);
+        }
+        $.ajax({
+            type: 'post',
+            url: targetUrl,
+            cache: false,
+            data: {
+                "id": suiteWithCaseControllerId,
+                "asserts": assertJson
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    alert("提交成功");
+                } else
+                    alert("数据错误");
+            },
+            error: function() {
+                alert("提交失败");
+            }
+        })
 
-			for (let i = 1; i <= _lena; i++) {
-			let assert=new Object();
-			assert.key = $("#assertKey" + i).val();
-			assert.method=$("#assertMethod" + i).val();
-			assert.value = $("#assertValue" + i).val();
-			if(assert.key!="")
-				assertList.push(assert);
-			}
-			if(assertList.length>0){
-				assertJson=JSON.stringify(assertList);
-			}
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : {
-					"id" : suiteWithCaseControllerId,
-					"asserts" : assertJson
-				},
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-					} else
-						alert("数据错误");
-				},
-				error : function() {
-					alert("提交失败");
-				}
-			})
-
-		});
-	</script>
-	<script>
-		function DeleteAssert(index) {
-			let _len = $("#tb_asserts tr").length;
-			$("tr[id='assert" + index + "']").remove();//删除当前行
-			for (let i = index + 1, j = _len; i < j; i++) {
-				let nextKeyVal = $("#assertKey" + i).val();
-				let nextMethodVal = $("#assertMethod" + i).val();
-				let nextValueVal = $("#assertValue" + i).val();
-				$("tr[id=\'assert" + i + "\']")
-						.replaceWith(
-								"<tr id='assert"
-										+ (i - 1)
-										+ "'><td><input id='assertKey"
-										+ (i - 1)
-										+ "' type='text' class='book_input03' value='"
-										+ nextKeyVal
-										+ "'></td><td><select id='assertMethod"
-										+ (i - 1)
-										+ "'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue"
-										+ (i - 1)
-										+ "' class='book_input03' value='"
-										+ nextValueVal
-										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteAssert("
-										+ (i - 1)
-										+ ")' class='add_a'>删除</a></td></tr>");
-				$("#assertMethod" + (i - 1)).val(nextMethodVal)
-			}
-		}
-	</script>
-	<script>
-		$(function() {
-			let url = decodeURI(window.location.search);
-			let value;
-			if (url.indexOf("?") != -1) {
-				let strs = url.substr(1).split("&");
-				value = new Array(strs.length);
-				for (let i = 0; i < strs.length; i++) {
-					value[i] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			let suiteWithCaseControllerId = value[0];
-			$("#suiteWithCaseControllerId").val(suiteWithCaseControllerId);
-			$.ajax({
-						type : 'post',
-						url : "toQueryAsserts",
-						cache : false,
-						data : {
-							"id" : suiteWithCaseControllerId
-						},
-						success : function(data) {
-							Data = data;
-							if (Data != null&&Data!="") {
-								Data = JSON.parse(Data);
-								for (let i = 1; i <= Data.length; i++) {
-									$("#tb_asserts")
-											.append(
-													"<tr id='assert"+i+"'><td><input id='assertKey"+i+"' type='text' class='book_input03' value='"
-										+ Data[i-1].key
-										+ "'></td><td><select id='assertMethod"+i+"'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='less'>小于</option><option value='greater'>大于</option><option value='lessorequal'>小于等于</option><option value='greaterorequal'>大于等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue"+i+"' class='book_input03' value='"
-										+ Data[i-1].value
-										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteAssert("
-															+ i
-															+ ")' class='add_a'>删除</a></td></tr>");
-									$("#assertMethod" + i).val(
-											Data[i - 1].method);
-								}
-							}
-						},
-						error : function() {
-							alert("查询失败")
-						}
-					})
-		});
-	</script>
-
+    });
+    </script>
+    <script>
+    function DeleteAssert(index) {
+        let _len = $("#tb_asserts tr").length;
+        $("tr[id='assert" + index + "']").remove(); //删除当前行
+        for (let i = index + 1, j = _len; i < j; i++) {
+            let nextKeyVal = $("#assertKey" + i).val();
+            let nextMethodVal = $("#assertMethod" + i).val();
+            let nextValueVal = $("#assertValue" + i).val();
+            $("tr[id=\'assert" + i + "\']")
+                .replaceWith(
+                    "<tr id='assert" +
+                    (i - 1) +
+                    "'><td><input id='assertKey" +
+                    (i - 1) +
+                    "' type='text' class='book_input03' value='" +
+                    nextKeyVal +
+                    "'></td><td><select id='assertMethod" +
+                    (i - 1) +
+                    "'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue" +
+                    (i - 1) +
+                    "' class='book_input03' value='" +
+                    nextValueVal +
+                    "'></td><td><a href='javascript:void(0)' onclick='DeleteAssert(" +
+                    (i - 1) +
+                    ")' class='add_a'>删除</a></td></tr>");
+            $("#assertMethod" + (i - 1)).val(nextMethodVal)
+        }
+    }
+    </script>
+    <script>
+    $(function() {
+        let url = decodeURI(window.location.search);
+        let value;
+        if (url.indexOf("?") != -1) {
+            let strs = url.substr(1).split("&");
+            value = new Array(strs.length);
+            for (let i = 0; i < strs.length; i++) {
+                value[i] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        let suiteWithCaseControllerId = value[0];
+        $("#suiteWithCaseControllerId").val(suiteWithCaseControllerId);
+        $.ajax({
+            type: 'post',
+            url: "toQueryAsserts",
+            cache: false,
+            data: {
+                "id": suiteWithCaseControllerId
+            },
+            success: function(data) {
+                Data = data;
+                if (Data != null && Data != "") {
+                    Data = JSON.parse(Data);
+                    for (let i = 1; i <= Data.length; i++) {
+                        $("#tb_asserts")
+                            .append(
+                                "<tr id='assert" + i + "'><td><input id='assertKey" + i + "' type='text' class='book_input03' value='" +
+                                Data[i - 1].key +
+                                "'></td><td><select id='assertMethod" + i + "'><option value='equal'>等于</option><option value='nEqual'>不等于</option><option value='less'>小于</option><option value='greater'>大于</option><option value='lessorequal'>小于等于</option><option value='greaterorequal'>大于等于</option><option value='contain'>包含</option><option value='nContain'>不包含</option><option value='startwith'>以...开始</option><option value='endwith'>以...结束</option><option value='regular'>正则匹配</option></select></td><td><input type='text' id='assertValue" + i + "' class='book_input03' value='" +
+                                Data[i - 1].value +
+                                "'></td><td><a href='javascript:void(0)' onclick='DeleteAssert(" +
+                                i +
+                                ")' class='add_a'>删除</a></td></tr>");
+                        $("#assertMethod" + i).val(
+                            Data[i - 1].method);
+                    }
+                }
+            },
+            error: function() {
+                alert("查询失败")
+            }
+        })
+    });
+    </script>
 </body>
+
 </html>

@@ -34,7 +34,7 @@ public class TaskDAO implements ITaskDAO {
 	public List<Task> QueryTask(int currentPageNo, int pageSize, int id, String name) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer(
-				"select id,name,beforeTask_id,replaceInfo_id,status,isLoop,isSend,email_id,starttime,updatetime from task where 1=1");
+				"select id,name,beforeTask_id,replaceInfo_id,status,isLoop,isSend,email_id,isFailSend,starttime,updatetime from task where 1=1");
 		List<Object> queryList = new ArrayList<Object>();
 
 		if (0 != id) {
@@ -64,6 +64,7 @@ public class TaskDAO implements ITaskDAO {
 			task.setIsLoop((Integer) row.get("isLoop"));
 			task.setEmailId((Integer) row.get("email_id"));
 			task.setIsSend((Integer) row.get("isSend"));
+			task.setIsFailSend((Integer) row.get("isFailSend"));
 			task.setStartTime((Long) row.get("starttime"));
 			task.setUpdateTime(df.format((Timestamp) row.get("updatetime")));
 			testSuiteLists.add(task);
@@ -158,8 +159,8 @@ public class TaskDAO implements ITaskDAO {
 	@Override
 	public Boolean UpdateTaskConfig(Task task) {
 		// TODO Auto-generated method stub
-		String sql = "update task set beforeTask_id=?,replaceInfo_id=?,email_id=? where id = ?";
-		Object args[] = new Object[] { task.getBeforeTaskId(), task.getReplaceInfoId(), task.getEmailId(),
+		String sql = "update task set beforeTask_id=?,replaceInfo_id=?,email_id=?,isFailSend=? where id = ?";
+		Object args[] = new Object[] { task.getBeforeTaskId(), task.getReplaceInfoId(), task.getEmailId(),task.getIsFailSend(),
 				task.getId() };
 		int row = this.jdbcTemplate.update(sql, args);
 		return row > 0;

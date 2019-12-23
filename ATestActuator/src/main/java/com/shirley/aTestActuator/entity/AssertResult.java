@@ -8,6 +8,7 @@ package com.shirley.aTestActuator.entity;
 public class AssertResult {
 	private int id;
 	private int taskId;
+	private int testSuiteId;
 	private int caseId;
 	private String caseName;
 	private String caseDescription;
@@ -26,6 +27,14 @@ public class AssertResult {
 		this.taskId = taskId;
 	}
 	
+	public int getTestSuiteId() {
+		return testSuiteId;
+	}
+
+	public void setTestSuiteId(int testSuiteId) {
+		this.testSuiteId = testSuiteId;
+	}
+
 	public int getCaseId() {
 		return caseId;
 	}

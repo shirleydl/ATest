@@ -1,154 +1,149 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title></title>
-<link href="css/all.css" rel="stylesheet" type="text/css">
-<link href="js/editor/css/font-awesome.min.css" rel="stylesheet"
-	type="text/css">
-<link href="js/editor/css/froala_editor.min.css" rel="stylesheet"
-	type="text/css">
 
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/all.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="js/editor/css/froala_editor.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body style="background-color: #e6ecf5">
+    <div class="book_con01">
+        <h1 class="book_h01">绑定变量信息</h1>
+        <p class="book_p">
+            <input id="testSuiteWithCaseId" name="testSuiteWithCaseId" type="hidden">
+            <table id="table" class="book_table" border="1" cellpadding="10">
+                <tr>
+                    <td><label class="td_label">变量名</label></td>
+                    <td><label class="td_label">变量值</label></td>
+                    <td><label class="td_label">操作</label></td>
+                </tr>
+            </table>
+        </p>
+        <p class="book_foot">
+            <input type="button" id="add" value="添加栏位" /> <input type="button" id="Sumbit" value="提交" />
+        </p>
+    </div>
+    <script src="js/jquery/jQuery-2.2.0.min.js"></script>
+    <script>
+    $("#add")
+        .click(
+            function() {
+                let _len = $("#table tr").length;
+                $("#table")
+                    .append(
+                        "<tr id='" + _len + "'><td><input type='text' id='key" + _len + "' class='book_input03'></td><td><input type='text' id='value" + _len + "' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteElement(" +
+                        _len +
+                        ")' class='add_a'>删除</a></td></tr>");
+            });
 
-	<div class="book_con01">
-		<h1 class="book_h01">绑定变量信息</h1>
-		<p class="book_p">
-			<input id="testSuiteWithCaseId" name="testSuiteWithCaseId"
-				type="hidden">
-		<table id="table" class="book_table" border="1" cellpadding="10">
-			<tr>
-				<td><label class="td_label">变量名</label></td>
-				<td><label class="td_label">变量值</label></td>
-				<td><label class="td_label">操作</label></td>
-			</tr>
-		</table>
-		</p>
-		<p class="book_foot">
-			<input type="button" id="add" value="添加栏位" /> <input type="button"
-				id="Sumbit" value="提交" />
-		</p>
-	</div>
-	<script src="js/jquery/jQuery-2.2.0.min.js"></script>
-	<script>
-		$("#add")
-				.click(
-						function() {
-							let _len = $("#table tr").length;
-							$("#table")
-									.append(
-											"<tr id='"+_len+"'><td><input type='text' id='key"+_len+"' class='book_input03'></td><td><input type='text' id='value"+_len+"' class='book_input03'></td><td><a href='javascript:void(0)' onclick='DeleteElement("
-													+ _len
-													+ ")' class='add_a'>删除</a></td></tr>");
-						});
+    $("#Sumbit").click(function() {
+        let targetUrl = "toUpdateBindVariables";
+        let testSuiteWithCaseId = $("#testSuiteWithCaseId").val();
+        let map = {};
+        let mapJson = "";
+        let _len = $("#table tr").length;
+        for (let i = 1; i < _len; i++) {
+            let keystr = $("#key" + i).val();
+            let valuestr = $("#value" + i).val();
+            map[keystr] = valuestr;
+        }
+        mapJson = JSON.stringify(map)
+        $.ajax({
+            type: 'post',
+            url: targetUrl,
+            cache: false,
+            data: {
+                "testSuiteWithCaseId": testSuiteWithCaseId,
+                "bindVariables": mapJson
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data) {
+                    alert("提交成功");
+                } else
+                    alert("数据错误");
+            },
+            error: function() {
+                alert("提交失败");
+            }
+        })
 
-		$("#Sumbit").click(function() {
-			let targetUrl = "toUpdateBindVariables";
-			let testSuiteWithCaseId=$("#testSuiteWithCaseId").val();
-			let map = {};
-			let mapJson="";
-			let _len = $("#table tr").length;
-			for (let i = 1; i < _len; i++) {
-				let keystr = $("#key" + i).val();
-				let valuestr = $("#value" + i).val();
-				map[keystr]=valuestr;
-			}
-			mapJson=JSON.stringify(map)
-			$.ajax({
-				type : 'post',
-				url : targetUrl,
-				cache : false,
-				data : {
-					"testSuiteWithCaseId" : testSuiteWithCaseId,
-					"bindVariables" : mapJson
-				},
-				dataType : 'json',
-				success : function(data) {
-					if (data) {
-						alert("提交成功");
-					} else
-						alert("数据错误");
-				},
-				error : function() {
-					alert("提交失败");
-				}
-			})
-
-		});
-	</script>
-	<script>
-		function DeleteElement(index) {
-			let _len = $("#table tr").length;
-			$("tr[id='" + index + "']").remove();//删除当前行
-			for (let i = index + 1, j = _len; i < j; i++) {
-				let nextkeyVal = $("#key" + i).val();
-				let nextValueVal = $("#value" + i).val();
-				$("tr[id=\'" + i + "\']")
-						.replaceWith(
-								"<tr id='"
-										+ (i - 1)
-										+ "'><td><input type='text' id='key"
-										+ (i - 1)
-										+ "' class='book_input03' value='"
-										+ nextkeyVal
-										+ "'></td><td><input type='text' id='value"
-										+ (i - 1)
-										+ "' class='book_input03' value='"
-										+ nextValueVal
-										+ "'></td><td><a href='javascript:void(0)' onclick='DeleteElement("
-										+ (i - 1)
-										+ ")' class='add_a'>删除</a></td></tr>");
-			}
-		}
-	</script>
-	<script>
-		$(function() {
-			let url = decodeURI(window.location.search);
-			let value;
-			if (url.indexOf("?") != -1) {
-				let strs = url.substr(1).split("&");
-				value = new Array(strs.length);
-				for (let i = 0; i < strs.length; i++) {
-					value[i] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			let testSuiteWithCaseId = value[0];
-			$("#testSuiteWithCaseId").val(testSuiteWithCaseId);
-			$
-					.ajax({
-						type : 'post',
-						url : "toQueryBinds",
-						cache : false,
-						data : {
-							"testSuiteWithCaseId" : testSuiteWithCaseId
-						},
-						success : function(data) {
-							let i=1;
-							let Data=data;
-							for (let key in Data) {
-								$("#table").append("<tr id='"
-														+ i
-														+ "'><td><input type='text' id='key"
-														+ i
-														+ "' class='book_input03' value='"
-														+ key
-														+ "'></td><td><input type='text' id='value"
-														+ i
-														+ "' class='book_input03' value='"
-														+ Data[key]
-														+ "'></td><td><a href='javascript:void(0)' onclick='DeleteElement("
-														+ i
-														+ ")' class='add_a'>删除</a></td></tr>");
-								i++;
-							}
-						},
-						error : function() {
-							alert("查询失败")
-						}
-					})
-		});
-	</script>
-
+    });
+    </script>
+    <script>
+    function DeleteElement(index) {
+        let _len = $("#table tr").length;
+        $("tr[id='" + index + "']").remove(); //删除当前行
+        for (let i = index + 1, j = _len; i < j; i++) {
+            let nextkeyVal = $("#key" + i).val();
+            let nextValueVal = $("#value" + i).val();
+            $("tr[id=\'" + i + "\']")
+                .replaceWith(
+                    "<tr id='" +
+                    (i - 1) +
+                    "'><td><input type='text' id='key" +
+                    (i - 1) +
+                    "' class='book_input03' value='" +
+                    nextkeyVal +
+                    "'></td><td><input type='text' id='value" +
+                    (i - 1) +
+                    "' class='book_input03' value='" +
+                    nextValueVal +
+                    "'></td><td><a href='javascript:void(0)' onclick='DeleteElement(" +
+                    (i - 1) +
+                    ")' class='add_a'>删除</a></td></tr>");
+        }
+    }
+    </script>
+    <script>
+    $(function() {
+        let url = decodeURI(window.location.search);
+        let value;
+        if (url.indexOf("?") != -1) {
+            let strs = url.substr(1).split("&");
+            value = new Array(strs.length);
+            for (let i = 0; i < strs.length; i++) {
+                value[i] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        let testSuiteWithCaseId = value[0];
+        $("#testSuiteWithCaseId").val(testSuiteWithCaseId);
+        $
+            .ajax({
+                type: 'post',
+                url: "toQueryBinds",
+                cache: false,
+                data: {
+                    "testSuiteWithCaseId": testSuiteWithCaseId
+                },
+                success: function(data) {
+                    let i = 1;
+                    let Data = data;
+                    for (let key in Data) {
+                        $("#table").append("<tr id='" +
+                            i +
+                            "'><td><input type='text' id='key" +
+                            i +
+                            "' class='book_input03' value='" +
+                            key +
+                            "'></td><td><input type='text' id='value" +
+                            i +
+                            "' class='book_input03' value='" +
+                            Data[key] +
+                            "'></td><td><a href='javascript:void(0)' onclick='DeleteElement(" +
+                            i +
+                            ")' class='add_a'>删除</a></td></tr>");
+                        i++;
+                    }
+                },
+                error: function() {
+                    alert("查询失败")
+                }
+            })
+    });
+    </script>
 </body>
+
 </html>
