@@ -21,8 +21,7 @@
 5. 部署ATest（接口自动化测试平台）,以tomcat为例,直接解压ATest.war到tomcat目录下的webapps目录里,更改\WEB-INF\spring\appServlet\servlet-context.xml数据库配置
 6. 使用命令运行ATestActuator（定时执行器）,以windows系统为例,把ATestActuator.bat与ATestActuator.jar放到同一个目录下,更改jar包里面applicantContent.xml数据库配置,并双击运行ATestActuator.bat
 
-百度网盘链接：https://pan.baidu.com/s/1fhItquuAfzi39r6Ttci3ng 
-提取码：uio9
+链接:https://pan.baidu.com/s/1EykIQR24vfhzImLx8-FXMw 提取码:kaid
 
 ## 功能介绍：
 ### 环境管理：
